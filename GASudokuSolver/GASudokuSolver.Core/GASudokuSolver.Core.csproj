@@ -24,10 +24,10 @@
     <None Update="Datasets\Csv\Easy\Unsolved\02.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Datasets\Csv\Medium\Solved\medium01.csv">
+    <None Update="Datasets\Csv\Medium\Solved\01.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Datasets\Csv\Medium\Unsolved\medium01.csv">
+    <None Update="Datasets\Csv\Medium\Unsolved\01.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
