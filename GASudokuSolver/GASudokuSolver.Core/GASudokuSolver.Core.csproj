@@ -6,4 +6,30 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Datasets\Csv\Expert\Solved\" />
+    <Folder Include="Datasets\Csv\Expert\Unsolved\" />
+    <Folder Include="Datasets\Csv\Extreme\Solved\" />
+    <Folder Include="Datasets\Csv\Extreme\Unsolved\" />
+    <Folder Include="Datasets\Csv\Hard\Solved\" />
+    <Folder Include="Datasets\Csv\Hard\Unsolved\" />
+    <Folder Include="Datasets\Csv\Master\Solved\" />
+    <Folder Include="Datasets\Csv\Master\Unsolved\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Datasets\Csv\Easy\Solved\02.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Datasets\Csv\Easy\Unsolved\02.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Datasets\Csv\Medium\Solved\medium01.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Datasets\Csv\Medium\Unsolved\medium01.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

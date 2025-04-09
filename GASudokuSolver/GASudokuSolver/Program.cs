@@ -1,9 +1,20 @@
-﻿namespace GASudokuSolver;
+﻿using GASudokuSolver.Core.Loading.Implementations;
+using GASudokuSolver.Core.Validators.Implementations;
 
-internal class Program
+namespace GASudokuSolver;
+
+public sealed class Program
 {
-	static void Main(string[] args)
+	static async Task Main(string[] args)
 	{
-		Console.WriteLine("Hello, World!");
+		var datasetLoader = new DatasetLoader();
+		var datasetValidator = new DatasetValidator();
+
+		Console.WriteLine("Loading dataset...");
+		var dataset = await datasetLoader.LoadDatasetAsync(path: "Datasets/Csv");
+
+		Console.WriteLine("Validating dataset...");
+		datasetValidator.Validate(dataset);
+		Console.ReadKey();
 	}
 }
