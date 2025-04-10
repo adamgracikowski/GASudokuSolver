@@ -14,7 +14,7 @@ public sealed class Grid
 	public int[] GetRow(int row)
 	{
 		var result = new int[Constants.Grid.Columns];
-		for (var col = 0; col < Constants.Grid.Columns; col++)
+		for (var col = 0; col < Constants.Grid.Columns; ++col)
 		{
 			result[col] = Data[row, col];
 		}
@@ -25,7 +25,7 @@ public sealed class Grid
 	public int[] GetColumn(int col)
 	{
 		var result = new int[Constants.Grid.Rows];
-		for (var row = 0; row < Constants.Grid.Rows; row++)
+		for (var row = 0; row < Constants.Grid.Rows; ++row)
 		{
 			result[row] = Data[row, col];
 		}
@@ -42,9 +42,9 @@ public sealed class Grid
 		
 		var counter = 0;
 
-		for (var row = startRow; row < startRow + Constants.Subgrid.Rows; row++)
+		for (var row = startRow; row < startRow + Constants.Subgrid.Rows; ++row)
 		{
-			for (var col = startCol; col < startCol + Constants.Subgrid.Columns; col++)
+			for (var col = startCol; col < startCol + Constants.Subgrid.Columns; ++col)
 			{
 				result[counter++] = Data[row, col];
 			}
