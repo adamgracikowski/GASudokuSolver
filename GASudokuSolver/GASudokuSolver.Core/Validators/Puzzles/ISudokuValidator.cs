@@ -1,6 +1,6 @@
 ﻿using GASudokuSolver.Core.Models;
 
-namespace GASudokuSolver.Core.Validators.Contracts;
+namespace GASudokuSolver.Core.Validators.Puzzles;
 
 public interface ISudokuValidator
 {

@@ -1,8 +1,8 @@
 ﻿using GASudokuSolver.Core.Enums;
 using GASudokuSolver.Core.Models;
-using GASudokuSolver.Core.Validators.Contracts;
+using GASudokuSolver.Core.Validators.Puzzles;
 
-namespace GASudokuSolver.Core.Validators.Implementations;
+namespace GASudokuSolver.Core.Validators.Datasets;
 
 public sealed class DatasetValidator : IDatasetValidator
 {

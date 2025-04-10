@@ -1,7 +1,7 @@
 ﻿using GASudokuSolver.Core.Models;
-using GASudokuSolver.Core.Validators.Contracts;
+using GASudokuSolver.Core.Validators.Grids;
 
-namespace GASudokuSolver.Core.Validators.Implementations;
+namespace GASudokuSolver.Core.Validators.Puzzles;
 
 public sealed class SudokuValidator : ISudokuValidator
 {

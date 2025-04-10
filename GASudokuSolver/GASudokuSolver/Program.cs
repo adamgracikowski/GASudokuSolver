@@ -1,5 +1,5 @@
-﻿using GASudokuSolver.Core.Loading.Implementations;
-using GASudokuSolver.Core.Validators.Implementations;
+﻿using GASudokuSolver.Core.Loading.Datasets;
+using GASudokuSolver.Core.Validators.Datasets;
 
 namespace GASudokuSolver;
 

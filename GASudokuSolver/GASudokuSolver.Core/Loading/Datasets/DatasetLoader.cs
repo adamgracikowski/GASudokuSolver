@@ -1,9 +1,9 @@
 ﻿using GASudokuSolver.Core.Enums;
-using GASudokuSolver.Core.Loading.Contracts;
 using GASudokuSolver.Core.Loading.Exceptions;
+using GASudokuSolver.Core.Loading.Puzzles;
 using GASudokuSolver.Core.Models;
 
-namespace GASudokuSolver.Core.Loading.Implementations;
+namespace GASudokuSolver.Core.Loading.Datasets;
 
 public sealed class DatasetLoader : IDatasetLoader
 {
@@ -52,9 +52,9 @@ public sealed class DatasetLoader : IDatasetLoader
 
 			return [.. results.SelectMany(result => result)];
 		}
-		catch (GridLoadException ex)
+		catch (GridLoadingException ex)
 		{
-			throw new DatasetLoadException($"Failed to load dataset from {path}", ex);
+			throw new DatasetLoadingException($"Failed to load dataset from {path}", ex);
 		}
 	}
 
@@ -66,7 +66,7 @@ public sealed class DatasetLoader : IDatasetLoader
 		var records = await File.ReadAllLinesAsync(path, cancellationToken);
 
 		var tasks = records.Select(record =>
-			this.sudokuLoader.LoadSudokuFromStringAsync(record, difficulty, cancellationToken)
+			sudokuLoader.LoadSudokuFromStringAsync(record, difficulty, cancellationToken)
 		);
 
 		var puzzles = await Task.WhenAll(tasks);

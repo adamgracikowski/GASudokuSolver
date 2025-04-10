@@ -1,7 +1,7 @@
 ﻿using GASudokuSolver.Core.Enums;
 using GASudokuSolver.Core.Models;
 
-namespace GASudokuSolver.Core.Loading.Contracts;
+namespace GASudokuSolver.Core.Loading.Puzzles;
 
 public interface ISudokuLoader
 {

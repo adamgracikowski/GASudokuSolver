@@ -1,8 +1,7 @@
 ﻿using GASudokuSolver.Core.Configurations;
 using GASudokuSolver.Core.Models;
-using GASudokuSolver.Core.Validators.Contracts;
 
-namespace GASudokuSolver.Core.Validators.Implementations;
+namespace GASudokuSolver.Core.Validators.Grids;
 
 public sealed class GridValidator : IGridValidator
 {

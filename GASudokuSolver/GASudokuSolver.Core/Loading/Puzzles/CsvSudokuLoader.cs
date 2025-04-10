@@ -1,9 +1,9 @@
 ﻿using GASudokuSolver.Core.Enums;
-using GASudokuSolver.Core.Loading.Contracts;
 using GASudokuSolver.Core.Loading.Exceptions;
+using GASudokuSolver.Core.Loading.Grids;
 using GASudokuSolver.Core.Models;
 
-namespace GASudokuSolver.Core.Loading.Implementations;
+namespace GASudokuSolver.Core.Loading.Puzzles;
 
 public sealed class CsvSudokuLoader : ISudokuLoader
 {
@@ -27,23 +27,23 @@ public sealed class CsvSudokuLoader : ISudokuLoader
 	{
 		try
 		{
-			var fields = content.Split(this.fieldDelimiter, this.splitOptions);
+			var fields = content.Split(fieldDelimiter, splitOptions);
 
-			if (fields.Length != this.fieldsCount)
+			if (fields.Length != fieldsCount)
 			{
 				throw new FormatException("Invalid format for sudoku puzzle");
 			}
 
-			var unsolved = await this.gridLoader.LoadGridFromStringAsync(fields[0], cancellationToken);
+			var unsolved = await gridLoader.LoadGridFromStringAsync(fields[0], cancellationToken);
 
-			var solved = await this.gridLoader.LoadGridFromStringAsync(fields[1], cancellationToken);
+			var solved = await gridLoader.LoadGridFromStringAsync(fields[1], cancellationToken);
 
 			return new Sudoku(difficulty, unsolved, solved);
 
 		}
 		catch (Exception ex)
 		{
-			throw new SudokuLoadException("Failed to load sudoku puzzle", ex);
+			throw new SudokuLoadingException("Failed to load sudoku puzzle", ex);
 		}
 	}
 }

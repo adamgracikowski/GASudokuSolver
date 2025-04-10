@@ -1,7 +1,7 @@
 ﻿using GASudokuSolver.Core.Enums;
 using GASudokuSolver.Core.Models;
 
-namespace GASudokuSolver.Core.Validators.Contracts;
+namespace GASudokuSolver.Core.Validators.Datasets;
 
 public interface IDatasetValidator
 {

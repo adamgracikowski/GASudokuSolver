@@ -1,9 +1,8 @@
 ﻿using GASudokuSolver.Core.Configurations;
-using GASudokuSolver.Core.Loading.Contracts;
 using GASudokuSolver.Core.Loading.Exceptions;
 using GASudokuSolver.Core.Models;
 
-namespace GASudokuSolver.Core.Loading.Implementations;
+namespace GASudokuSolver.Core.Loading.Grids;
 
 public sealed class CsvGridLoader : IGridLoader
 {
@@ -32,7 +31,7 @@ public sealed class CsvGridLoader : IGridLoader
 		}
 		catch (Exception ex)
 		{
-			throw new GridLoadException($"Failed to load sudoku from {content}.", ex);
+			throw new GridLoadingException($"Failed to load sudoku from {content}.", ex);
 		}
 	}
 }
