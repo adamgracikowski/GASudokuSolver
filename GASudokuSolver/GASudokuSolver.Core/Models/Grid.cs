@@ -13,8 +13,8 @@ public sealed class Grid
 
 	public int[] GetRow(int row)
 	{
-		var result = new int[SudokuConstants.Grid.NumberOfColumns];
-		for (var col = 0; col < SudokuConstants.Grid.NumberOfColumns; col++)
+		var result = new int[Constants.Grid.Columns];
+		for (var col = 0; col < Constants.Grid.Columns; col++)
 		{
 			result[col] = Data[row, col];
 		}
@@ -24,8 +24,8 @@ public sealed class Grid
 
 	public int[] GetColumn(int col)
 	{
-		var result = new int[SudokuConstants.Grid.NumberOfRows];
-		for (var row = 0; row < SudokuConstants.Grid.NumberOfRows; row++)
+		var result = new int[Constants.Grid.Rows];
+		for (var row = 0; row < Constants.Grid.Rows; row++)
 		{
 			result[row] = Data[row, col];
 		}
@@ -35,18 +35,18 @@ public sealed class Grid
 
 	public int[] GetSubgrid(int subgrid)
 	{
-		var result = new int[SudokuConstants.Subgrid.NumberOfRows * SudokuConstants.Subgrid.NumberOfColumns];
+		var result = new int[Constants.Subgrid.Rows * Constants.Subgrid.Columns];
 		
-		var startRow = (subgrid / SudokuConstants.Subgrid.NumberOfRows) * SudokuConstants.Subgrid.NumberOfRows;
-		var startCol = (subgrid % SudokuConstants.Subgrid.NumberOfColumns) * SudokuConstants.Subgrid.NumberOfColumns;
+		var startRow = (subgrid / Constants.Subgrid.Rows) * Constants.Subgrid.Rows;
+		var startCol = (subgrid % Constants.Subgrid.Columns) * Constants.Subgrid.Columns;
 		
-		var i = 0;
+		var counter = 0;
 
-		for (var row = startRow; row < startRow + SudokuConstants.Subgrid.NumberOfRows; row++)
+		for (var row = startRow; row < startRow + Constants.Subgrid.Rows; row++)
 		{
-			for (var col = startCol; col < startCol + SudokuConstants.Subgrid.NumberOfColumns; col++)
+			for (var col = startCol; col < startCol + Constants.Subgrid.Columns; col++)
 			{
-				result[i++] = Data[row, col];
+				result[counter++] = Data[row, col];
 			}
 		}
 

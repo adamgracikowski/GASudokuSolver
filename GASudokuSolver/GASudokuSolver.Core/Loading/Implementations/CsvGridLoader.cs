@@ -7,58 +7,32 @@ namespace GASudokuSolver.Core.Loading.Implementations;
 
 public sealed class CsvGridLoader : IGridLoader
 {
-	private readonly char recordDelimiter = '\n';
-	private readonly char fieldDelimiter = ',';
-
-	private readonly StringSplitOptions splitOptions
-		= StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries;
-
-	public async Task<Grid> LoadGridFromFileAsync(string path)
+	public async Task<Grid> LoadGridFromStringAsync(string content, CancellationToken cancellationToken)
 	{
 		try
 		{
-			using var reader = new StreamReader(path);
-
-			var content = await reader.ReadToEndAsync();
-
-			var records = content.Split(recordDelimiter, splitOptions);
-
-			if(records.Length != SudokuConstants.Grid.NumberOfRows)
+			if (content.Length != Constants.Grid.Cells)
 			{
 				throw new FormatException(
-					$"Number of rows {records.Length} different from expected {SudokuConstants.Grid.NumberOfRows}."
+					$"Number of cells {content.Length} different from expected {Constants.Grid.Cells}."
 				);
 			}
 
-			var data = new int[SudokuConstants.Grid.NumberOfRows, SudokuConstants.Grid.NumberOfColumns];
+			var data = new int[Constants.Grid.Rows, Constants.Grid.Columns];
 
-			var row = 0;
-
-			foreach (var line in records)
+			for (var row = 0; row < Constants.Grid.Rows; ++row)
 			{
-				var fields = line
-					.Split(fieldDelimiter, splitOptions)
-					.ToList();
-
-				if(fields.Count != SudokuConstants.Grid.NumberOfColumns)
+				for (var col = 0; col < Constants.Grid.Columns; ++col)
 				{
-					throw new FormatException($"Number of columns {fields.Count} different from expected " +
-						$"({SudokuConstants.Grid.NumberOfColumns}) in row {row}.");
+					data[row, col] = int.Parse(content[row * Constants.Grid.Rows + col].ToString());
 				}
-
-				for(var col = 0; col < SudokuConstants.Grid.NumberOfColumns; ++col)
-				{
-					data[row, col] = int.Parse(fields[col]);
-				}
-				
-				row++;
 			}
 
-			return new Grid(data: data);
+			return await Task.FromResult(new Grid(data: data));
 		}
 		catch (Exception ex)
 		{
-			throw new GridLoadException($"Failed to load sudoku from {path}.", ex);
+			throw new GridLoadException($"Failed to load sudoku from {content}.", ex);
 		}
 	}
 }

@@ -5,5 +5,5 @@ namespace GASudokuSolver.Core.Loading.Contracts;
 
 public interface IDatasetLoader
 {
-	Task<Dictionary<DifficultyLevel, List<Sudoku>>> LoadDatasetAsync(string path);
+	Task<Dictionary<Difficulty, List<Sudoku>>> LoadDatasetAsync(string path, CancellationToken cancellationToken = default);
 }

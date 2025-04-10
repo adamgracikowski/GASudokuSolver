@@ -5,5 +5,5 @@ namespace GASudokuSolver.Core.Validators.Contracts;
 
 public interface IDatasetValidator
 {
-	public void Validate(Dictionary<DifficultyLevel, List<Sudoku>> dataset);
+	public void Validate(Dictionary<Difficulty, List<Sudoku>> dataset);
 }

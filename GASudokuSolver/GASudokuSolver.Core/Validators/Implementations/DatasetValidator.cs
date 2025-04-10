@@ -13,7 +13,7 @@ public sealed class DatasetValidator : IDatasetValidator
 		this.sudokuValidator = sudokuValidator ?? new SudokuValidator();
 	}
 
-	public void Validate(Dictionary<DifficultyLevel, List<Sudoku>> dataset)
+	public void Validate(Dictionary<Difficulty, List<Sudoku>> dataset)
 	{
 		foreach(var (difficultyLevel, puzzles) in dataset)
 		{

@@ -13,23 +13,37 @@ public sealed class GridValidator : IGridValidator
 			return false;
 		}
 
-		for (var i = 0; i < SudokuConstants.Grid.NumberOfRows; i++)
+		for (var row = 0; row < Constants.Grid.Rows; ++row)
 		{
-			for(var j = 0; j < SudokuConstants.Grid.NumberOfColumns; j++)
+			for(var col = 0; col < Constants.Grid.Columns; ++col)
 			{
-				if (solved.Data[i, j] != unsolved.Data[i, j] && 
-					unsolved.Data[i, j] != SudokuConstants.Cell.EmptyValue)
+				if (solved.Data[row, col] != unsolved.Data[row, col] && 
+					unsolved.Data[row, col] != Constants.Cell.EmptyValue)
 				{
 					return false;
 				}
 			}
 		}
 
-		for (var i = 0; i < SudokuConstants.Grid.NumberOfRows; i++)
+		for (var row = 0; row < Constants.Grid.Rows; ++row)
 		{
-			if (!IsValidGroup(solved.GetRow(i)) ||
-				!IsValidGroup(solved.GetColumn(i)) ||
-				!IsValidGroup(solved.GetSubgrid(i)))
+			if (!IsValidGroup(solved.GetRow(row)))
+			{
+				return false;
+			}
+		}
+
+		for (var col = 0; col < Constants.Grid.Columns; ++col)
+		{
+			if (!IsValidGroup(solved.GetColumn(col)))
+			{
+				return false;
+			}
+		}
+
+		for (var subgrid = 0; subgrid < Constants.Grid.Subgrids; ++subgrid)
+		{
+			if (!IsValidGroup(solved.GetSubgrid(subgrid)))
 			{
 				return false;
 			}
@@ -45,11 +59,25 @@ public sealed class GridValidator : IGridValidator
 			return false;
 		}
 
-		for (var i = 0; i < SudokuConstants.Grid.NumberOfRows; i++)
+		for (var row = 0; row < Constants.Grid.Rows; ++row)
 		{
-			if (!IsValidGroup(unsolved.GetRow(i), skipEmptyCells: true) ||
-				!IsValidGroup(unsolved.GetColumn(i), skipEmptyCells: true) ||
-				!IsValidGroup(unsolved.GetSubgrid(i), skipEmptyCells: true))
+			if (!IsValidGroup(unsolved.GetRow(row), skipEmptyCells: true))
+			{
+				return false;
+			}
+		}
+
+		for (var col = 0; col < Constants.Grid.Columns; ++col)
+		{
+			if (!IsValidGroup(unsolved.GetColumn(col), skipEmptyCells: true))
+			{
+				return false;
+			}
+		}
+
+		for (var subgrid = 0; subgrid < Constants.Grid.Subgrids; ++subgrid)
+		{
+			if (!IsValidGroup(unsolved.GetSubgrid(subgrid), skipEmptyCells: true))
 			{
 				return false;
 			}
@@ -60,8 +88,8 @@ public sealed class GridValidator : IGridValidator
 
 	private static bool HasValidDimensions(Grid grid)
 	{
-		return grid.Data.GetLength(0) == SudokuConstants.Grid.NumberOfRows &&
-			grid.Data.GetLength(1) == SudokuConstants.Grid.NumberOfColumns;
+		return grid.Data.GetLength(0) == Constants.Grid.Rows &&
+			grid.Data.GetLength(1) == Constants.Grid.Columns;
 	}
 
 	private static bool IsValidGroup(int[] group, bool skipEmptyCells = false)
@@ -70,11 +98,11 @@ public sealed class GridValidator : IGridValidator
 
 		foreach (var number in group)
 		{
-			if (skipEmptyCells && number == SudokuConstants.Cell.EmptyValue) 
+			if (skipEmptyCells && number == Constants.Cell.EmptyValue) 
 				continue;
 
-			if (number < SudokuConstants.Cell.MinValue || 
-				number > SudokuConstants.Cell.MaxValue ||
+			if (number < Constants.Cell.MinValue || 
+				number > Constants.Cell.MaxValue ||
 				!seen.Add(number))
 			{
 				return false;

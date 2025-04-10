@@ -1,6 +1,6 @@
 ﻿namespace GASudokuSolver.Core.Enums;
 
-public enum DifficultyLevel
+public enum Difficulty
 {
 	Easy,
 	Medium,

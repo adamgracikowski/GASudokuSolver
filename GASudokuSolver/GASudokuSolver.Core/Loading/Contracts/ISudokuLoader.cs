@@ -5,5 +5,9 @@ namespace GASudokuSolver.Core.Loading.Contracts;
 
 public interface ISudokuLoader
 {
-	Task<Sudoku> LoadSudokuFromFilesAsync(string unsolvedPath, string solvedPath, DifficultyLevel difficultyLevel);
+	Task<Sudoku> LoadSudokuFromStringAsync(
+		string content, 
+		Difficulty difficulty, 
+		CancellationToken cancellationToken = default
+	);
 }

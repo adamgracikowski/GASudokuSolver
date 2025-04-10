@@ -11,64 +11,66 @@ public sealed class DatasetLoader : IDatasetLoader
 
 	public DatasetLoader(ISudokuLoader? sudokuLoader = null)
 	{
-		this.sudokuLoader = sudokuLoader ?? new SudokuLoader();
+		this.sudokuLoader = sudokuLoader ?? new CsvSudokuLoader();
 	}
 
-	public async Task<Dictionary<DifficultyLevel, List<Sudoku>>> LoadDatasetAsync(string path)
+	public async Task<Dictionary<Difficulty, List<Sudoku>>> LoadDatasetAsync(
+		string path, 
+		CancellationToken cancellationToken = default)
 	{
-		var existingLevelDifficulties = Enum
-			.GetValues(typeof(DifficultyLevel))
-			.Cast<DifficultyLevel>()
+		var existingDifficulties = Enum
+			.GetValues(typeof(Difficulty))
+			.Cast<Difficulty>()
 			.Where(level => Directory.Exists(Path.Combine(path, level.ToString())))
 			.ToList();
 
-		var dataset = new Dictionary<DifficultyLevel, List<Sudoku>>();
-
-		foreach (var difficultyLevel in existingLevelDifficulties)
+		var tasks = existingDifficulties.Select(async difficulty =>
 		{
-			dataset[difficultyLevel] = await LoadDifficultyLevelAsync(path, difficultyLevel);
-		}
+			var puzzles = await LoadDifficultyLevelAsync(path, difficulty, cancellationToken);
+			
+			return new KeyValuePair<Difficulty, List<Sudoku>>(difficulty, puzzles);
+		});
 
-		return dataset;
+		var results = await Task.WhenAll(tasks);
+
+		return results.ToDictionary(kv => kv.Key, kv => kv.Value);
 	}
 
-	private async Task<List<Sudoku>> LoadDifficultyLevelAsync(string path, DifficultyLevel difficultyLevel)
+	private async Task<List<Sudoku>> LoadDifficultyLevelAsync(string path, Difficulty difficulty, CancellationToken cancellationToken = default)
 	{
-		var directory = Path.Combine(path, difficultyLevel.ToString());
-
-		var solvedDirectory = Path.Combine(directory, SolvedStatus.Solved.ToString());
-		var unsolvedDirectory = Path.Combine(directory, SolvedStatus.Unsolved.ToString());
-
-		if (!Directory.Exists(solvedDirectory))
-		{
-			throw new DatasetLoadException($"Missing {SolvedStatus.Solved} directory in {path}");
-		}
-
-		if (!Directory.Exists(unsolvedDirectory))
-		{
-			throw new DatasetLoadException($"Missing {SolvedStatus.Unsolved} directory in {path}");
-		}
-
-		var puzzles = new List<Sudoku>();
-
-		var solvedFiles = Directory.GetFiles(solvedDirectory);
-
 		try
 		{
-			foreach (var solvedFile in solvedFiles)
-			{
-				var unsolvedFile = Path.Combine(unsolvedDirectory, Path.GetFileName(solvedFile));
+			var directory = Path.Combine(path, difficulty.ToString());
 
-				var puzzle = await sudokuLoader.LoadSudokuFromFilesAsync(unsolvedFile, solvedFile, difficultyLevel);
+			var files = Directory.GetFiles(directory);
 
-				puzzles.Add(puzzle);
-			}
+			var tasks = files.Select(file =>
+				LoadPuzzlesFromFileAsync(file, difficulty, cancellationToken)
+			);
 
-			return puzzles;
+			var results = await Task.WhenAll(tasks);
+
+			return [.. results.SelectMany(result => result)];
 		}
 		catch (GridLoadException ex)
 		{
 			throw new DatasetLoadException($"Failed to load dataset from {path}", ex);
 		}
+	}
+
+	private async Task<List<Sudoku>> LoadPuzzlesFromFileAsync(
+		string path, 
+		Difficulty difficulty, 
+		CancellationToken cancellationToken = default)
+	{
+		var records = await File.ReadAllLinesAsync(path, cancellationToken);
+
+		var tasks = records.Select(record =>
+			this.sudokuLoader.LoadSudokuFromStringAsync(record, difficulty, cancellationToken)
+		);
+
+		var puzzles = await Task.WhenAll(tasks);
+
+		return [.. puzzles];
 	}
 }

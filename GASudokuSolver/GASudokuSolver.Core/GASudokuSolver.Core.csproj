@@ -7,27 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Datasets\Csv\Expert\Solved\" />
-    <Folder Include="Datasets\Csv\Expert\Unsolved\" />
-    <Folder Include="Datasets\Csv\Extreme\Solved\" />
-    <Folder Include="Datasets\Csv\Extreme\Unsolved\" />
-    <Folder Include="Datasets\Csv\Hard\Solved\" />
-    <Folder Include="Datasets\Csv\Hard\Unsolved\" />
-    <Folder Include="Datasets\Csv\Master\Solved\" />
-    <Folder Include="Datasets\Csv\Master\Unsolved\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Datasets\Csv\Easy\Solved\02.csv">
+    <None Update="Datasets\Csv\Easy\easy.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Datasets\Csv\Easy\Unsolved\02.csv">
+    <None Update="Datasets\Csv\Expert\expert.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Datasets\Csv\Medium\Solved\01.csv">
+    <None Update="Datasets\Csv\Extreme\extreme.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Datasets\Csv\Medium\Unsolved\01.csv">
+    <None Update="Datasets\Csv\Hard\hard.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Datasets\Csv\Master\master.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Datasets\Csv\Medium\medium.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

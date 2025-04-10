@@ -4,5 +4,5 @@ namespace GASudokuSolver.Core.Loading.Contracts;
 
 public interface IGridLoader
 {
-	Task<Grid> LoadGridFromFileAsync(string path);
+	Task<Grid> LoadGridFromStringAsync(string content, CancellationToken cancellationToken);
 }
