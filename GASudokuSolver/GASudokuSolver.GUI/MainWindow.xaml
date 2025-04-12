@@ -103,7 +103,7 @@
             </Border>
 
 
-            <!--  Right Panel  -->
+            <!--  Left Panel  -->
             <Grid Grid.Row="1" Grid.Column="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="2*" />
@@ -166,7 +166,7 @@
             </Grid>
 
 
-            <!--  Left Panel  -->
+            <!--  Right Panel  -->
             <Grid Grid.Row="1" Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="450" />
