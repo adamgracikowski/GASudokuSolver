@@ -206,6 +206,13 @@
                         </ItemsControl>
                     </Border>
                 </Grid>
+
+                <!--  Algorithm Results  -->
+                <Border Grid.Row="1" Style="{StaticResource ModernCard}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel />
+                    </ScrollViewer>
+                </Border>
             </Grid>
         </Grid>
     </DockPanel>
