@@ -9,11 +9,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
+    <None Remove="Resources\Icons\close.png" />
+    <None Remove="Resources\Icons\export.png" />
+    <None Remove="Resources\Icons\import.png" />
+    <None Remove="Resources\Icons\info.png" />
+    <None Remove="Resources\Icons\question.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\Icons\" />
+    <Resource Include="Resources\Icons\close.png" />
+    <Resource Include="Resources\Icons\export.png" />
+    <Resource Include="Resources\Icons\import.png" />
+    <Resource Include="Resources\Icons\info.png" />
+    <Resource Include="Resources\Icons\question.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
   </ItemGroup>
 
   <ItemGroup>
