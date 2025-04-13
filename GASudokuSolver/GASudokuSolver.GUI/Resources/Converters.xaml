@@ -1,0 +1,8 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:GASudokuSolver.GUI.Converters">
+
+    <converters:SudokuBorderConverter x:Key="SudokuBorderConverter" />
+    <converters:ReadOnlyToBackgroundConverter x:Key="ReadOnlyToBackgroundConverter" />
+</ResourceDictionary>
