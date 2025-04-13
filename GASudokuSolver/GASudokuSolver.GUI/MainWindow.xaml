@@ -83,6 +83,21 @@
             </Setter>
         </Style>
 
+        <Style x:Key="ResultLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#555" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,5" />
+        </Style>
+
+        <Style x:Key="ResultValueStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#222" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="10,5" />
+        </Style>
+
         <converters:SudokuBorderConverter x:Key="SudokuBorderConverter" />
         <converters:ReadOnlyToBackgroundConverter x:Key="ReadOnlyToBackgroundConverter" />
     </Window.Resources>
@@ -171,6 +186,7 @@
                 <Border Grid.Row="0" Style="{StaticResource ModernCard}">
                     <lvc:CartesianChart
                         x:Name="GeneticChart"
+                        DataClick="GeneticChartDataClick"
                         LegendLocation="Right"
                         Series="{Binding FitnessSeries}"
                         Zoom="Xy">
@@ -304,29 +320,37 @@
                                     <TextBlock
                                         Grid.Row="0"
                                         Grid.Column="0"
-                                        Text="Fitness: " />
+                                        Style="{StaticResource ResultLabelStyle}"
+                                        Text="Fitness:" />
                                     <TextBlock
                                         x:Name="FitnessText"
                                         Grid.Row="0"
                                         Grid.Column="1"
+                                        Style="{StaticResource ResultValueStyle}"
                                         Text="123" />
+
                                     <TextBlock
                                         Grid.Row="1"
                                         Grid.Column="0"
-                                        Text="Generation: " />
+                                        Style="{StaticResource ResultLabelStyle}"
+                                        Text="Generation:" />
                                     <TextBlock
                                         x:Name="GenerationText"
                                         Grid.Row="1"
                                         Grid.Column="1"
+                                        Style="{StaticResource ResultValueStyle}"
                                         Text="300" />
+
                                     <TextBlock
                                         Grid.Row="2"
                                         Grid.Column="0"
-                                        Text="Time: " />
+                                        Style="{StaticResource ResultLabelStyle}"
+                                        Text="Time:" />
                                     <TextBlock
                                         x:Name="TimeText"
                                         Grid.Row="2"
                                         Grid.Column="1"
+                                        Style="{StaticResource ResultValueStyle}"
                                         Text="00:00:12" />
                                 </Grid>
                             </StackPanel>

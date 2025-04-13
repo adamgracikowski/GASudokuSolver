@@ -62,7 +62,7 @@ public partial class MainWindow : Window
 			{
 				Title = "Fitness",
 				Values = FitnessValues,
-				PointGeometry = null
+				//PointGeometry = null
 			}
 		];
 	}
@@ -196,6 +196,16 @@ public partial class MainWindow : Window
 	{
 		// TODO
 	}
+
+	private void GeneticChartDataClick(object sender, ChartPoint chartPoint)
+	{
+		var generation = (int)chartPoint.X;
+		var progressData = ProgressDataColection[generation];
+
+		LoadBoard(progressData.Board);
+		FitnessText.Text = progressData.FitnessValue.ToString("F4");
+		GenerationText.Text = progressData.Generation.ToString();
+	}
 }
 
 public class SudokuCell : INotifyPropertyChanged
@@ -303,26 +313,27 @@ public static class AlgorithmMock
 {
 	public static async Task<AlgorithmProgressData> Run(int[,] board, IProgress<AlgorithmProgressData>? progress = null) 
 	{
-		var copy = new int[Constants.Grid.Rows, Constants.Grid.Columns];
-		
-		Array.Copy(board, copy, copy.Length);
-
-		var generations = 300;
-
+		var generations = 100;
 		var empty = new List<(int r, int c)>();
 
-		for(var r = 0; r < copy.GetLength(0); r++)
+		for(var r = 0; r < board.GetLength(0); r++)
 		{
-			for(var c = 0; c < copy.GetLength(1); c++)
+			for(var c = 0; c < board.GetLength(1); c++)
 			{
-				if (copy[r,c] == 0)
+				if (board[r,c] == 0)
 					empty.Add((r, c));
 			}
 		}
 
+		var copy = new int[Constants.Grid.Rows, Constants.Grid.Columns];
+
 		for(var i = 0; i < generations; i++)
 		{
-			foreach(var (r, c) in empty)
+			copy = new int[Constants.Grid.Rows, Constants.Grid.Columns];
+
+			Array.Copy(board, copy, copy.Length);
+
+			foreach (var (r, c) in empty)
 			{
 				copy[r, c] = Random.Shared.Next(1, 9);
 			}
