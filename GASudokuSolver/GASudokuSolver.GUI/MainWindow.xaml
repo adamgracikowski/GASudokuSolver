@@ -84,18 +84,40 @@
         </Style>
 
         <converters:SudokuBorderConverter x:Key="SudokuBorderConverter" />
+        <converters:ReadOnlyToBackgroundConverter x:Key="ReadOnlyToBackgroundConverter" />
     </Window.Resources>
 
     <DockPanel>
         <!--  Menu  -->
         <Menu DockPanel.Dock="Top" Style="{StaticResource ModernMenu}">
             <MenuItem Header="_File" Style="{StaticResource ModernMenuItem}">
-                <MenuItem Header="_Import Board" Style="{StaticResource ModernMenuItem}" />
-                <MenuItem Header="_Export Board" Style="{StaticResource ModernMenuItem}" />
+                <MenuItem Header="_Save Board" Style="{StaticResource ModernMenuItem}">
+                    <MenuItem
+                        Click="SaveBoardCsvClick"
+                        Header="_csv"
+                        Style="{StaticResource ModernMenuItem}" />
+                </MenuItem>
+                <MenuItem Header="_Load Board" Style="{StaticResource ModernMenuItem}">
+                    <MenuItem
+                        Click="LoadBoardCsvClickAsync"
+                        Header="_csv"
+                        Style="{StaticResource ModernMenuItem}" />
+                </MenuItem>
+                <Separator />
+                <MenuItem
+                    Click="ExitClick"
+                    Header="_Exit"
+                    Style="{StaticResource ModernMenuItem}" />
             </MenuItem>
             <MenuItem Header="_Help" Style="{StaticResource ModernMenuItem}">
-                <MenuItem Header="_About" Style="{StaticResource ModernMenuItem}" />
-                <MenuItem Header="_User Guide" Style="{StaticResource ModernMenuItem}" />
+                <MenuItem
+                    Click="AboutClick"
+                    Header="_About"
+                    Style="{StaticResource ModernMenuItem}" />
+                <MenuItem
+                    Click="UserGuideClick"
+                    Header="_User Guide"
+                    Style="{StaticResource ModernMenuItem}" />
             </MenuItem>
         </Menu>
 
@@ -129,9 +151,13 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <!--  Chart in a Card  -->
+                <!--  Chart  -->
                 <Border Grid.Row="0" Style="{StaticResource ModernCard}">
-                    <lvc:CartesianChart x:Name="GeneticChart" LegendLocation="Right">
+                    <lvc:CartesianChart
+                        x:Name="GeneticChart"
+                        LegendLocation="Right"
+                        Zoom="Xy"
+                        Series="{Binding FitnessSeries}">
                         <lvc:CartesianChart.AxisY>
                             <lvc:Axis Title="Fitness" LabelFormatter="{Binding AxisLabelFormatter}" />
                         </lvc:CartesianChart.AxisY>
@@ -141,7 +167,7 @@
                     </lvc:CartesianChart>
                 </Border>
 
-                <!--  Settings in a Card  -->
+                <!--  Settings  -->
                 <Border Grid.Row="1" Style="{StaticResource ModernCard}">
                     <TabControl>
                         <TabItem Header="Population">
@@ -195,7 +221,7 @@
                 <!--  Sudoku Board  -->
                 <Grid Grid.Row="0" Grid.Column="1">
                     <Border Style="{StaticResource ModernCard}">
-                        <ItemsControl ItemsSource="{Binding SudokuCells}">
+                        <ItemsControl ItemsSource="{Binding Board}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <UniformGrid Columns="9" Rows="9" />
@@ -204,11 +230,12 @@
 
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
+                                    <!--  Background="#FAFAFA"  -->
                                     <Border
                                         Width="40"
                                         Height="40"
                                         Margin="1"
-                                        Background="#FAFAFA"
+                                        Background="{Binding ReadOnly, Converter={StaticResource ReadOnlyToBackgroundConverter}}"
                                         BorderBrush="#444"
                                         BorderThickness="{Binding Converter={StaticResource SudokuBorderConverter}}"
                                         CornerRadius="3">
@@ -237,9 +264,10 @@
                                 DockPanel.Dock="Top"
                                 Style="{StaticResource ModernCard}">
                                 <Button
+                                    x:Name="StartButton"
                                     Grid.Row="3"
                                     Grid.Column="0"
-                                    Click="StartButtonClick"
+                                    Click="StartButtonClickAsync"
                                     Content="Start"
                                     Style="{StaticResource NoHoverButtonStyle}" />
                             </Border>
@@ -262,6 +290,7 @@
                                         Grid.Column="0"
                                         Text="Fitness: " />
                                     <TextBlock
+                                        x:Name="FitnessText"
                                         Grid.Row="0"
                                         Grid.Column="1"
                                         Text="123" />
@@ -270,6 +299,7 @@
                                         Grid.Column="0"
                                         Text="Generation: " />
                                     <TextBlock
+                                        x:Name="GenerationText"
                                         Grid.Row="1"
                                         Grid.Column="1"
                                         Text="300" />
@@ -278,6 +308,7 @@
                                         Grid.Column="0"
                                         Text="Time: " />
                                     <TextBlock
+                                        x:Name="TimeText"
                                         Grid.Row="2"
                                         Grid.Column="1"
                                         Text="00:00:12" />

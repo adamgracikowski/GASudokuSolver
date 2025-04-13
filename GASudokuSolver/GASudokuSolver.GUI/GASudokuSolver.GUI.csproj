@@ -12,4 +12,12 @@
     <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Resources\Icons\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GASudokuSolver.Core\GASudokuSolver.Core.csproj" />
+  </ItemGroup>
+
 </Project>
