@@ -64,6 +64,25 @@
             <Setter Property="FontWeight" Value="Normal" />
         </Style>
 
+        <Style x:Key="NoHoverButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter
+                            Margin="6,2"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <converters:SudokuBorderConverter x:Key="SudokuBorderConverter" />
     </Window.Resources>
 
@@ -210,7 +229,61 @@
                 <!--  Algorithm Results  -->
                 <Border Grid.Row="1" Style="{StaticResource ModernCard}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel />
+                        <DockPanel>
+                            <Border
+                                Width="100"
+                                Padding="5"
+                                Background="#4CAF50"
+                                DockPanel.Dock="Top"
+                                Style="{StaticResource ModernCard}">
+                                <Button
+                                    Grid.Row="3"
+                                    Grid.Column="0"
+                                    Click="StartButtonClick"
+                                    Content="Start"
+                                    Style="{StaticResource NoHoverButtonStyle}" />
+                            </Border>
+                            <StackPanel Margin="10" Orientation="Vertical">
+                                <Grid x:Name="AlgorithmResultsGrid" Visibility="Collapsed">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                        Text="Fitness: " />
+                                    <TextBlock
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        Text="123" />
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        Text="Generation: " />
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Text="300" />
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Grid.Column="0"
+                                        Text="Time: " />
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Text="00:00:12" />
+                                </Grid>
+                            </StackPanel>
+                        </DockPanel>
                     </ScrollViewer>
                 </Border>
             </Grid>
