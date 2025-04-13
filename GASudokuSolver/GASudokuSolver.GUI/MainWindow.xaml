@@ -91,33 +91,49 @@
         <!--  Menu  -->
         <Menu DockPanel.Dock="Top" Style="{StaticResource ModernMenu}">
             <MenuItem Header="_File" Style="{StaticResource ModernMenuItem}">
-                <MenuItem Header="_Save Board" Style="{StaticResource ModernMenuItem}">
-                    <MenuItem
-                        Click="SaveBoardCsvClick"
-                        Header="_csv"
-                        Style="{StaticResource ModernMenuItem}" />
+                <MenuItem
+                    Click="SaveBoardCsvClick"
+                    Header="_Save Board"
+                    Style="{StaticResource ModernMenuItem}">
+                    <MenuItem.Icon>
+                        <Image Source="/Resources/Icons/export.png" />
+                    </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Load Board" Style="{StaticResource ModernMenuItem}">
-                    <MenuItem
-                        Click="LoadBoardCsvClickAsync"
-                        Header="_csv"
-                        Style="{StaticResource ModernMenuItem}" />
+                <MenuItem
+                    Click="LoadBoardCsvClickAsync"
+                    Header="_Load Board"
+                    Style="{StaticResource ModernMenuItem}">
+                    <MenuItem.Icon>
+                        <Image Source="/Resources/Icons/import.png" />
+                    </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
                 <MenuItem
                     Click="ExitClick"
                     Header="_Exit"
-                    Style="{StaticResource ModernMenuItem}" />
+                    Style="{StaticResource ModernMenuItem}">
+                    <MenuItem.Icon>
+                        <Image Source="/Resources/Icons/close.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="_Help" Style="{StaticResource ModernMenuItem}">
                 <MenuItem
                     Click="AboutClick"
                     Header="_About"
-                    Style="{StaticResource ModernMenuItem}" />
+                    Style="{StaticResource ModernMenuItem}">
+                    <MenuItem.Icon>
+                        <Image Source="/Resources/Icons/info.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem
                     Click="UserGuideClick"
                     Header="_User Guide"
-                    Style="{StaticResource ModernMenuItem}" />
+                    Style="{StaticResource ModernMenuItem}">
+                    <MenuItem.Icon>
+                        <Image Source="/Resources/Icons/question.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
         </Menu>
 
@@ -156,8 +172,8 @@
                     <lvc:CartesianChart
                         x:Name="GeneticChart"
                         LegendLocation="Right"
-                        Zoom="Xy"
-                        Series="{Binding FitnessSeries}">
+                        Series="{Binding FitnessSeries}"
+                        Zoom="Xy">
                         <lvc:CartesianChart.AxisY>
                             <lvc:Axis Title="Fitness" LabelFormatter="{Binding AxisLabelFormatter}" />
                         </lvc:CartesianChart.AxisY>
