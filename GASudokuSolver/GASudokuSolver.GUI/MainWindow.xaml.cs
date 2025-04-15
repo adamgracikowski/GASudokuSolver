@@ -2,15 +2,14 @@
 using GASudokuSolver.Core.Enums;
 using GASudokuSolver.Core.Loading.Puzzles;
 using GASudokuSolver.Core.Models;
+using GASudokuSolver.GUI.Models;
 using GASudokuSolver.GUI.Windows;
 using LiveCharts;
 using LiveCharts.Wpf;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 namespace GASudokuSolver.GUI;
@@ -128,7 +127,7 @@ public partial class MainWindow : Window
 		Stopwatch.Restart();
 		Timer.Start();
 
-		await Task.Run(() => AlgorithmMock.Run(Sudoku.Unsolved.Data, progress));
+		await Task.Run(() => GeneticAlgorithmMock.Run(Sudoku.Unsolved.Data, progress));
 
 		Stopwatch.Stop();
 		Timer.Stop();
@@ -211,144 +210,5 @@ public partial class MainWindow : Window
 		LoadBoard(progressData.Board);
 		FitnessText.Text = progressData.FitnessValue.ToString("F4");
 		GenerationText.Text = progressData.Generation.ToString();
-	}
-}
-
-public class SudokuCell : INotifyPropertyChanged
-{
-	private bool readOnly;
-	private int? _value;
-
-	public int Row { get; set; }
-	public int Column { get; set; }
-
-	public int? Value
-	{
-		get => _value;
-		set
-		{
-			if (_value != value)
-			{
-				_value = value;
-				OnPropertyChanged();
-			}
-		}
-	}
-
-	public bool ReadOnly
-	{
-		get => readOnly;
-		set
-		{
-			if (readOnly != value)
-			{
-				readOnly = value;
-				OnPropertyChanged();
-			}
-		}
-	}
-
-
-	public event PropertyChangedEventHandler? PropertyChanged;
-
-	protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-	{
-		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-	}
-}
-public class AlgorithmProgressData : INotifyPropertyChanged
-{
-	private double fitnessValue;
-	private int[,] board;
-	private int generation;
-
-	public AlgorithmProgressData(double fitnessValue, int generation, int[,] board)
-	{
-		this.fitnessValue = fitnessValue;
-		this.generation = generation;
-		this.board = board;
-	}
-
-	public double FitnessValue
-	{
-		get => fitnessValue;
-		set
-		{
-			if (fitnessValue != value)
-			{
-				fitnessValue = value;
-				OnPropertyChanged(nameof(FitnessValue));
-			}
-		}
-	}
-
-	public int[,] Board
-	{
-		get => board;
-		set
-		{
-			board = value;
-			OnPropertyChanged(nameof(Board));
-		}
-	}
-
-	public int Generation
-	{
-		get => generation;
-		set
-		{
-			if (generation != value)
-			{
-				generation = value;
-				OnPropertyChanged(nameof(Generation));
-			}
-		}
-	}
-
-	public static AlgorithmProgressData CreateEmpty()
-	{
-		return new AlgorithmProgressData(0, 0, new int[Constants.Grid.Rows, Constants.Grid.Columns]);
-	}
-
-	public event PropertyChangedEventHandler? PropertyChanged;
-
-	protected virtual void OnPropertyChanged(string propertyName) =>
-		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-}
-public static class AlgorithmMock
-{
-	public static async Task<AlgorithmProgressData> Run(int[,] board, IProgress<AlgorithmProgressData>? progress = null) 
-	{
-		var generations = 100;
-		var empty = new List<(int r, int c)>();
-
-		for(var r = 0; r < board.GetLength(0); r++)
-		{
-			for(var c = 0; c < board.GetLength(1); c++)
-			{
-				if (board[r,c] == 0)
-					empty.Add((r, c));
-			}
-		}
-
-		var copy = new int[Constants.Grid.Rows, Constants.Grid.Columns];
-
-		for(var i = 0; i < generations; i++)
-		{
-			copy = new int[Constants.Grid.Rows, Constants.Grid.Columns];
-
-			Array.Copy(board, copy, copy.Length);
-
-			foreach (var (r, c) in empty)
-			{
-				copy[r, c] = Random.Shared.Next(1, 9);
-			}
-
-			await Task.Delay(200);
-
-			progress?.Report(new AlgorithmProgressData(10 * Random.Shared.NextDouble() + 1, i, copy));
-		}
-
-		return new AlgorithmProgressData(10 * Random.Shared.NextDouble() + 1, generations, copy);
 	}
 }
