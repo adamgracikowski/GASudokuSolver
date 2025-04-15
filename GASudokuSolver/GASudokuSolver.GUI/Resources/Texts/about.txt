@@ -1,0 +1,3 @@
+﻿This application is a Sudoku solver based on genetic algorithms. It was developed as part of an academic course on Introduction to Artificial Intelligence.
+
+The goal of this project is to demonstrate the application of evolutionary computation techniques to constraint satisfaction problems like Sudoku. It showcases the fundamentals of AI such as population-based search, selection, crossover, and mutation in an interactive and educational way.

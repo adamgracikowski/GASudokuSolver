@@ -2,6 +2,7 @@
 using GASudokuSolver.Core.Enums;
 using GASudokuSolver.Core.Loading.Puzzles;
 using GASudokuSolver.Core.Models;
+using GASudokuSolver.GUI.Windows;
 using LiveCharts;
 using LiveCharts.Wpf;
 using Microsoft.Win32;
@@ -189,7 +190,12 @@ public partial class MainWindow : Window
 
 	private void AboutClick(object sender, RoutedEventArgs e)
 	{
-		// TODO
+		var aboutWindow = new AboutWindow
+		{
+			Owner = this
+		};
+
+		aboutWindow.ShowDialog();
 	}
 
 	private void UserGuideClick(object sender, RoutedEventArgs e)

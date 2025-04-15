@@ -14,6 +14,11 @@
     <None Remove="Resources\Icons\import.png" />
     <None Remove="Resources\Icons\info.png" />
     <None Remove="Resources\Icons\question.png" />
+    <None Remove="Resources\Texts\about.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Texts\about.txt" />
   </ItemGroup>
 
   <ItemGroup>
