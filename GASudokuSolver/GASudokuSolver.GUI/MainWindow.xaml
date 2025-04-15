@@ -197,8 +197,7 @@
                                         x:Name="FitnessText"
                                         Grid.Row="0"
                                         Grid.Column="1"
-                                        Style="{StaticResource ResultValueStyle}"
-                                        Text="123" />
+                                        Style="{StaticResource ResultValueStyle}" />
 
                                     <TextBlock
                                         Grid.Row="1"
@@ -209,8 +208,7 @@
                                         x:Name="GenerationText"
                                         Grid.Row="1"
                                         Grid.Column="1"
-                                        Style="{StaticResource ResultValueStyle}"
-                                        Text="300" />
+                                        Style="{StaticResource ResultValueStyle}" />
 
                                     <TextBlock
                                         Grid.Row="2"
@@ -221,8 +219,7 @@
                                         x:Name="TimeText"
                                         Grid.Row="2"
                                         Grid.Column="1"
-                                        Style="{StaticResource ResultValueStyle}"
-                                        Text="00:00:12" />
+                                        Style="{StaticResource ResultValueStyle}" />
                                 </Grid>
                             </StackPanel>
                         </DockPanel>

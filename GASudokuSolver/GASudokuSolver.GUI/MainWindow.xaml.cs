@@ -102,6 +102,8 @@ public partial class MainWindow : Window
 		FitnessValues.Clear();
 		ProgressDataColection.Clear();
 		TimeText.Text = @"00:00:00:000";
+		FitnessText.Text = "0";
+		GenerationText.Text = "0";
 	}
 
 	private async void StartButtonClickAsync(object sender, RoutedEventArgs e)
