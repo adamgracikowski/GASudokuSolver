@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:GASudokuSolver.GUI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:svg="http://sharpvectors.codeplex.com/runtime/"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -15,8 +16,13 @@
                 Header="_Save Board"
                 Style="{StaticResource ModernMenuItem}">
                 <MenuItem.Icon>
-                    <Image Source="/Resources/Icons/export.png" />
+                    <Image Source="/Resources/Icons/save.svg" />
+                    <!--<svg:SvgViewbox Width="16" Height="16"
+                                Source="/Resources/Icons/save.png" />-->
                 </MenuItem.Icon>
+                <!--<MenuItem.Icon>
+                    <Image Source="/Resources/Icons/export.png" />
+                </MenuItem.Icon>-->
             </MenuItem>
             <MenuItem
                 Click="LoadBoardCsvClickAsync"

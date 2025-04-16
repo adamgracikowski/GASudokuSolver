@@ -9,24 +9,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\Icons\close.png" />
-    <None Remove="Resources\Icons\export.png" />
-    <None Remove="Resources\Icons\import.png" />
-    <None Remove="Resources\Icons\info.png" />
-    <None Remove="Resources\Icons\question.png" />
+    <None Remove="Resources\Icons\close.svg" />
+    <None Remove="Resources\Icons\info.svg" />
+    <None Remove="Resources\Icons\question.svg" />
+    <None Remove="Resources\Icons\save.svg" />
+    <None Remove="Resources\Icons\upload.svg" />
     <None Remove="Resources\Texts\about.txt" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Texts\about.txt" />
+    <Resource Include="Resources\Icons\close.svg" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\Icons\close.png" />
-    <Resource Include="Resources\Icons\export.png" />
-    <Resource Include="Resources\Icons\import.png" />
-    <Resource Include="Resources\Icons\info.png" />
-    <Resource Include="Resources\Icons\question.png" />
+    <EmbeddedResource Include="Resources\Texts\about.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +31,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GASudokuSolver.Core\GASudokuSolver.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Icons\info.svg" />
+    <Resource Include="Resources\Icons\question.svg" />
+    <Resource Include="Resources\Icons\save.svg" />
+    <Resource Include="Resources\Icons\upload.svg" />
   </ItemGroup>
 
 </Project>
