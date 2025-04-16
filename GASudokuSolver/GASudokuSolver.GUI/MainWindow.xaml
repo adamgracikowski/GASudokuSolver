@@ -10,7 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Genetic Algorithms Sudoku Solver"
     Width="1200"
-    Height="800"
+    Height="850"
     mc:Ignorable="d">
     <Window.Resources />
 
@@ -45,7 +45,6 @@
                 Style="{StaticResource ModernCard}">
                 <TextBlock Style="{StaticResource TitleText}" Text="Genetic Algorithms Sudoku Solver" />
             </Border>
-
 
             <!--  Left Panel  -->
             <Grid Grid.Row="1" Grid.Column="0">
@@ -170,6 +169,8 @@
                                     x:Name="StartButton"
                                     Grid.Row="3"
                                     Grid.Column="0"
+                                    Width="100"
+                                    HorizontalAlignment="Center"
                                     Click="StartButtonClickAsync"
                                     Content="Start"
                                     Style="{StaticResource NoHoverButtonStyle}" />

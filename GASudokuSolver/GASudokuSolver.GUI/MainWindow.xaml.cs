@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Windows.Media;
 
 namespace GASudokuSolver.GUI;
 
@@ -26,6 +27,10 @@ public partial class MainWindow : Window
 	public SeriesCollection FitnessSeries { get; set; }
 
 	public Func<double, string> AxisLabelFormatter { get; set; } = value => value.ToString("N2");
+
+	private Brush? PreviousBrush = null;
+	private System.Windows.Shapes.Shape? PreviousShape = null;
+	private readonly Brush SelectedBrush = Brushes.Red;
 
 #pragma warning disable CS8618
 	public MainWindow()
@@ -212,5 +217,17 @@ public partial class MainWindow : Window
 		LoadBoard(progressData.Board);
 		FitnessText.Text = progressData.FitnessValue.ToString("F4");
 		GenerationText.Text = progressData.Generation.ToString();
-	}
+
+		if (sender is System.Windows.Shapes.Shape shape)
+		{
+			if(PreviousShape != null)
+			{
+				PreviousShape.Fill = PreviousBrush;
+			}
+
+			PreviousShape = shape;
+			PreviousBrush = shape.Fill;
+			shape.Fill = SelectedBrush;
+		}
+	}	
 }
