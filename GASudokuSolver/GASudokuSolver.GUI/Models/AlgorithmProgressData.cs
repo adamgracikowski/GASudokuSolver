@@ -18,12 +18,12 @@ public class AlgorithmProgressData : INotifyPropertyChanged
 
 	public double FitnessValue
 	{
-		get => fitnessValue;
+		get => this.fitnessValue;
 		set
 		{
-			if (fitnessValue != value)
+			if (this.fitnessValue != value)
 			{
-				fitnessValue = value;
+				this.fitnessValue = value;
 				OnPropertyChanged(nameof(FitnessValue));
 			}
 		}
@@ -31,30 +31,25 @@ public class AlgorithmProgressData : INotifyPropertyChanged
 
 	public int[,] Board
 	{
-		get => board;
+		get => this.board;
 		set
 		{
-			board = value;
+			this.board = value;
 			OnPropertyChanged(nameof(Board));
 		}
 	}
 
 	public int Generation
 	{
-		get => generation;
+		get => this.generation;
 		set
 		{
-			if (generation != value)
+			if (this.generation != value)
 			{
-				generation = value;
+				this.generation = value;
 				OnPropertyChanged(nameof(Generation));
 			}
 		}
-	}
-
-	public static AlgorithmProgressData CreateEmpty()
-	{
-		return new AlgorithmProgressData(0, 0, new int[Constants.Grid.Rows, Constants.Grid.Columns]);
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;

@@ -5,6 +5,7 @@ using GASudokuSolver.Core.Models;
 using GASudokuSolver.GUI.Models;
 using GASudokuSolver.GUI.Windows;
 using LiveCharts;
+using LiveCharts.Configurations;
 using LiveCharts.Wpf;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
@@ -22,15 +23,13 @@ public partial class MainWindow : Window
 
 	public Sudoku? Sudoku { get; set; }
 	public ObservableCollection<SudokuCell> Board { get; set; } = [];
-	public List<AlgorithmProgressData> ProgressDataColection { get; set; } = [];
-	public ChartValues<double> FitnessValues { get; set; } = [];
+
 	public SeriesCollection FitnessSeries { get; set; }
+	public ChartValues<ChartPointData> ChartPointsColection { get; set; } = [];
+	public ChartPointData? Selected = null;
 
-	public Func<double, string> AxisLabelFormatter { get; set; } = value => value.ToString("N2");
-
-	private Brush? PreviousBrush = null;
-	private System.Windows.Shapes.Shape? PreviousShape = null;
-	private readonly Brush SelectedBrush = Brushes.Red;
+	public Func<double, string> YAxisLabelFormatter { get; set; } = value => value.ToString("N2");
+	public Func<double, string> XAxisLabelFormatter { get; set; } = value => value.ToString("N0");
 
 #pragma warning disable CS8618
 	public MainWindow()
@@ -66,8 +65,12 @@ public partial class MainWindow : Window
 			new LineSeries
 			{
 				Title = "Fitness",
-				Values = FitnessValues,
-				//PointGeometry = null
+				Values = ChartPointsColection,
+				Configuration = new CartesianMapper<ChartPointData>()
+					.X(point => point.ProgressData.Generation)
+					.Y(point => point.ProgressData.FitnessValue)
+					.Stroke(point => point.Selected ? Brushes.Red : Brushes.LightBlue)
+					.Fill(point => point.Selected ? Brushes.Red : null),
 			}
 		];
 	}
@@ -81,7 +84,7 @@ public partial class MainWindow : Window
 			});
 		};
 	}
-	
+
 	public void LoadBoard(int[,] board, bool updateReadOnly = false)
 	{
 		for (var row = 0; row < Constants.Grid.Rows; ++row)
@@ -91,7 +94,7 @@ public partial class MainWindow : Window
 				var cellValue = board[row, col];
 				if (updateReadOnly)
 				{
-					Board[row * Constants.Grid.Rows + col].ReadOnly = 
+					Board[row * Constants.Grid.Rows + col].ReadOnly =
 						cellValue == Constants.Cell.EmptyValue;
 				}
 				Board[row * Constants.Grid.Rows + col].Value =
@@ -104,8 +107,7 @@ public partial class MainWindow : Window
 
 	public void ClearResults()
 	{
-		FitnessValues.Clear();
-		ProgressDataColection.Clear();
+		ChartPointsColection.Clear();
 		TimeText.Text = @"00:00:00:000";
 		FitnessText.Text = "0";
 		GenerationText.Text = "0";
@@ -124,10 +126,8 @@ public partial class MainWindow : Window
 		{
 			FitnessText.Text = data.FitnessValue.ToString("F4");
 			GenerationText.Text = data.Generation.ToString();
-			
-			ProgressDataColection.Add(data);
-			FitnessValues.Add(data.FitnessValue);
-			
+
+			ChartPointsColection.Add(new ChartPointData(progressData: data));
 			LoadBoard(data.Board);
 		});
 
@@ -170,7 +170,7 @@ public partial class MainWindow : Window
 
 			Sudoku = await sudokuLoader.LoadSudokuFromStringAsync(line, Difficulty.Unknown);
 
-			if(Sudoku is not null)
+			if (Sudoku is not null)
 			{
 				ClearResults();
 				LoadBoard(Sudoku.Unsolved.Data, updateReadOnly: true);
@@ -181,9 +181,9 @@ public partial class MainWindow : Window
 		catch (Exception ex)
 		{
 			MessageBox.Show(
-				$"Error while loading the Sudoku: {ex.Message}", 
-				"Error", 
-				MessageBoxButton.OK, 
+				$"Error while loading the Sudoku: {ex.Message}",
+				"Error",
+				MessageBoxButton.OK,
 				MessageBoxImage.Error
 			);
 		}
@@ -212,22 +212,18 @@ public partial class MainWindow : Window
 	private void GeneticChartDataClick(object sender, ChartPoint chartPoint)
 	{
 		var generation = (int)chartPoint.X;
-		var progressData = ProgressDataColection[generation];
+		var chartPointForGeneration = ChartPointsColection[generation];
+		var progressData = chartPointForGeneration.ProgressData;
+
+		if (Selected == chartPointForGeneration) return;
+
+		if (Selected != null) Selected.Selected = false;
+
+		chartPointForGeneration.Selected = true;
+		Selected = chartPointForGeneration;
 
 		LoadBoard(progressData.Board);
 		FitnessText.Text = progressData.FitnessValue.ToString("F4");
 		GenerationText.Text = progressData.Generation.ToString();
-
-		if (sender is System.Windows.Shapes.Shape shape)
-		{
-			if(PreviousShape != null)
-			{
-				PreviousShape.Fill = PreviousBrush;
-			}
-
-			PreviousShape = shape;
-			PreviousBrush = shape.Fill;
-			shape.Fill = SelectedBrush;
-		}
-	}	
+	}
 }
