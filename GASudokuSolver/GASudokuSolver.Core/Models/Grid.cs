@@ -1,5 +1,4 @@
 ﻿using GASudokuSolver.Core.Configurations;
-using System.Windows.Controls;
 
 namespace GASudokuSolver.Core.Models;
 
