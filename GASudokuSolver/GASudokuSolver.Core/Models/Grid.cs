@@ -1,14 +1,42 @@
 ﻿using GASudokuSolver.Core.Configurations;
+using System.Windows.Controls;
 
 namespace GASudokuSolver.Core.Models;
 
 public sealed class Grid
 {
-	public readonly int[,] Data;
+	public int[,] Data;
+	public bool[,] Mutable;
 
 	public Grid(int[,] data)
 	{
 		Data = data;
+		SetMutables();
+	}
+
+	public Grid(Grid grid)
+	{
+		Data = new int[Constants.Grid.Rows, Constants.Grid.Columns];
+		for (var row = 0; row < Constants.Grid.Rows; row++)
+		{
+			for(var col = 0; col < Constants.Grid.Columns; col++)
+			{
+				Data[row, col] = grid.Data[row, col];
+			}
+		}
+		SetMutables();
+	}
+
+	public void SetMutables()
+	{
+		Mutable = new bool[Data.GetLength(0), Data.GetLength(1)];
+		for (var row = 0; row < Constants.Grid.Rows; row++)
+		{
+			for (var col = 0; col < Constants.Grid.Columns; col++)
+			{
+				Mutable[row, col] = Data[row, col] == Constants.Cell.EmptyValue;
+			}
+		}
 	}
 
 	public int[] GetRow(int row)

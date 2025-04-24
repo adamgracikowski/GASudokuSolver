@@ -1,4 +1,6 @@
-﻿namespace GASudokuSolver.Core.Configurations;
+﻿using System.Security.RightsManagement;
+
+namespace GASudokuSolver.Core.Configurations;
 
 public static class Constants
 {
@@ -22,5 +24,11 @@ public static class Constants
 		public const int EmptyValue = 0;
 		public const int MinValue = 1;
 		public const int MaxValue = 9;
+	}
+
+	public static class Solver
+	{
+		public const int DefaultMaxGenerations = 100;
+		public const double DefaultMaxTimeInMinutes = 5.0;
 	}
 }
