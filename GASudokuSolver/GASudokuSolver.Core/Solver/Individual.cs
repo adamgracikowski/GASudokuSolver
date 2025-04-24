@@ -29,6 +29,7 @@ class Individual
 	}
 	public Individual Clone()
 	{
+		UpdateBoard();
 		return new Individual(Representation, Board);
 	}
 }
