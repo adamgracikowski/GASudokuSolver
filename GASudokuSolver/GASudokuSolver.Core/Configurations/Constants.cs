@@ -1,6 +1,4 @@
-﻿using System.Security.RightsManagement;
-
-namespace GASudokuSolver.Core.Configurations;
+﻿namespace GASudokuSolver.Core.Configurations;
 
 public static class Constants
 {
