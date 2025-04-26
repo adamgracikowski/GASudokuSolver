@@ -14,6 +14,7 @@
             <MenuItem
                 Click="SaveBoardCsvClick"
                 Header="_Save Board"
+                IsEnabled="{Binding IsAlgorithmRunning, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BooleanInverseConverter}}"
                 Style="{StaticResource ModernMenuItem}">
                 <MenuItem.Icon>
                     <svgc:SvgViewbox Source="Resources/Icons/save.svg" />
@@ -22,6 +23,7 @@
             <MenuItem
                 Click="LoadBoardCsvClickAsync"
                 Header="_Load Board"
+                IsEnabled="{Binding IsAlgorithmRunning, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BooleanInverseConverter}}"
                 Style="{StaticResource ModernMenuItem}">
                 <MenuItem.Icon>
                     <svgc:SvgViewbox Source="Resources/Icons/upload.svg" />

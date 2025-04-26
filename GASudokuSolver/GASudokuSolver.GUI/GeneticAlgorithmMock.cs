@@ -7,6 +7,8 @@ public static class GeneticAlgorithmMock
 {
 	public static async Task<AlgorithmProgressData> Run(int[,] board, IProgress<AlgorithmProgressData>? progress = null) 
 	{
+		var bestProgress = new AlgorithmProgressData(0, 0, new int[Constants.Grid.Rows, Constants.Grid.Columns]);
+
 		var generations = 100;
 		var empty = new List<(int r, int c)>();
 
@@ -34,9 +36,18 @@ public static class GeneticAlgorithmMock
 
 			await Task.Delay(200);
 
-			progress?.Report(new AlgorithmProgressData(10 * Random.Shared.NextDouble() + 1, i, copy));
+			var fitness = 10 * Random.Shared.NextDouble() + 1;
+
+			var currentProgress = (new AlgorithmProgressData(fitness, i, copy));
+
+			if (fitness > bestProgress.FitnessValue)
+			{
+				bestProgress = currentProgress;
+			}
+
+			progress?.Report(currentProgress);
 		}
 
-		return new AlgorithmProgressData(10 * Random.Shared.NextDouble() + 1, generations, copy);
+		return bestProgress;
 	}
 }

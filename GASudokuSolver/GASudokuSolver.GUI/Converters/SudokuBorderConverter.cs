@@ -5,6 +5,7 @@ using System.Windows.Data;
 
 namespace GASudokuSolver.GUI.Converters;
 
+[ValueConversion(typeof(SudokuCell), typeof(Thickness))]
 public sealed class SudokuBorderConverter : IValueConverter
 {
 	public const double BorderSlim = 0.4;

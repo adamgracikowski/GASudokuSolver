@@ -15,6 +15,19 @@ public partial class MainMenu : UserControl
 	
 	public event RoutedEventHandler UserGuideClicked;
 
+	public static readonly DependencyProperty IsAlgorithmRunningProperty =
+		DependencyProperty.Register(
+			nameof(IsAlgorithmRunning),
+			typeof(bool),
+			typeof(MainMenu),
+			new PropertyMetadata(false));
+
+	public bool IsAlgorithmRunning
+	{
+		get => (bool)GetValue(IsAlgorithmRunningProperty);
+		set => SetValue(IsAlgorithmRunningProperty, value);
+	}
+
 #pragma warning disable CS8618
 	public MainMenu()
 #pragma warning restore CS8618

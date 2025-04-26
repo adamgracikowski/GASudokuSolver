@@ -17,6 +17,7 @@
     <DockPanel>
         <!--  Menu  -->
         <controls:MainMenu
+            x:Name="MainMenu"
             AboutClicked="AboutClick"
             DockPanel.Dock="Top"
             ExitClicked="ExitClick"
@@ -122,38 +123,7 @@
                 </Grid.RowDefinitions>
 
                 <!--  Sudoku Board  -->
-                <Grid Grid.Row="0" Grid.Column="1">
-                    <Border Style="{StaticResource ModernCard}">
-                        <ItemsControl ItemsSource="{Binding Board}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <UniformGrid Columns="9" Rows="9" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border
-                                        Width="40"
-                                        Height="40"
-                                        Margin="1"
-                                        Background="{Binding ReadOnly, Converter={StaticResource ReadOnlyToBackgroundConverter}}"
-                                        BorderBrush="#444"
-                                        BorderThickness="{Binding Converter={StaticResource SudokuBorderConverter}}"
-                                        CornerRadius="3">
-                                        <TextBlock
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            FontSize="16"
-                                            FontWeight="SemiBold"
-                                            Foreground="#333"
-                                            Text="{Binding Value}" />
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </Border>
-                </Grid>
+                <controls:SudokuBoardControl Grid.Row="0" Board="{Binding Board}" />
 
                 <!--  Algorithm Results  -->
                 <Border Grid.Row="1" Style="{StaticResource ModernCard}">

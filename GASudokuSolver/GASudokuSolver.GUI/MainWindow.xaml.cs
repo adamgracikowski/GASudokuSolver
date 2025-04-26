@@ -2,6 +2,7 @@
 using GASudokuSolver.Core.Enums;
 using GASudokuSolver.Core.Loading.Puzzles;
 using GASudokuSolver.Core.Models;
+using GASudokuSolver.GUI.Controls;
 using GASudokuSolver.GUI.Models;
 using GASudokuSolver.GUI.Windows;
 using LiveCharts;
@@ -37,14 +38,14 @@ public partial class MainWindow : Window
 	{
 		InitializeComponent();
 
-		InitializeBoard();
+		InitializeBoard(Board);
 		InitializeChart();
 		InitializeTimer();
 
 		DataContext = this;
 	}
 
-	public void InitializeBoard()
+	public static void InitializeBoard(ObservableCollection<SudokuCell> board)
 	{
 		var cells = Enumerable
 			.Range(0, Constants.Grid.Cells)
@@ -56,7 +57,7 @@ public partial class MainWindow : Window
 			})
 			.ToList();
 
-		Board = [.. cells];
+		cells.ForEach(board.Add);
 	}
 	public void InitializeChart()
 	{
@@ -76,28 +77,40 @@ public partial class MainWindow : Window
 	}
 	public void InitializeTimer()
 	{
-		Timer.Elapsed += (s, e) =>
+		Timer.Elapsed += TimerElapsed;
+	}
+
+	private void TimerElapsed(object? sender, System.Timers.ElapsedEventArgs e)
+	{
+		try
 		{
 			Dispatcher.Invoke(() =>
 			{
-				TimeText.Text = Stopwatch.Elapsed.ToString(@"hh\:mm\:ss\.fff");
+				if (TimeText != null)
+				{
+					TimeText.Text = Stopwatch.Elapsed.ToString(@"hh\:mm\:ss\.fff");
+				}
 			});
-		};
+		}
+		catch
+		{
+			// Window is probably closing, ignore
+		}
 	}
 
-	public void LoadBoard(int[,] board, bool updateReadOnly = false)
+	public static void LoadBoard(int[,] source, ObservableCollection<SudokuCell> destination, bool updateReadOnly = false)
 	{
 		for (var row = 0; row < Constants.Grid.Rows; ++row)
 		{
 			for (var col = 0; col < Constants.Grid.Columns; ++col)
 			{
-				var cellValue = board[row, col];
+				var cellValue = source[row, col];
 				if (updateReadOnly)
 				{
-					Board[row * Constants.Grid.Rows + col].ReadOnly =
+					destination[row * Constants.Grid.Rows + col].ReadOnly =
 						cellValue == Constants.Cell.EmptyValue;
 				}
-				Board[row * Constants.Grid.Rows + col].Value =
+				destination[row * Constants.Grid.Rows + col].Value =
 					cellValue == Constants.Cell.EmptyValue
 					? null
 					: cellValue;
@@ -118,8 +131,9 @@ public partial class MainWindow : Window
 		if (Sudoku is null) return;
 
 		ClearResults();
-		StartButton.IsEnabled = false;
 
+		MainMenu.IsAlgorithmRunning = true;
+		StartButton.IsEnabled = false;
 		AlgorithmResultsGrid.Visibility = Visibility.Visible;
 
 		var progress = new Progress<AlgorithmProgressData>(data =>
@@ -128,16 +142,42 @@ public partial class MainWindow : Window
 			GenerationText.Text = data.Generation.ToString();
 
 			ChartPointsColection.Add(new ChartPointData(progressData: data));
-			LoadBoard(data.Board);
+			LoadBoard(data.Board, Board);
 		});
 
 		Stopwatch.Restart();
 		Timer.Start();
 
-		await Task.Run(() => GeneticAlgorithmMock.Run(Sudoku.Unsolved.Data, progress));
+		var bestResult = await Task.Run(
+			() => GeneticAlgorithmMock.Run(Sudoku.Unsolved.Data, progress)
+		);
 
 		Stopwatch.Stop();
 		Timer.Stop();
+
+		var bestBoard = new ObservableCollection<SudokuCell>();
+
+		InitializeBoard(bestBoard);
+
+		LoadBoard(Sudoku.Unsolved.Data, bestBoard, updateReadOnly: true);
+		LoadBoard(bestResult.Board, bestBoard);
+
+
+		var viewModel = new BestResultViewModel(
+			board: bestBoard,
+			currentFitness: bestResult.FitnessValue.ToString("F4"),
+			currentGeneration: bestResult.Generation.ToString()
+		);
+
+		MainMenu.IsAlgorithmRunning = false;
+		StartButton.IsEnabled = true;
+
+		var bestResultWindow = new BestResultWindow(viewModel) 
+		{ 
+			Owner = this 
+		};
+
+		bestResultWindow.Show();
 	}
 
 	private void SaveBoardCsvClick(object sender, RoutedEventArgs e)
@@ -173,7 +213,7 @@ public partial class MainWindow : Window
 			if (Sudoku is not null)
 			{
 				ClearResults();
-				LoadBoard(Sudoku.Unsolved.Data, updateReadOnly: true);
+				LoadBoard(Sudoku.Unsolved.Data, Board, updateReadOnly: true);
 				StartButton.IsEnabled = true;
 			}
 
@@ -222,8 +262,17 @@ public partial class MainWindow : Window
 		chartPointForGeneration.Selected = true;
 		Selected = chartPointForGeneration;
 
-		LoadBoard(progressData.Board);
+		LoadBoard(progressData.Board, Board);
 		FitnessText.Text = progressData.FitnessValue.ToString("F4");
 		GenerationText.Text = progressData.Generation.ToString();
+	}
+
+	protected override void OnClosed(EventArgs e)
+	{
+		Timer.Elapsed -= TimerElapsed;
+		Timer.Stop();
+		Timer.Dispose();
+
+		base.OnClosed(e);
 	}
 }

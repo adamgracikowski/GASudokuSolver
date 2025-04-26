@@ -5,4 +5,5 @@
 
     <converters:SudokuBorderConverter x:Key="SudokuBorderConverter" />
     <converters:ReadOnlyToBackgroundConverter x:Key="ReadOnlyToBackgroundConverter" />
+    <converters:BooleanInverseConverter x:Key="BooleanInverseConverter" />
 </ResourceDictionary>

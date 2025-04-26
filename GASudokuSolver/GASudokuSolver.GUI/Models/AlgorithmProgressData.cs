@@ -1,5 +1,4 @@
-﻿using GASudokuSolver.Core.Configurations;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace GASudokuSolver.GUI.Models;
 
