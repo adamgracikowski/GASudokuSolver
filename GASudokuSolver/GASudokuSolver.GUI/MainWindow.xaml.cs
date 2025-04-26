@@ -27,7 +27,9 @@ public partial class MainWindow : Window
 
 	public SeriesCollection FitnessSeries { get; set; }
 	public ChartValues<ChartPointData> ChartPointsColection { get; set; } = [];
+	
 	public ChartPointData? Selected = null;
+	private object SelectedLock = new();
 
 	public Func<double, string> YAxisLabelFormatter { get; set; } = value => value.ToString("N2");
 	public Func<double, string> XAxisLabelFormatter { get; set; } = value => value.ToString("N0");
@@ -138,11 +140,18 @@ public partial class MainWindow : Window
 
 		var progress = new Progress<AlgorithmProgressData>(data =>
 		{
-			FitnessText.Text = data.FitnessValue.ToString("F4");
-			GenerationText.Text = data.Generation.ToString();
-
 			ChartPointsColection.Add(new ChartPointData(progressData: data));
-			LoadBoard(data.Board, Board);
+
+			lock (SelectedLock)
+			{
+				if(Selected is null)
+				{
+					FitnessText.Text = data.FitnessValue.ToString("F4");
+					GenerationText.Text = data.Generation.ToString();
+
+					LoadBoard(data.Board, Board);
+				}
+			}
 		});
 
 		Stopwatch.Restart();
@@ -155,6 +164,16 @@ public partial class MainWindow : Window
 		Stopwatch.Stop();
 		Timer.Stop();
 
+		MainMenu.IsAlgorithmRunning = false;
+		StartButton.IsEnabled = true;
+
+		ShowBestResultWindow(bestResult);
+	}
+
+	private void ShowBestResultWindow(AlgorithmProgressData bestResult)
+	{
+		if (Sudoku is null) return;
+
 		var bestBoard = new ObservableCollection<SudokuCell>();
 
 		InitializeBoard(bestBoard);
@@ -162,19 +181,15 @@ public partial class MainWindow : Window
 		LoadBoard(Sudoku.Unsolved.Data, bestBoard, updateReadOnly: true);
 		LoadBoard(bestResult.Board, bestBoard);
 
-
 		var viewModel = new BestResultViewModel(
 			board: bestBoard,
 			currentFitness: bestResult.FitnessValue.ToString("F4"),
 			currentGeneration: bestResult.Generation.ToString()
 		);
 
-		MainMenu.IsAlgorithmRunning = false;
-		StartButton.IsEnabled = true;
-
-		var bestResultWindow = new BestResultWindow(viewModel) 
-		{ 
-			Owner = this 
+		var bestResultWindow = new BestResultWindow(viewModel)
+		{
+			Owner = this
 		};
 
 		bestResultWindow.Show();
@@ -255,16 +270,25 @@ public partial class MainWindow : Window
 		var chartPointForGeneration = ChartPointsColection[generation];
 		var progressData = chartPointForGeneration.ProgressData;
 
-		if (Selected == chartPointForGeneration) return;
+		lock (SelectedLock)
+		{
+			if(Selected != chartPointForGeneration)
+			{
+				if (Selected is not null) Selected.Selected = false;
 
-		if (Selected != null) Selected.Selected = false;
+				chartPointForGeneration.Selected = true;
+				Selected = chartPointForGeneration;
 
-		chartPointForGeneration.Selected = true;
-		Selected = chartPointForGeneration;
-
-		LoadBoard(progressData.Board, Board);
-		FitnessText.Text = progressData.FitnessValue.ToString("F4");
-		GenerationText.Text = progressData.Generation.ToString();
+				LoadBoard(progressData.Board, Board);
+				FitnessText.Text = progressData.FitnessValue.ToString("F4");
+				GenerationText.Text = progressData.Generation.ToString();
+			}
+			else
+			{
+				chartPointForGeneration.Selected = false;
+				Selected = null;
+			}
+		}
 	}
 
 	protected override void OnClosed(EventArgs e)
