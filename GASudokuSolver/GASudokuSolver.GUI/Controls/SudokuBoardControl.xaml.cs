@@ -1,0 +1,26 @@
+﻿using System.Collections;
+using System.Windows;
+using System.Windows.Controls;
+
+namespace GASudokuSolver.GUI.Controls;
+
+public partial class SudokuBoardControl : UserControl
+{
+	public SudokuBoardControl()
+	{
+		InitializeComponent();
+	}
+
+	public static readonly DependencyProperty BoardProperty =
+		DependencyProperty.Register(
+			nameof(Board),
+			typeof(IEnumerable),
+			typeof(SudokuBoardControl),
+			new PropertyMetadata(default(IEnumerable)));
+
+	public IEnumerable Board
+	{
+		get => (IEnumerable)GetValue(BoardProperty);
+		set => SetValue(BoardProperty, value);
+	}
+}
