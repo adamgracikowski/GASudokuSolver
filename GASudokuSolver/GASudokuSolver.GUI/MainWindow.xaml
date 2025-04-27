@@ -66,7 +66,10 @@
                             <lvc:Axis Title="Fitness" LabelFormatter="{Binding YAxisLabelFormatter}" />
                         </lvc:CartesianChart.AxisY>
                         <lvc:CartesianChart.AxisX>
-                            <lvc:Axis Title="Generation" LabelFormatter="{Binding XAxisLabelFormatter}" />
+                            <lvc:Axis
+                                Title="Generation"
+                                LabelFormatter="{Binding XAxisLabelFormatter}"
+                                RangeChanged="AxisXRangeChanged" />
                         </lvc:CartesianChart.AxisX>
                     </lvc:CartesianChart>
                 </Border>

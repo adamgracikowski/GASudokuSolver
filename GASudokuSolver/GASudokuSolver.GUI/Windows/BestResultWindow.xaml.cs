@@ -28,4 +28,9 @@ public partial class BestResultWindow : Window
 		if (e.Key == Key.Escape)
 			Close();
 	}
+
+	private void CloseButtonClick(object sender, RoutedEventArgs e)
+	{
+		this.Close();
+	}
 }

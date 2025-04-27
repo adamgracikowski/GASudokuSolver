@@ -7,6 +7,7 @@ using GASudokuSolver.GUI.Models;
 using GASudokuSolver.GUI.Windows;
 using LiveCharts;
 using LiveCharts.Configurations;
+using LiveCharts.Events;
 using LiveCharts.Wpf;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
@@ -81,7 +82,6 @@ public partial class MainWindow : Window
 	{
 		Timer.Elapsed += TimerElapsed;
 	}
-
 	private void TimerElapsed(object? sender, System.Timers.ElapsedEventArgs e)
 	{
 		try
@@ -165,7 +165,6 @@ public partial class MainWindow : Window
 		Timer.Stop();
 
 		MainMenu.IsAlgorithmRunning = false;
-		StartButton.IsEnabled = true;
 
 		ShowBestResultWindow(bestResult);
 	}
@@ -272,7 +271,7 @@ public partial class MainWindow : Window
 
 		lock (SelectedLock)
 		{
-			if(Selected != chartPointForGeneration)
+			if (Selected != chartPointForGeneration)
 			{
 				if (Selected is not null) Selected.Selected = false;
 
@@ -287,7 +286,21 @@ public partial class MainWindow : Window
 			{
 				chartPointForGeneration.Selected = false;
 				Selected = null;
+				GeneticChart.AxisX[0].MaxValue = double.NaN;
 			}
+		}
+	}
+
+	private void AxisXRangeChanged(RangeChangedEventArgs eventArgs)
+	{
+		Axis axis = (Axis)eventArgs.Axis;
+		if (axis.MinValue < 0)
+		{
+			axis.MinValue = 0;
+		}
+		if (ChartPointsColection.Count > 0 && axis.MaxValue > ChartPointsColection.Last().ProgressData.Generation)
+		{
+			axis.MaxValue = double.NaN;
 		}
 	}
 
