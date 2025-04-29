@@ -1,0 +1,205 @@
+﻿<Window
+    x:Class="GASudokuSolver.GUI.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:GASudokuSolver.GUI.Controls"
+    xmlns:converters="clr-namespace:GASudokuSolver.GUI.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:GASudokuSolver.GUI"
+    xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Genetic Algorithms Sudoku Solver"
+    Width="1200"
+    Height="850"
+    mc:Ignorable="d">
+    <Window.Resources />
+
+    <DockPanel>
+        <!--  Menu  -->
+        <controls:MainMenu
+            x:Name="MainMenu"
+            AboutClicked="AboutClick"
+            DockPanel.Dock="Top"
+            ExitClicked="ExitClick"
+            LoadBoardClicked="LoadBoardCsvClickAsync"
+            SaveBoardClicked="SaveBoardCsvClick"
+            UserGuideClicked="UserGuideClick" />
+
+
+        <!--  Main Grid  -->
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="450" />
+            </Grid.ColumnDefinitions>
+
+            <!--  Title  -->
+            <Border
+                Grid.Row="0"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Style="{StaticResource ModernCard}">
+                <TextBlock Style="{StaticResource TitleText}" Text="Genetic Algorithms Sudoku Solver" />
+            </Border>
+
+            <!--  Left Panel  -->
+            <Grid Grid.Row="1" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!--  Chart  -->
+                <Border Grid.Row="0" Style="{StaticResource ModernCard}">
+                    <lvc:CartesianChart
+                        x:Name="GeneticChart"
+                        DataClick="GeneticChartDataClick"
+                        LegendLocation="Right"
+                        Series="{Binding FitnessSeries}"
+                        Zoom="X">
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis Title="Fitness" LabelFormatter="{Binding YAxisLabelFormatter}" />
+                        </lvc:CartesianChart.AxisY>
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis
+                                Title="Generation"
+                                LabelFormatter="{Binding XAxisLabelFormatter}"
+                                RangeChanged="AxisXRangeChanged" />
+                        </lvc:CartesianChart.AxisX>
+                    </lvc:CartesianChart>
+                </Border>
+
+                <!--  Settings  -->
+                <Border Grid.Row="1" Style="{StaticResource ModernCard}">
+                    <TabControl>
+                        <TabItem Header="Population">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="Population settings" />
+                        </TabItem>
+                        <TabItem Header="Representation">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="Representation settings" />
+                        </TabItem>
+                        <TabItem Header="Fitness Function">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="Fitness function settings" />
+                        </TabItem>
+                        <TabItem Header="Selection">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="Selection settings" />
+                        </TabItem>
+                        <TabItem Header="Crossover">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="Crossover settings" />
+                        </TabItem>
+                        <TabItem Header="Mutation">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="Mutation settings" />
+                        </TabItem>
+                    </TabControl>
+                </Border>
+            </Grid>
+
+
+            <!--  Right Panel  -->
+            <Grid Grid.Row="1" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="450" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!--  Sudoku Board  -->
+                <controls:SudokuBoardControl Grid.Row="0" Board="{Binding Board}" />
+
+                <!--  Algorithm Results  -->
+                <Border Grid.Row="1" Style="{StaticResource ModernCard}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <DockPanel>
+                            <Border
+                                Width="100"
+                                Padding="5"
+                                Background="#4CAF50"
+                                DockPanel.Dock="Top"
+                                Style="{StaticResource ModernCard}">
+                                <Button
+                                    x:Name="StartButton"
+                                    Grid.Row="3"
+                                    Grid.Column="0"
+                                    Width="100"
+                                    HorizontalAlignment="Center"
+                                    Click="StartButtonClickAsync"
+                                    Content="Start"
+                                    Style="{StaticResource NoHoverButtonStyle}" />
+                            </Border>
+                            <StackPanel Margin="10" Orientation="Vertical">
+                                <Grid x:Name="AlgorithmResultsGrid" Visibility="Collapsed">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                        Style="{StaticResource ResultLabelStyle}"
+                                        Text="Fitness:" />
+                                    <TextBlock
+                                        x:Name="FitnessText"
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        Style="{StaticResource ResultValueStyle}" />
+
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        Style="{StaticResource ResultLabelStyle}"
+                                        Text="Generation:" />
+                                    <TextBlock
+                                        x:Name="GenerationText"
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Style="{StaticResource ResultValueStyle}" />
+
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Grid.Column="0"
+                                        Style="{StaticResource ResultLabelStyle}"
+                                        Text="Time:" />
+                                    <TextBlock
+                                        x:Name="TimeText"
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Style="{StaticResource ResultValueStyle}" />
+                                </Grid>
+                            </StackPanel>
+                        </DockPanel>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+        </Grid>
+    </DockPanel>
+</Window>
