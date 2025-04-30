@@ -124,7 +124,7 @@ public class SudokuSolver
 				);
 			}
 
-			if (TimeoutToken.IsCancellationRequested)
+			if (timeoutToken.IsCancellationRequested)
 			{
 				return new AlgorithmResult(
 					new AlgorithmProgressData(bestIndividualThroughtGenerations, generation),
@@ -143,7 +143,7 @@ public class SudokuSolver
 			}
 
 			var parents = Selection.Select(Population, numberOfParents, FitnessFunction);
-			Population = Crossover.Crossover(Parents, populationSize);
+			Population = Crossover.Crossover(parents, populationSize);
 			Parallel.ForEach(Population , individual =>
 			{
 				foreach(Gene gene in individual.Genes)
