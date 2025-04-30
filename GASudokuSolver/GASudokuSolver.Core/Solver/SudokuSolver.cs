@@ -96,7 +96,7 @@ public class SudokuSolver
 
 		using var cancellationTokenSource = new CancellationTokenSource(maxTime);
 
-		var TimeoutToken = cancellationTokenSource.Token;
+		var timeoutToken = cancellationTokenSource.Token;
 		DateTime start = DateTime.UtcNow;
 		EvaluatePopulation();
 		while (generation < maxGenerations)
@@ -142,7 +142,7 @@ public class SudokuSolver
 				);
 			}
 
-			var Parents = Selection.Select(Population, numberOfParents, FitnessFunction);
+			var parents = Selection.Select(Population, numberOfParents, FitnessFunction);
 			Population = Crossover.Crossover(Parents, populationSize);
 			Parallel.ForEach(Population , individual =>
 			{
