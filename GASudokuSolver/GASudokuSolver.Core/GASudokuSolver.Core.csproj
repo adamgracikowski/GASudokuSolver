@@ -31,10 +31,4 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Solver\Crossovers\" />
-    <Folder Include="Solver\Representations\" />
-    <Folder Include="Solver\Selections\" />
-  </ItemGroup>
-
 </Project>

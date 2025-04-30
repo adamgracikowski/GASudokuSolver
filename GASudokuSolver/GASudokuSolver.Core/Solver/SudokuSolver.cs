@@ -1,19 +1,26 @@
 ﻿using GASudokuSolver.Core.Configurations;
+using GASudokuSolver.Core.Enums;
 using GASudokuSolver.Core.Models;
+using GASudokuSolver.Core.Solver.Genes;
 using GASudokuSolver.Core.Solver.Interfaces;
-using System.Threading;
 
 namespace GASudokuSolver.Core.Solver;
-class SudokuSolver
+
+/// <summary>
+/// Represents a genetic algorithm solver for Sudoku puzzles.
+/// </summary>
+public class SudokuSolver
 {
 	private int generation;
 	private TimeSpan maxTime = TimeSpan.FromMinutes(
 		Constants.Solver.DefaultMaxTimeInMinutes);
 	private int maxGenerations;
 	private int populationSize;
+	private int numberOfParents;
 
 	public List<Individual> Population;
 	public List<Individual> BestIndividuals;
+	public Individual bestIndividualThroughtGenerations;
 
 	public IMutation Mutation;
 	public ISelection Selection;
@@ -21,16 +28,28 @@ class SudokuSolver
 
 	public IFitnessFunction FitnessFunction;
 
+	/// <summary>
+	/// Gets the current generation number.
+	/// </summary>
+	public int Generation => generation;
 
-	public int Generation
-	{
-		get { return generation; }
-	}
-
-
+	/// <summary>
+	/// Initializes a new instance of the <see cref="SudokuSolver"/> class.
+	/// </summary>
+	/// <param name="sudoku">The unsolved <see cref="Sudoku"/> puzzle to be solved.</param>
+	/// <param name="populationSize">The number of <see cref="Individual"/>s in the population.</param>
+	/// <param name="numberOfParents">The number of parents selected for crossover in each generation.</param>
+	/// <param name="mutation">The mutation strategy to be used.</param>
+	/// <param name="selection">The selection strategy to be used.</param>
+	/// <param name="crossover">The crossover strategy to be used.</param>
+	/// <param name="fitnessFunction">The fitness function used to evaluate <see cref="Individual"/>s.</param>
+	/// <param name="representation">The representation strategy for <see cref="Individual"/>s.</param>
+	/// <param name="maxGenerations">The maximum number of generations to run the solver. Default is configured in constants.</param>
+	/// <param name="maxTime">The maximum time to run the solver. Default is configured in constants.</param>
 	public SudokuSolver(
 		Sudoku sudoku,
 		int populationSize,
+		int numberOfParents,
 		IMutation mutation,
 		ISelection selection,
 		ICrossover crossover,
@@ -40,18 +59,23 @@ class SudokuSolver
 		TimeSpan? maxTime = null
 	)
 	{
-		this.maxGenerations = maxGenerations;
+		this.maxGenerations = maxGenerations > 0 ? maxGenerations : 1;
 		this.generation = 0;
 		if (maxTime != null)
 		{
-			maxTime = maxTime.Value;
+			this.maxTime = maxTime.Value;
 		}
 
-		Population = new List<Individual>(populationSize);
-		for (var individual = 0; individual < populationSize; individual++)
+		this.populationSize = populationSize > 2 ? populationSize : 2;
+		this.numberOfParents = numberOfParents > 2 ? numberOfParents : 2;
+
+		Population = new List<Individual>(this.populationSize);
+		for (var individual = 0; individual < this.populationSize; individual++)
 		{
-			Population[individual] = new Individual(representation, sudoku.Unsolved);
+			Population.Add(new Individual(representation, sudoku.Unsolved));
 		}
+		BestIndividuals = new List<Individual>(this.populationSize);
+		bestIndividualThroughtGenerations = Population[0];
 
 		Mutation = mutation;
 		Selection = selection;
@@ -59,48 +83,97 @@ class SudokuSolver
 		FitnessFunction = fitnessFunction;
 	}
 
-	public Task Run()
+	/// <summary>
+	/// Runs the genetic algorithm to solve the Sudoku puzzle.
+	/// </summary>
+	/// <param name="cancellationToken">Optional external cancellation token to abort the algorithm early.</param>
+	/// <param name="progress">Optional progress reporter to receive intermediate results.</param>
+	/// <returns>An <see cref="AlgorithmResult"/> containing the best solution found, time elapsed and termination reason.</returns>
+	public AlgorithmResult Run(
+		CancellationToken cancellationToken = default,
+		IProgress<AlgorithmProgressData>? progress = null)
 	{
-		using (var cancellationTokenSource = new CancellationTokenSource(maxTime))
+
+		using var cancellationTokenSource = new CancellationTokenSource(maxTime);
+
+		var TimeoutToken = cancellationTokenSource.Token;
+		DateTime start = DateTime.UtcNow;
+		EvaluatePopulation();
+		while (generation < maxGenerations)
 		{
-			var token = cancellationTokenSource.Token;
 
-			while (generation < maxGenerations)
+			Parallel.ForEach(Population, individual =>
 			{
-				generation++; 
+				individual.UpdateBoard();
+				individual.Evaluate(FitnessFunction);
+			});
 
-				foreach(var individual in Population)
-				{
-					individual.UpdateBoard();
-					individual.Evaluate(FitnessFunction);
-				}
+			var bestIndividualInGeneration = EvaluatePopulation();
 
-				var bestIndividual = Population.Aggregate(
-					(best, current) =>
-						FitnessFunction.Compare(best.Fitness, current.Fitness) ? best : current
+			progress?.Report(new AlgorithmProgressData(
+				bestIndividualInGeneration,
+				generation)
+			);
+
+			if (FitnessFunction.IsSolved(bestIndividualThroughtGenerations.Fitness))
+			{
+				return new AlgorithmResult(
+					new AlgorithmProgressData(bestIndividualThroughtGenerations, generation),
+					start - DateTime.UtcNow,
+					TerminationReason.SoultionFound
 				);
-				BestIndividuals.Add(bestIndividual);
-
-				// tutaj pewnie ten progres, ale nie wiem jak chcesz to robić,
-				// może przydałoby się AlgorithmProgressData dać do core
-
-				if(FitnessFunction.IsSolved(bestIndividual.Fitness))
-				{
-					return Task.CompletedTask;
-				}
-
-				if (token.IsCancellationRequested)
-				{
-					// można dodać jakieś info
-					return Task.FromCanceled(token);
-				}
-
-				// Te liczby /2 też do zmiany jakoś nie?
-				var Parents = Selection.Select(Population, populationSize / 2, FitnessFunction.Compare);
-				Population = Crossover.Crossover(Parents, populationSize).ToList();
 			}
+
+			if (TimeoutToken.IsCancellationRequested)
+			{
+				return new AlgorithmResult(
+					new AlgorithmProgressData(bestIndividualThroughtGenerations, generation),
+					start - DateTime.UtcNow,
+					TerminationReason.Timeout
+				);
+			}
+
+			if (cancellationToken.IsCancellationRequested)
+			{
+				return new AlgorithmResult(
+					new AlgorithmProgressData(bestIndividualThroughtGenerations, generation),
+					start - DateTime.UtcNow,
+					TerminationReason.Cancelled
+				);
+			}
+
+			var Parents = Selection.Select(Population, numberOfParents, FitnessFunction);
+			Population = Crossover.Crossover(Parents, populationSize);
+			Parallel.ForEach(Population , individual =>
+			{
+				foreach(Gene gene in individual.Genes)
+				{
+					Mutation.Mutate(gene);
+				}
+			});
+			generation++;
 		}
 
-		return Task.CompletedTask;
+		return new AlgorithmResult(
+			new AlgorithmProgressData(bestIndividualThroughtGenerations, generation),
+			start - DateTime.UtcNow,
+			TerminationReason.MaxGenerationsReached
+		);
+	}
+
+	private Individual EvaluatePopulation()
+	{
+		var bestIndividualInGeneration = Population.Max(FitnessFunction)!;
+		BestIndividuals.Add(bestIndividualInGeneration);
+
+		if (FitnessFunction.Compare(
+			bestIndividualThroughtGenerations,
+			bestIndividualInGeneration) > 0)
+		{
+			bestIndividualThroughtGenerations = bestIndividualInGeneration;
+		}
+
+		return bestIndividualInGeneration;
 	}
 }
+

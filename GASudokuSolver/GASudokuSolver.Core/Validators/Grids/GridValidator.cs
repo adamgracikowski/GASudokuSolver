@@ -91,9 +91,9 @@ public sealed class GridValidator : IGridValidator
 			grid.Data.GetLength(1) == Constants.Grid.Columns;
 	}
 
-	private static bool IsValidGroup(int[] group, bool skipEmptyCells = false)
+	private static bool IsValidGroup(byte[] group, bool skipEmptyCells = false)
 	{
-		var seen = new HashSet<int>();
+		var seen = new HashSet<byte>();
 
 		foreach (var number in group)
 		{

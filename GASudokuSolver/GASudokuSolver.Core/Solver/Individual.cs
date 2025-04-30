@@ -1,16 +1,38 @@
 ﻿using GASudokuSolver.Core.Models;
 using GASudokuSolver.Core.Solver.Genes;
-using System.Security.Cryptography.X509Certificates;
 
 namespace GASudokuSolver.Core.Solver.Interfaces;
 
-class Individual
+/// <summary>
+/// Represents a single individual in the population for the genetic algorithm.
+/// </summary>
+public class Individual
 {
+	/// <summary>
+	/// Gets the fitness value of this individual, as evaluated by a fitness function.
+	/// </summary>
 	public double Fitness { get; private set; }
+
+	/// <summary>
+	/// Gets the Sudoku grid associated with this individual.
+	/// </summary>
 	public Grid Board { get; private set; }
+
+	/// <summary>
+	/// Gets the list of genes representing this individual's solution encoding.
+	/// </summary>
 	public List<Gene> Genes { get; private set; }
 
+	/// <summary>
+	/// Gets the representation strategy used to encode and decode the Sudoku grid.
+	/// </summary>
 	public IRepresentation Representation { get; private set; }
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="Individual"/> class using the specified representation and initial board.
+	/// </summary>
+	/// <param name="representation">The representation strategy to use for encoding and decoding the board.</param>
+	/// <param name="board">The initial Sudoku board to base this individual on.</param>
 	public Individual(IRepresentation representation, Grid board)
 	{
 		Fitness = 0.0;
@@ -19,14 +41,35 @@ class Individual
 		Genes = Representation.Encode(Board);
 	}
 
+	public Individual(Individual baseIndividual, IList<Gene> newGenes)
+	{
+		Fitness = 0.0;
+		Representation = baseIndividual.Representation;
+		Genes = newGenes.ToList();
+		Board = new Grid(baseIndividual.Board);
+	}
+
+	/// <summary>
+	/// Evaluates this individual using the specified fitness function.
+	/// </summary>
+	/// <param name="fitnessFunction">The fitness function used to calculate the fitness of this individual.</param>
 	public void Evaluate(IFitnessFunction fitnessFunction)
 	{
 		Fitness = fitnessFunction.Eveluate(Board);
 	}
+
+	/// <summary>
+	/// Updates the board using the current gene values and the representation's decoding logic.
+	/// </summary>
 	public void UpdateBoard()
 	{
 		Representation.Decode(Board, Genes);
 	}
+
+	/// <summary>
+	/// Creates a deep copy of this individual.
+	/// </summary>
+	/// <returns>A new <see cref="Individual"/> instance with the same representation and a cloned board.</returns>
 	public Individual Clone()
 	{
 		UpdateBoard();

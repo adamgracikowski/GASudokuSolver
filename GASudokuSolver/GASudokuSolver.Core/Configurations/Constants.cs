@@ -7,7 +7,9 @@ public static class Constants
 		public const int Rows = 9;
 		public const int Columns = 9;
 		public const int Cells = Rows * Columns;
-		public const int Subgrids = (Rows / Subgrid.Rows) * (Columns / Subgrid.Columns);
+		public const int Subgrids = SubgridsInRow * SubgridsInColumn;
+		public const int SubgridsInRow = (Columns / Subgrid.Columns);
+		public const int SubgridsInColumn= (Rows / Subgrid.Rows);
 	}
 
 	public static class Subgrid
@@ -15,6 +17,7 @@ public static class Constants
 		public const int Rows = 3;
 		public const int Columns = 3;
 		public const int Cells = Rows * Columns;
+		
 	}
 
 	public static class Cell

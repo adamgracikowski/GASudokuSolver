@@ -1,13 +1,13 @@
 ﻿using GASudokuSolver.Core.Configurations;
-using GASudokuSolver.GUI.Models;
+using GASudokuSolver.Core.Models;
 
 namespace GASudokuSolver.GUI;
 
 public static class GeneticAlgorithmMock
 {
-	public static async Task<AlgorithmProgressData> Run(int[,] board, IProgress<AlgorithmProgressData>? progress = null) 
+	public static async Task<AlgorithmProgressData> Run(byte[,] board, IProgress<AlgorithmProgressData>? progress = null) 
 	{
-		var bestProgress = new AlgorithmProgressData(0, 0, new int[Constants.Grid.Rows, Constants.Grid.Columns]);
+		var bestProgress = new AlgorithmProgressData(0, 0, new byte[Constants.Grid.Rows, Constants.Grid.Columns]);
 
 		var generations = 100;
 		var empty = new List<(int r, int c)>();
@@ -21,17 +21,17 @@ public static class GeneticAlgorithmMock
 			}
 		}
 
-		var copy = new int[Constants.Grid.Rows, Constants.Grid.Columns];
+		var copy = new byte[Constants.Grid.Rows, Constants.Grid.Columns];
 
 		for(var i = 0; i < generations; i++)
 		{
-			copy = new int[Constants.Grid.Rows, Constants.Grid.Columns];
+			copy = new byte[Constants.Grid.Rows, Constants.Grid.Columns];
 
 			Array.Copy(board, copy, copy.Length);
 
 			foreach (var (r, c) in empty)
 			{
-				copy[r, c] = Random.Shared.Next(1, 9);
+				copy[r, c] = (byte)Random.Shared.Next(1, 9);
 			}
 
 			await Task.Delay(200);

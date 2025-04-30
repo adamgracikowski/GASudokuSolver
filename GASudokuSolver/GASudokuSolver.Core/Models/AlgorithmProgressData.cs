@@ -1,18 +1,26 @@
-﻿using System.ComponentModel;
+﻿using GASudokuSolver.Core.Solver.Interfaces;
+using System.ComponentModel;
 
-namespace GASudokuSolver.GUI.Models;
+namespace GASudokuSolver.Core.Models;
 
 public class AlgorithmProgressData : INotifyPropertyChanged
 {
 	private double fitnessValue;
-	private int[,] board;
+	private byte[,] board;
 	private int generation;
 
-	public AlgorithmProgressData(double fitnessValue, int generation, int[,] board)
+	public AlgorithmProgressData(double fitnessValue, int generation, byte[,] board)
 	{
 		this.fitnessValue = fitnessValue;
 		this.generation = generation;
 		this.board = board;
+	}
+
+	public AlgorithmProgressData(Individual individual, int generation)
+	{
+		fitnessValue = individual.Fitness;
+		board = individual.Board.CloneBoard();
+		this.generation = generation;
 	}
 
 	public double FitnessValue
@@ -28,7 +36,7 @@ public class AlgorithmProgressData : INotifyPropertyChanged
 		}
 	}
 
-	public int[,] Board
+	public byte[,] Board
 	{
 		get => this.board;
 		set
