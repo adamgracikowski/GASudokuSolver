@@ -1,7 +1,7 @@
 ﻿using GASudokuSolver.Core.Configurations;
 using GASudokuSolver.Core.Enums;
-using GASudokuSolver.Core.Loading.Puzzles;
 using GASudokuSolver.Core.Models;
+using GASudokuSolver.Core.Loading.Puzzles;
 using GASudokuSolver.GUI.Controls;
 using GASudokuSolver.GUI.Models;
 using GASudokuSolver.GUI.Windows;
@@ -15,6 +15,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
+using GASudokuSolver.Core.Solver;
+using GASudokuSolver.Core.Solver.Crossovers;
+using GASudokuSolver.Core.Solver.Mutations;
+using GASudokuSolver.Core.Solver.FitnessFunctions;
+using GASudokuSolver.Core.Solver.Representations;
+using GASudokuSolver.Core.Solver.Selections;
 
 namespace GASudokuSolver.GUI;
 
@@ -25,6 +31,8 @@ public partial class MainWindow : Window
 
 	public Sudoku? Sudoku { get; set; }
 	public ObservableCollection<SudokuCell> Board { get; set; } = [];
+
+	public SudokuSolver Solver { get; set; }
 
 	public SeriesCollection FitnessSeries { get; set; }
 	public ChartValues<ChartPointData> ChartPointsColection { get; set; } = [];
@@ -77,6 +85,8 @@ public partial class MainWindow : Window
 					.Fill(point => point.Selected ? Brushes.Red : null),
 			}
 		];
+
+		GeneticChart.DisableAnimations = true;
 	}
 	public void InitializeTimer()
 	{
@@ -100,7 +110,7 @@ public partial class MainWindow : Window
 		}
 	}
 
-	public static void LoadBoard(int[,] source, ObservableCollection<SudokuCell> destination, bool updateReadOnly = false)
+	public static void LoadBoard(byte[,] source, ObservableCollection<SudokuCell> destination, bool updateReadOnly = false)
 	{
 		for (var row = 0; row < Constants.Grid.Rows; ++row)
 		{
@@ -126,6 +136,7 @@ public partial class MainWindow : Window
 		TimeText.Text = @"00:00:00:000";
 		FitnessText.Text = "0";
 		GenerationText.Text = "0";
+		Selected = null;
 	}
 
 	private async void StartButtonClickAsync(object sender, RoutedEventArgs e)
@@ -157,8 +168,18 @@ public partial class MainWindow : Window
 		Stopwatch.Restart();
 		Timer.Start();
 
+		Solver = new SudokuSolver(Sudoku, 10000, 40,
+			new PercentChanceMutation(20),
+			new TruncateSelection(),
+			new OnePointCrossover(),
+			new EachErrorPunishedEqualyFitnessFunction(),
+			new SingleCellRowCollumnRepresentation(),
+			1000,
+			TimeSpan.FromMinutes(1)
+		);
+
 		var bestResult = await Task.Run(
-			() => GeneticAlgorithmMock.Run(Sudoku.Unsolved.Data, progress)
+			() => Solver.Run(progress: progress)
 		);
 
 		Stopwatch.Stop();
@@ -166,7 +187,7 @@ public partial class MainWindow : Window
 
 		MainMenu.IsAlgorithmRunning = false;
 
-		ShowBestResultWindow(bestResult);
+		ShowBestResultWindow(bestResult.BestIndividual);
 	}
 
 	private void ShowBestResultWindow(AlgorithmProgressData bestResult)

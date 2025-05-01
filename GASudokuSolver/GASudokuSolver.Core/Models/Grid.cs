@@ -4,16 +4,44 @@ namespace GASudokuSolver.Core.Models;
 
 public sealed class Grid
 {
-	public readonly int[,] Data;
+	public byte[,] Data;
+	public bool[,] Mutable;
 
-	public Grid(int[,] data)
+	public Grid(byte[,] data)
 	{
 		Data = data;
+		Mutable = new bool[Data.GetLength(0), Data.GetLength(1)];
+		SetMutables();
 	}
 
-	public int[] GetRow(int row)
+	public Grid(Grid grid)
 	{
-		var result = new int[Constants.Grid.Columns];
+		Data = new byte[Constants.Grid.Rows, Constants.Grid.Columns];
+		Mutable = new bool[Data.GetLength(0), Data.GetLength(1)];
+		for (var row = 0; row < Constants.Grid.Rows; row++)
+		{
+			for(var col = 0; col < Constants.Grid.Columns; col++)
+			{
+				Data[row, col] = grid.Data[row, col];
+				Mutable[row, col] = grid.Mutable[row, col];
+			}
+		}
+	}
+
+	public void SetMutables()
+	{
+		for (var row = 0; row < Constants.Grid.Rows; row++)
+		{
+			for (var col = 0; col < Constants.Grid.Columns; col++)
+			{
+				Mutable[row, col] = Data[row, col] == Constants.Cell.EmptyValue;
+			}
+		}
+	}
+
+	public byte[] GetRow(int row)
+	{
+		var result = new byte[Constants.Grid.Columns];
 		for (var col = 0; col < Constants.Grid.Columns; ++col)
 		{
 			result[col] = Data[row, col];
@@ -22,9 +50,9 @@ public sealed class Grid
 		return result;
 	}
 
-	public int[] GetColumn(int col)
+	public byte[] GetColumn(int col)
 	{
-		var result = new int[Constants.Grid.Rows];
+		var result = new byte[Constants.Grid.Rows];
 		for (var row = 0; row < Constants.Grid.Rows; ++row)
 		{
 			result[row] = Data[row, col];
@@ -33,9 +61,9 @@ public sealed class Grid
 		return result;
 	}
 
-	public int[] GetSubgrid(int subgrid)
+	public byte[] GetSubgrid(int subgrid)
 	{
-		var result = new int[Constants.Subgrid.Rows * Constants.Subgrid.Columns];
+		var result = new byte[Constants.Subgrid.Rows * Constants.Subgrid.Columns];
 		
 		var startRow = (subgrid / Constants.Subgrid.Rows) * Constants.Subgrid.Rows;
 		var startCol = (subgrid % Constants.Subgrid.Columns) * Constants.Subgrid.Columns;
@@ -51,5 +79,10 @@ public sealed class Grid
 		}
 
 		return result;
+	}
+
+	public byte[,] CloneBoard()
+	{
+		return (byte[,])Data.Clone(); 
 	}
 }

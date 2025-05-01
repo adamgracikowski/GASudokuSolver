@@ -17,13 +17,13 @@ public sealed class CsvGridLoader : IGridLoader
 				);
 			}
 
-			var data = new int[Constants.Grid.Rows, Constants.Grid.Columns];
+			var data = new byte[Constants.Grid.Rows, Constants.Grid.Columns];
 
 			for (var row = 0; row < Constants.Grid.Rows; ++row)
 			{
 				for (var col = 0; col < Constants.Grid.Columns; ++col)
 				{
-					data[row, col] = int.Parse(content[row * Constants.Grid.Rows + col].ToString());
+					data[row, col] = byte.Parse(content[row * Constants.Grid.Rows + col].ToString());
 				}
 			}
 
