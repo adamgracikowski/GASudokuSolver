@@ -9,7 +9,7 @@ public class PercentChanceMutation : IMutation
 
 	public PercentChanceMutation(double chance)
 	{
-		chance = Math.Min(Math.Max(chance, 0), 100);
+		chance = Math.Clamp(chance, 0, 100);
 		this.percentage = chance/100;
 	}
 

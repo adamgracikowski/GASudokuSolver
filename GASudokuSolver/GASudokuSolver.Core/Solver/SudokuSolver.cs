@@ -12,8 +12,7 @@ namespace GASudokuSolver.Core.Solver;
 public class SudokuSolver
 {
 	private int generation;
-	private TimeSpan maxTime = TimeSpan.FromMinutes(
-		Constants.Solver.DefaultMaxTimeInMinutes);
+	private TimeSpan maxTime;
 	private int maxGenerations;
 	private int populationSize;
 	private int numberOfParents;
@@ -61,13 +60,12 @@ public class SudokuSolver
 	{
 		this.maxGenerations = maxGenerations > 0 ? maxGenerations : 1;
 		this.generation = 0;
-		if (maxTime != null)
-		{
-			this.maxTime = maxTime.Value;
-		}
+		this.maxTime = maxTime ?? TimeSpan.FromMinutes(
+			Constants.Solver.DefaultMaxTimeInMinutes);
+		
 
-		this.populationSize = populationSize > 2 ? populationSize : 2;
-		this.numberOfParents = numberOfParents > 2 ? numberOfParents : 2;
+		this.populationSize = Math.Max(populationSize, 2);
+		this.numberOfParents = Math.Clamp(numberOfParents, 2, this.populationSize);
 
 		Population = new List<Individual>(this.populationSize);
 		Parallel.For(0, this.populationSize, (i, state) =>
