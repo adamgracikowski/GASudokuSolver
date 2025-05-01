@@ -172,7 +172,7 @@ public partial class MainWindow : Window
 			new PercentChanceMutation(20),
 			new TruncateSelection(),
 			new OnePointCrossover(),
-			new EachErrorPunishedEqualyFitnessFunction(),
+			new EquallyPunishedConflictFitnessFunction(),
 			new SingleCellRowCollumnRepresentation(),
 			1000,
 			TimeSpan.FromMinutes(1)
