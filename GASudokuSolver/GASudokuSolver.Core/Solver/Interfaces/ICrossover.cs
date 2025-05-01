@@ -1,4 +1,6 @@
-﻿namespace GASudokuSolver.Core.Solver.Interfaces;
+﻿using GASudokuSolver.Core.Solver.Genes;
+
+namespace GASudokuSolver.Core.Solver.Interfaces;
 
 /// <summary>
 /// Defines a crossover strategy for combining parent <see cref="Individual"/>s to produce offspring.
@@ -6,10 +8,13 @@
 public interface ICrossover
 {
 	/// <summary>
-	/// Performs crossover on a list of parent <see cref="Individual"/>s to produce a specified number of children.
+	/// Performs crossover on the provided parent genes and modifies the given population of <see cref="Individual"/>s,
+	/// turning them into children generated from the parent genes.
 	/// </summary>
-	/// <param name="parents">The list of parent <see cref="Individual"/>s used in the crossover.</param>
-	/// <param name="childrenCount">The number of children to generate.</param>
-	/// <returns>A list of newly created child <see cref="Individual"/>.</returns>
-	List<Individual> Crossover(List<Individual> parents, int childrenCount);
+	/// <param name="parentsGenes">The list of genes representing the parents.</param>
+	/// <param name="population">
+	/// The list of <see cref="Individual"/>s to be modified in-place.
+	/// After the method executes, these individuals will contain genes resulting from the crossover.
+	/// </param>
+	void Crossover(List<List<Gene>> parentsGenes, List<Individual> population);
 }

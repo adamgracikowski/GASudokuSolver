@@ -136,6 +136,7 @@ public partial class MainWindow : Window
 		TimeText.Text = @"00:00:00:000";
 		FitnessText.Text = "0";
 		GenerationText.Text = "0";
+		Selected = null;
 	}
 
 	private async void StartButtonClickAsync(object sender, RoutedEventArgs e)
@@ -168,8 +169,8 @@ public partial class MainWindow : Window
 		Timer.Start();
 
 		Solver = new SudokuSolver(Sudoku, 10000, 40,
-			new PercentChanceMutation(5),
-			new SteadyStateSelection(),
+			new PercentChanceMutation(20),
+			new TruncateSelection(),
 			new OnePointCrossover(),
 			new EachErrorPunishedEqualyFitnessFunction(),
 			new SingleCellRowCollumnRepresentation(),

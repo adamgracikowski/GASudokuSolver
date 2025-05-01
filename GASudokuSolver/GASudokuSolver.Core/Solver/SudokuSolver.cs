@@ -70,10 +70,10 @@ public class SudokuSolver
 		this.numberOfParents = numberOfParents > 2 ? numberOfParents : 2;
 
 		Population = new List<Individual>(this.populationSize);
-		for (var individual = 0; individual < this.populationSize; individual++)
+		Parallel.For(0, this.populationSize, (i, state) =>
 		{
 			Population.Add(new Individual(representation, sudoku.Unsolved));
-		}
+		});
 		BestIndividuals = new List<Individual>(this.populationSize);
 		bestIndividualThroughtGenerations = Population[0];
 
@@ -142,8 +142,8 @@ public class SudokuSolver
 				);
 			}
 
-			var parents = Selection.Select(Population, numberOfParents, FitnessFunction);
-			Population = Crossover.Crossover(parents, populationSize);
+			var parentsGenes = Selection.Select(Population, numberOfParents, FitnessFunction);
+			Crossover.Crossover(parentsGenes, Population);
 			Parallel.ForEach(Population , individual =>
 			{
 				foreach(Gene gene in individual.Genes)
@@ -163,12 +163,12 @@ public class SudokuSolver
 
 	private Individual EvaluatePopulation()
 	{
-		var bestIndividualInGeneration = Population.Max(FitnessFunction)!;
+		var bestIndividualInGeneration = Population.Max(FitnessFunction)!.Clone();
 		BestIndividuals.Add(bestIndividualInGeneration);
 
 		if (FitnessFunction.Compare(
-			bestIndividualThroughtGenerations,
-			bestIndividualInGeneration) > 0)
+			bestIndividualInGeneration,
+			bestIndividualThroughtGenerations) > 0)
 		{
 			bestIndividualThroughtGenerations = bestIndividualInGeneration;
 		}

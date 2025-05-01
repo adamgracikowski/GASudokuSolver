@@ -5,18 +5,18 @@ namespace GASudokuSolver.Core.Solver.Mutations;
 
 public class PercentChanceMutation : IMutation
 {
-	private double chance;
+	private double percentage;
 
 	public PercentChanceMutation(double chance)
 	{
 		chance = Math.Min(Math.Max(chance, 0), 100);
-		this.chance = chance/100;
+		this.percentage = chance/100;
 	}
 
 	public void Mutate(Gene gene)
 	{
 		double random = Random.Shared.NextDouble();
-		if(random<=chance)
+		if(random <= percentage)
 		{
 			gene.Mutate();
 		}

@@ -5,35 +5,33 @@ namespace GASudokuSolver.Core.Solver.Crossovers;
 
 public class OnePointCrossover : ICrossover
 {
-	public List<Individual> Crossover(List<Individual> parents, int childrenCount)
+	public void Crossover(List<List<Gene>> parents, List<Individual> population)
 	{
-		List<Individual> children = new List<Individual>(childrenCount);
-		int parentsCount = parents.Count;
-		var geneCount = parents[0].Genes.Count;
-		int parentIndex = 0;
+		var parentsCount = parents.Count;
+		var geneCount = parents[0].Count;
+		var halfGeneCount = geneCount / 2;
+		var childrenCount = population.Count;
 
-		for(int childIndex = 0; childIndex < childrenCount; childIndex++)
+		Parallel.For(0, (childrenCount+1)/2, (i, state) =>
 		{
-			var parentA = parents[parentIndex];
-			parentIndex = (parentIndex + 1) % parentsCount;
-			var parentB = parents[parentIndex];
+			var parentA = parents[i % parentsCount];
+			var parentB = parents[(i+1) % parentsCount];
 
-			
-			var point = Random.Shared.Next(geneCount - 1)+1;
+			var point = Random.Shared.Next(geneCount - 1) + 1;
+			var geneIndex = 0;
+			for (; geneIndex < point; geneIndex++)
+			{
+				population[i].Genes[geneIndex].Copy(parentA[geneIndex]);
+				if(i+halfGeneCount < childrenCount)
+					population[i + halfGeneCount].Genes[geneIndex].Copy(parentB[geneIndex]);
+			}
+			for(; geneIndex < geneCount; geneIndex++)
+			{
+				population[i].Genes[geneIndex].Copy(parentB[geneIndex]);
+				if (i + halfGeneCount < childrenCount)
+					population[i + halfGeneCount].Genes[geneIndex].Copy(parentA[geneIndex]);
+			}
 
-			var newGenesChildA = parentA.Genes.Take(point).ToList();
-			var newGenesChildB = parentB.Genes.Take(point).ToList();
-
-			newGenesChildA.AddRange(parentB.Genes.Skip(point));
-			newGenesChildB.AddRange(parentA.Genes.Skip(point));
-			
-			children.Add(new Individual(parentA, newGenesChildA));
-			childIndex++;
-			if(childIndex >= childrenCount)
-				break;
-			children.Add(new Individual(parentB, newGenesChildB));
-		}
-
-		return children;
+		});
 	}
 }

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using GASudokuSolver.Core.Configurations;
 
 namespace GASudokuSolver.Core.Solver.Genes;
 
@@ -8,7 +8,7 @@ public class SingleCellGene : Gene
 
 	public SingleCellGene()
 	{
-		Number = (byte)Random.Shared.Next(1, 10);
+		Randomize();
 	}
 
 	public SingleCellGene(byte number)
@@ -21,13 +21,25 @@ public class SingleCellGene : Gene
 		return new SingleCellGene(Number);
 	}
 
-	public override void Mutate()
+	public override void Copy(Gene gene)
 	{
-		RandomGene();
+		var singleCellGene = gene as SingleCellGene;
+		if (singleCellGene == null)
+		{
+			throw new Exception("Cannot copy different gene Representation");
+		}
+		
+		Number = singleCellGene.Number;
 	}
 
-	public override void RandomGene()
+	public override void Mutate()
 	{
-		Number = (byte)Random.Shared.Next(1, 10);
+		Randomize();
 	}
+
+	public override void Randomize()
+	{
+		Number = (byte)Random.Shared.Next(Constants.Cell.MinValue, Constants.Cell.MaxValue + 1);
+	}
+
 }

@@ -19,14 +19,14 @@ public class Individual
 	public Grid Board { get; private set; }
 
 	/// <summary>
-	/// Gets the list of genes representing this individual's solution encoding.
-	/// </summary>
-	public List<Gene> Genes { get; private set; }
-
-	/// <summary>
 	/// Gets the representation strategy used to encode and decode the Sudoku grid.
 	/// </summary>
 	public IRepresentation Representation { get; private set; }
+
+	/// <summary>
+	/// List of genes representing this individual's solution encoding.
+	/// </summary>
+	public List<Gene> Genes;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="Individual"/> class using the specified representation and initial board.
@@ -73,6 +73,19 @@ public class Individual
 	public Individual Clone()
 	{
 		UpdateBoard();
-		return new Individual(Representation, Board);
+		var clone = new Individual(Representation, Board);
+		clone.Fitness = Fitness;
+		return clone;
+	}
+
+	/// <summary>
+	/// Creates a deep copy of this individual's genes.
+	/// </summary>
+	/// <returns>
+	/// A new list containing cloned <see cref="Gene"/> instances that replicate the current genes of this individual.
+	/// </returns>
+	public List<Gene> CloneGenes()
+	{
+		return Genes.Select(g => g.Clone()).ToList();
 	}
 }

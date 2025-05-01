@@ -12,7 +12,7 @@ public class EachErrorPunishedEqualyFitnessFunction : IFitnessFunction
 		{
 			return 0;
 		}
-		return -x.Fitness.CompareTo(y.Fitness);
+		return x.Fitness.CompareTo(y.Fitness);
 	}
 
 	public bool CompareFitness(double lhsFitnessValue, double rhsFitnessValue)

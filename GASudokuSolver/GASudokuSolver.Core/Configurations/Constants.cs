@@ -22,9 +22,9 @@ public static class Constants
 
 	public static class Cell
 	{
-		public const int EmptyValue = 0;
-		public const int MinValue = 1;
-		public const int MaxValue = 9;
+		public const byte EmptyValue = 0;
+		public const byte MinValue = 1;
+		public const byte MaxValue = 9;
 	}
 
 	public static class Solver

@@ -83,14 +83,6 @@ public sealed class Grid
 
 	public byte[,] CloneBoard()
 	{
-		byte[,] clone = new byte[Constants.Grid.Rows, Constants.Grid.Columns];
-		for (var row = 0; row < Constants.Grid.Rows; row++)
-		{
-			for (var col = 0; col < Constants.Grid.Columns; col++)
-			{
-				clone[row, col] = Data[row, col];
-			}
-		}
-		return clone; 
+		return (byte[,])Data.Clone(); 
 	}
 }
