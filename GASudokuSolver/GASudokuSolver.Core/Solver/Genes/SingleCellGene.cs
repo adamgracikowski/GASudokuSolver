@@ -23,12 +23,9 @@ public class SingleCellGene : Gene
 
 	public override void Copy(Gene gene)
 	{
-		var singleCellGene = gene as SingleCellGene;
-		if (singleCellGene == null)
-		{
+		var singleCellGene = (gene as SingleCellGene) ??
 			throw new Exception("Cannot copy different gene Representation");
-		}
-		
+
 		Number = singleCellGene.Number;
 	}
 

@@ -16,9 +16,11 @@ public class SudokuSolver
 	private int maxGenerations;
 	private int populationSize;
 	private int numberOfParents;
+	private int bestIndividualThroughtGenerationsIndex;
 
 	public List<Individual> Population;
 	public List<Individual> BestIndividuals;
+
 	public Individual bestIndividualThroughtGenerations;
 
 	public IMutation Mutation;
@@ -62,7 +64,7 @@ public class SudokuSolver
 		this.generation = 0;
 		this.maxTime = maxTime ?? TimeSpan.FromMinutes(
 			Constants.Solver.DefaultMaxTimeInMinutes);
-		
+		this.bestIndividualThroughtGenerationsIndex = 0;
 
 		this.populationSize = Math.Max(populationSize, 2);
 		this.numberOfParents = Math.Clamp(numberOfParents, 2, this.populationSize);
@@ -153,7 +155,7 @@ public class SudokuSolver
 		}
 
 		return new AlgorithmResult(
-			new AlgorithmProgressData(bestIndividualThroughtGenerations, generation),
+			new AlgorithmProgressData(bestIndividualThroughtGenerations, bestIndividualThroughtGenerationsIndex),
 			start - DateTime.UtcNow,
 			TerminationReason.MaxGenerationsReached
 		);
@@ -169,6 +171,7 @@ public class SudokuSolver
 			bestIndividualThroughtGenerations) > 0)
 		{
 			bestIndividualThroughtGenerations = bestIndividualInGeneration;
+			bestIndividualThroughtGenerationsIndex = generation;
 		}
 
 		return bestIndividualInGeneration;
