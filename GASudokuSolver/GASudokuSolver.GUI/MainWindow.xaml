@@ -90,10 +90,7 @@
                                 Text="Representation settings" />
                         </TabItem>
                         <TabItem Header="Fitness Function">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="Fitness function settings" />
+                            <controls:FitnessFunctionSettingsControl x:Name="FitnessFunctionControl" />
                         </TabItem>
                         <TabItem Header="Selection">
                             <controls:SelectionSettingsControl x:Name="SelectionControl" />

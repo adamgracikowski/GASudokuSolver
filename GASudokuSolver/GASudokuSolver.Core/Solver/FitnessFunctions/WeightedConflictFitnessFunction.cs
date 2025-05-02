@@ -11,11 +11,11 @@ public sealed class WeightedConflictFitnessFunction : IFitnessFunction
 	public WeightedConflictFitnessFunction(
 		double rowPenalty = 1.0,
 		double colPenalty = 1.0,
-		double blockPenalty = 1.0)
+		double subgridPenalty = 1.0)
 	{
 		_rowPenalty = rowPenalty;
 		_columnPenalty = colPenalty;
-		_subgridPenalty = blockPenalty;
+		_subgridPenalty = subgridPenalty;
 	}
 
 	public int Compare(Individual? x, Individual? y)

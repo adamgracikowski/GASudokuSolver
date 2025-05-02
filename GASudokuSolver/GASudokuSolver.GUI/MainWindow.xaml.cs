@@ -168,6 +168,7 @@ public partial class MainWindow : Window
 
 		var selection = SelectionControl.SelectedSelection;
 		var mutation = MutationControl.SelectedMutation;
+		var fitnessFunction = FitnessFunctionControl.SelectedFitnessFunction;
 
 		Stopwatch.Restart();
 		Timer.Start();
@@ -176,7 +177,7 @@ public partial class MainWindow : Window
 			mutation,
 			selection,
 			new OnePointCrossover(),
-			new EquallyPunishedConflictFitnessFunction(),
+			fitnessFunction,
 			new SingleCellRowCollumnRepresentation(),
 			1000,
 			TimeSpan.FromMinutes(1)
