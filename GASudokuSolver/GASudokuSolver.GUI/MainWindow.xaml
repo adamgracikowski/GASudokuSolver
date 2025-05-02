@@ -78,10 +78,7 @@
                 <Border Grid.Row="1" Style="{StaticResource ModernCard}">
                     <TabControl>
                         <TabItem Header="Population">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="Population settings" />
+                            <controls:PopulationSettingsControl x:Name="PopulationControl" />
                         </TabItem>
                         <TabItem Header="Representation">
                             <TextBlock

@@ -1,0 +1,104 @@
+﻿<UserControl
+    x:Class="GASudokuSolver.GUI.Controls.PopulationSettingsControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="clr-namespace:GASudokuSolver.GUI.Controls.ViewModels"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    Width="Auto"
+    Height="Auto">
+    <UserControl.Resources>
+        <Style x:Key="FormLabel" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,0,16,12" />
+        </Style>
+
+        <Style x:Key="NumericUpDownStyle" TargetType="xctk:IntegerUpDown">
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Padding" Value="2" />
+            <Setter Property="Background" Value="#FFF" />
+            <Setter Property="BorderBrush" Value="#CCC" />
+            <Setter Property="BorderThickness" Value="0.5" />
+            <Setter Property="Margin" Value="0,0,12,4" />
+        </Style>
+
+        <Style x:Key="DoubleUpDownStyle" TargetType="xctk:DoubleUpDown">
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Padding" Value="4" />
+            <Setter Property="Background" Value="#FFF" />
+            <Setter Property="BorderBrush" Value="#CCC" />
+            <Setter Property="BorderThickness" Value="0.5" />
+            <Setter Property="Margin" Value="0,0,12,4" />
+        </Style>
+
+    </UserControl.Resources>
+
+    <UserControl.DataContext>
+        <vm:PopulationSettingsViewModel />
+    </UserControl.DataContext>
+
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            Grid.Column="0"
+            Style="{StaticResource FormLabel}"
+            Text="Population size:" />
+        <xctk:IntegerUpDown
+            Grid.Row="0"
+            Grid.Column="1"
+            Maximum="10000"
+            Minimum="1"
+            Style="{StaticResource NumericUpDownStyle}"
+            Value="{Binding PopulationSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <TextBlock
+            Grid.Row="1"
+            Grid.Column="0"
+            Style="{StaticResource FormLabel}"
+            Text="Parents per generation:" />
+        <xctk:IntegerUpDown
+            Grid.Row="1"
+            Grid.Column="1"
+            Maximum="{Binding PopulationSize}"
+            Minimum="1"
+            Style="{StaticResource NumericUpDownStyle}"
+            Value="{Binding NumberOfParents, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <TextBlock
+            Grid.Row="0"
+            Grid.Column="2"
+            Style="{StaticResource FormLabel}"
+            Text="Max generations:" />
+        <xctk:IntegerUpDown
+            Grid.Row="0"
+            Grid.Column="3"
+            Maximum="100000"
+            Minimum="1"
+            Style="{StaticResource NumericUpDownStyle}"
+            Value="{Binding MaxGenerations, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <TextBlock
+            Grid.Row="1"
+            Grid.Column="2"
+            Style="{StaticResource FormLabel}"
+            Text="Max time (s):" />
+        <xctk:DoubleUpDown
+            Grid.Row="1"
+            Grid.Column="4"
+            FormatString="F0"
+            Maximum="3600"
+            Minimum="0"
+            Style="{StaticResource DoubleUpDownStyle}"
+            Value="{Binding MaxTimeSeconds, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+    </Grid>
+</UserControl>
