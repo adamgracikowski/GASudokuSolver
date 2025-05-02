@@ -18,6 +18,7 @@ public class SudokuSolver
 	private int numberOfParents;
 	private int bestIndividualThroughtGenerationsIndex;
 
+
 	public List<Individual> Population;
 	public List<Individual> BestIndividuals;
 
@@ -26,6 +27,7 @@ public class SudokuSolver
 	public IMutation Mutation;
 	public ISelection Selection;
 	public ICrossover Crossover;
+	public IRepresentation Representation;
 
 	public IFitnessFunction FitnessFunction;
 
@@ -69,10 +71,13 @@ public class SudokuSolver
 		this.populationSize = Math.Max(populationSize, 2);
 		this.numberOfParents = Math.Clamp(numberOfParents, 2, this.populationSize);
 
+		Representation = representation;
+		Representation.SetupRepresentation(sudoku.Unsolved);
+
 		Population = new List<Individual>(this.populationSize);
 		Parallel.For(0, this.populationSize, (i, state) =>
 		{
-			Population.Add(new Individual(representation, sudoku.Unsolved));
+			Population.Add(new Individual(Representation, sudoku.Unsolved));
 		});
 		BestIndividuals = new List<Individual>(this.populationSize);
 		bestIndividualThroughtGenerations = Population[0];
