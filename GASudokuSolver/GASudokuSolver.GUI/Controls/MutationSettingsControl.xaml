@@ -1,12 +1,12 @@
 ﻿<UserControl
-    x:Class="GASudokuSolver.GUI.Controls.SelectionSettingsControl"
+    x:Class="GASudokuSolver.GUI.Controls.MutationSettingsControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="clr-namespace:GASudokuSolver.GUI.Controls.ViewModels"
     Width="Auto"
     Height="Auto">
     <UserControl.DataContext>
-        <vm:SelectionSettingsViewModel />
+        <vm:MutationSettingsViewModel />
     </UserControl.DataContext>
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -22,7 +22,7 @@
             Grid.Row="0"
             Grid.Column="0"
             DisplayMemberPath="Name"
-            ItemsSource="{Binding SelectionOptions}"
+            ItemsSource="{Binding MutationOptions}"
             SelectedItem="{Binding SelectedOption, Mode=TwoWay}" />
         <ScrollViewer
             Grid.Row="1"
@@ -43,31 +43,35 @@
             Content="{Binding SelectedOption}">
             <ContentControl.Resources>
                 <!--  Templates specific for a concrete types:  -->
-                <DataTemplate DataType="{x:Type vm:TournamentSelectionOption}">
+                <DataTemplate DataType="{x:Type vm:PercentChanceMutationOption}">
                     <StackPanel VerticalAlignment="Top" Orientation="Vertical">
                         <TextBlock
                             Margin="0,0,0,8"
                             VerticalAlignment="Center"
-                            Text="Tournament size:" />
+                            Text="Percent chance:" />
+
                         <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                             <Slider
-                                Width="120"
+                                Width="150"
                                 IsSnapToTickEnabled="True"
-                                Maximum="{Binding MaximumTournamentSize}"
-                                Minimum="{Binding MinimumTournamentSize}"
-                                TickFrequency="1"
-                                Value="{Binding TournamentSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                LargeChange="1"
+                                Maximum="{Binding MaximumPercentChance}"
+                                Minimum="{Binding MinimumPercentChance}"
+                                SmallChange="0.01"
+                                TickFrequency="0.01"
+                                Value="{Binding PercentChance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
                             <TextBlock
-                                Width="24"
-                                HorizontalAlignment="Center"
+                                Width="60"
                                 VerticalAlignment="Center"
                                 Foreground="Gray"
-                                Text="{Binding TournamentSize}" />
+                                Text="{Binding PercentChance, StringFormat={}{0:F2}%}" />
                         </StackPanel>
                     </StackPanel>
                 </DataTemplate>
+
                 <!--  Default template  -->
-                <DataTemplate DataType="{x:Type vm:SimpleSelectionOption}">
+                <DataTemplate DataType="{x:Type vm:SimpleMutatationOption}">
                     <TextBlock
                         FontStyle="Italic"
                         Foreground="Gray"

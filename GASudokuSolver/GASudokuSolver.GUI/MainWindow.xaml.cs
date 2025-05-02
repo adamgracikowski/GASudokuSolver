@@ -167,12 +167,13 @@ public partial class MainWindow : Window
 		});
 
 		var selection = SelectionControl.SelectedSelection;
+		var mutation = MutationControl.SelectedMutation;
 
 		Stopwatch.Restart();
 		Timer.Start();
 
 		Solver = new SudokuSolver(Sudoku, 10000, 10,
-			new PercentChanceMutation(20),
+			mutation,
 			selection,
 			new OnePointCrossover(),
 			new EquallyPunishedConflictFitnessFunction(),

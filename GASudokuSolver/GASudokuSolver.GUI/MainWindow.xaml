@@ -96,10 +96,6 @@
                                 Text="Fitness function settings" />
                         </TabItem>
                         <TabItem Header="Selection">
-                            <!--<TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="Selection settings" />-->
                             <controls:SelectionSettingsControl x:Name="SelectionControl" />
                         </TabItem>
                         <TabItem Header="Crossover">
@@ -109,15 +105,11 @@
                                 Text="Crossover settings" />
                         </TabItem>
                         <TabItem Header="Mutation">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="Mutation settings" />
+                            <controls:MutationSettingsControl x:Name="MutationControl" />
                         </TabItem>
                     </TabControl>
                 </Border>
             </Grid>
-
 
             <!--  Right Panel  -->
             <Grid Grid.Row="1" Grid.Column="1">
