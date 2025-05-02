@@ -58,14 +58,14 @@ public class SudokuSolver
 		ICrossover crossover,
 		IFitnessFunction fitnessFunction,
 		IRepresentation representation,
-		int maxGenerations = Constants.Solver.DefaultMaxGenerations,
+		int maxGenerations = Constants.Solver.DefaultGenerations,
 		TimeSpan? maxTime = null
 	)
 	{
 		this.maxGenerations = maxGenerations > 0 ? maxGenerations : 1;
 		this.generation = 0;
 		this.maxTime = maxTime ?? TimeSpan.FromMinutes(
-			Constants.Solver.DefaultMaxTimeInMinutes);
+			Constants.Solver.DefaultTimeInMinutes);
 		this.bestIndividualThroughtGenerationsIndex = 0;
 
 		this.populationSize = Math.Max(populationSize, 2);

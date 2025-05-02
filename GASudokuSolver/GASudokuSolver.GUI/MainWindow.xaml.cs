@@ -166,22 +166,28 @@ public partial class MainWindow : Window
 			}
 		});
 
+
+
 		var selection = SelectionControl.SelectedSelection;
 		var crossover = CrossoverControl.SelectedCrossover;
 		var mutation = MutationControl.SelectedMutation;
 		var fitnessFunction = FitnessFunctionControl.SelectedFitnessFunction;
+		var solverSettings = SolverControl.ViewModel;
 
 		Stopwatch.Restart();
 		Timer.Start();
 
-		Solver = new SudokuSolver(Sudoku, 10000, 10,
+		Solver = new SudokuSolver(
+			Sudoku, 
+			solverSettings.PopulationSize, 
+			solverSettings.NumberOfParents,
 			mutation,
 			selection,
 			crossover,
 			fitnessFunction,
 			new SingleCellRowCollumnRepresentation(),
-			1000,
-			TimeSpan.FromMinutes(1)
+			solverSettings.MaxGenerations,
+			solverSettings.MaxTimeSpanMinutes
 		);
 
 		var bestResult = await Task.Run(
