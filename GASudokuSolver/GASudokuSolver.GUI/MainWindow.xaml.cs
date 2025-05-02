@@ -168,7 +168,7 @@ public partial class MainWindow : Window
 		Stopwatch.Restart();
 		Timer.Start();
 
-		Solver = new SudokuSolver(Sudoku, 10000, 40,
+		Solver = new SudokuSolver(Sudoku, 10000, 10,
 			new PercentChanceMutation(20),
 			new TruncateSelection(),
 			new OnePointCrossover(),

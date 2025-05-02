@@ -1,4 +1,4 @@
-﻿using GASudokuSolver.Core.Solver.Interfaces;
+﻿using GASudokuSolver.Core.Solver;
 using System.ComponentModel;
 
 namespace GASudokuSolver.Core.Models;

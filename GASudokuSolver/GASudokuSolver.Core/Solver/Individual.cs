@@ -1,7 +1,8 @@
 ﻿using GASudokuSolver.Core.Models;
 using GASudokuSolver.Core.Solver.Genes;
+using GASudokuSolver.Core.Solver.Interfaces;
 
-namespace GASudokuSolver.Core.Solver.Interfaces;
+namespace GASudokuSolver.Core.Solver;
 
 /// <summary>
 /// Represents a single individual in the population for the genetic algorithm.
@@ -38,7 +39,7 @@ public class Individual
 		Fitness = 0.0;
 		Board = new Grid(board);
 		Representation = representation;
-		Genes = Representation.Encode(Board);
+		Genes = Representation.Encode();
 	}
 
 	public Individual(Individual baseIndividual, IList<Gene> newGenes)
