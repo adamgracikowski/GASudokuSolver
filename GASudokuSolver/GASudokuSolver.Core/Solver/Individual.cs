@@ -46,7 +46,7 @@ public class Individual
 	{
 		Fitness = 0.0;
 		Representation = baseIndividual.Representation;
-		Genes = newGenes.ToList();
+		Genes = newGenes.Select(gene => gene.Clone()).ToList();
 		Board = new Grid(baseIndividual.Board);
 	}
 
