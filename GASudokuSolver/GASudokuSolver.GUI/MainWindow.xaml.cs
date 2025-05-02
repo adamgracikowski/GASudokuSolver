@@ -21,6 +21,7 @@ using GASudokuSolver.Core.Solver.Mutations;
 using GASudokuSolver.Core.Solver.FitnessFunctions;
 using GASudokuSolver.Core.Solver.Representations;
 using GASudokuSolver.Core.Solver.Selections;
+using GASudokuSolver.Core.Solver.Interfaces;
 
 namespace GASudokuSolver.GUI;
 
@@ -165,12 +166,14 @@ public partial class MainWindow : Window
 			}
 		});
 
+		var selection = SelectionControl.SelectedSelection;
+
 		Stopwatch.Restart();
 		Timer.Start();
 
 		Solver = new SudokuSolver(Sudoku, 10000, 10,
 			new PercentChanceMutation(20),
-			new TruncateSelection(),
+			selection,
 			new OnePointCrossover(),
 			new EquallyPunishedConflictFitnessFunction(),
 			new SingleCellRowCollumnRepresentation(),

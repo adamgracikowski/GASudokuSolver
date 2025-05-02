@@ -96,10 +96,11 @@
                                 Text="Fitness function settings" />
                         </TabItem>
                         <TabItem Header="Selection">
-                            <TextBlock
+                            <!--<TextBlock
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="Selection settings" />
+                                Text="Selection settings" />-->
+                            <controls:SelectionSettingsControl x:Name="SelectionControl" />
                         </TabItem>
                         <TabItem Header="Crossover">
                             <TextBlock
