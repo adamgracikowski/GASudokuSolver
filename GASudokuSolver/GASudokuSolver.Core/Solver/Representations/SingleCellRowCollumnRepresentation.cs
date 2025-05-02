@@ -8,6 +8,7 @@ namespace GASudokuSolver.Core.Solver.Representations;
 public class SingleCellRowCollumnRepresentation : IRepresentation
 {
 	private int mutableCells = 0;
+
 	public void Decode(Grid board, List<Gene> genes)
 	{
 		var geneIndex = 0;
@@ -27,7 +28,8 @@ public class SingleCellRowCollumnRepresentation : IRepresentation
 
 	public List<Gene> Encode()
 	{
-		List<Gene> genes = new List<Gene>(mutableCells);
+		var genes = new List<Gene>(mutableCells);
+		
 		for (var cell = 0; cell < mutableCells; cell++)
 		{
 			genes.Add(new SingleCellGene());
@@ -37,7 +39,8 @@ public class SingleCellRowCollumnRepresentation : IRepresentation
 
 	public void SetupRepresentation(Grid board)
 	{
-		int boardMutableCells = 0;
+		var boardMutableCells = 0;
+		
 		for (var row = 0; row < Constants.Grid.Rows; row++)
 		{
 			for (var col = 0; col < Constants.Grid.Columns; col++)
@@ -48,6 +51,7 @@ public class SingleCellRowCollumnRepresentation : IRepresentation
 				}
 			}
 		}
+
 		mutableCells = boardMutableCells;
 	}
 }

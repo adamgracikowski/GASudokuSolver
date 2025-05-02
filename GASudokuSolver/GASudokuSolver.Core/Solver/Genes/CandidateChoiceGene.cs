@@ -6,7 +6,7 @@
 public sealed class CandidateChoiceGene : Gene
 {
 	public byte Number => Candidates[Index];
-	public readonly byte[] Candidates;
+	public byte[] Candidates;
 	public int Index;
 
 	public CandidateChoiceGene(byte[] candidates)
@@ -33,6 +33,7 @@ public sealed class CandidateChoiceGene : Gene
 			throw new ArgumentException("Gene type mismatch", nameof(gene));
 
 		Index = other.Index;
+		Candidates = other.Candidates;
 	}
 
 	public override void Mutate()

@@ -7,6 +7,8 @@ namespace GASudokuSolver.Core.Solver.Representations;
 
 public sealed class CandidateChoiceRepresentation : IRepresentation
 {
+	private readonly List<byte[]> candidatesForEachMutableCell = [];
+
 	public void Decode(Grid board, List<Gene> genes)
 	{
 		var geneIndex = 0;
@@ -23,9 +25,18 @@ public sealed class CandidateChoiceRepresentation : IRepresentation
 		}
 	}
 
-	public List<Gene> Encode(Grid board)
+	public List<Gene> Encode()
 	{
-		var genes = new List<Gene>();
+		var genes = new List<Gene>(candidatesForEachMutableCell.Count);
+
+		this.candidatesForEachMutableCell
+			.ForEach(candidates => genes.Add(new CandidateChoiceGene(candidates)));
+
+		return genes;
+	}
+
+	public void SetupRepresentation(Grid board)
+	{
 		for (var row = 0; row < Constants.Grid.Rows; row++)
 		{
 			for (var col = 0; col < Constants.Grid.Columns; col++)
@@ -33,18 +44,17 @@ public sealed class CandidateChoiceRepresentation : IRepresentation
 				if (!board.Mutable[row, col])
 					continue;
 
-				var domain = ComputeCandidates(board, row, col);
+				var candidatesForSingleCell = ComputeCandidatesForSingleCell(board, row, col);
 				
-				genes.Add(new CandidateChoiceGene(domain));
+				this.candidatesForEachMutableCell.Add(candidatesForSingleCell);
 			}
 		}
-		return genes;
 	}
 
-	private static byte[] ComputeCandidates(Grid board, int row, int col)
+	private static byte[] ComputeCandidatesForSingleCell(Grid board, int row, int col)
 	{
-		var used = new bool[Constants.Cell.MaxValue + 1]; 
-		
+		var used = new bool[Constants.Cell.MaxValue + 1];
+
 		for (var c = 0; c < Constants.Grid.Columns; c++)
 		{
 			var value = board.Data[row, c];
@@ -54,10 +64,10 @@ public sealed class CandidateChoiceRepresentation : IRepresentation
 		for (var r = 0; r < Constants.Grid.Rows; r++)
 		{
 			var value = board.Data[r, col];
-			if (value != 0) used[value] = true;
+			if (value != Constants.Cell.EmptyValue) used[value] = true;
 		}
 
-		var br = (row / Constants.Subgrid.Rows) * Constants.Subgrid.Rows;
+		var br = row / Constants.Subgrid.Rows * Constants.Subgrid.Rows;
 		var bc = (col / Constants.Subgrid.Columns) * Constants.Subgrid.Columns;
 
 		for (var r = br; r < br + Constants.Subgrid.Rows; r++)
@@ -65,11 +75,12 @@ public sealed class CandidateChoiceRepresentation : IRepresentation
 			for (var c = bc; c < bc + Constants.Subgrid.Columns; c++)
 			{
 				var value = board.Data[r, c];
-				if (value != 0) used[value] = true;
+				if (value != Constants.Cell.EmptyValue) used[value] = true;
 			}
 		}
 
-		var candidates = new List<byte>(9);
+		var candidates = new List<byte>(Constants.Cell.MaxValue);
+
 		for (var v = Constants.Cell.MinValue; v <= Constants.Cell.MaxValue; v++)
 		{
 			if (!used[v]) candidates.Add(v);
