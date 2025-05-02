@@ -5,7 +5,7 @@ using GASudokuSolver.Core.Solver.Interfaces;
 
 namespace GASudokuSolver.Core.Solver.Representations;
 
-public class SingleCellRowCollumnRepresentation : IRepresentation
+public class SingleCellRowColumnRepresentation : IRepresentation
 {
 	private int mutableCells = 0;
 

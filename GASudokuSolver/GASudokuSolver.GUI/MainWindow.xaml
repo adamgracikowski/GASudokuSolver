@@ -81,10 +81,7 @@
                             <controls:SolverSettingsControl x:Name="SolverControl" />
                         </TabItem>
                         <TabItem Header="Representation">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="Representation settings" />
+                            <controls:RepresentationSettingsControl x:Name="RepresentationControl" />
                         </TabItem>
                         <TabItem Header="Fitness Function">
                             <controls:FitnessFunctionSettingsControl x:Name="FitnessFunctionControl" />

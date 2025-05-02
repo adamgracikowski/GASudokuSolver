@@ -1,7 +1,8 @@
 ﻿using GASudokuSolver.Core.Configurations;
 using GASudokuSolver.Core.Enums;
-using GASudokuSolver.Core.Models;
 using GASudokuSolver.Core.Loading.Puzzles;
+using GASudokuSolver.Core.Models;
+using GASudokuSolver.Core.Solver;
 using GASudokuSolver.GUI.Controls;
 using GASudokuSolver.GUI.Models;
 using GASudokuSolver.GUI.Windows;
@@ -15,13 +16,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
-using GASudokuSolver.Core.Solver;
-using GASudokuSolver.Core.Solver.Crossovers;
-using GASudokuSolver.Core.Solver.Mutations;
-using GASudokuSolver.Core.Solver.FitnessFunctions;
-using GASudokuSolver.Core.Solver.Representations;
-using GASudokuSolver.Core.Solver.Selections;
-using GASudokuSolver.Core.Solver.Interfaces;
 
 namespace GASudokuSolver.GUI;
 
@@ -32,8 +26,6 @@ public partial class MainWindow : Window
 
 	public Sudoku? Sudoku { get; set; }
 	public ObservableCollection<SudokuCell> Board { get; set; } = [];
-
-	public SudokuSolver Solver { get; set; }
 
 	public SeriesCollection FitnessSeries { get; set; }
 	public ChartValues<ChartPointData> ChartPointsColection { get; set; } = [];
@@ -166,32 +158,13 @@ public partial class MainWindow : Window
 			}
 		});
 
-
-
-		var selection = SelectionControl.SelectedSelection;
-		var crossover = CrossoverControl.SelectedCrossover;
-		var mutation = MutationControl.SelectedMutation;
-		var fitnessFunction = FitnessFunctionControl.SelectedFitnessFunction;
-		var solverSettings = SolverControl.ViewModel;
+		var solver = BuildSolver();
 
 		Stopwatch.Restart();
 		Timer.Start();
 
-		Solver = new SudokuSolver(
-			Sudoku, 
-			solverSettings.PopulationSize, 
-			solverSettings.NumberOfParents,
-			mutation,
-			selection,
-			crossover,
-			fitnessFunction,
-			new SingleCellRowCollumnRepresentation(),
-			solverSettings.MaxGenerations,
-			solverSettings.MaxTimeSpanMinutes
-		);
-
 		var bestResult = await Task.Run(
-			() => Solver.Run(progress: progress)
+			() => solver.Run(progress: progress)
 		);
 
 		Stopwatch.Stop();
@@ -200,6 +173,24 @@ public partial class MainWindow : Window
 		MainMenu.IsAlgorithmRunning = false;
 
 		ShowBestResultWindow(bestResult.BestIndividual);
+	}
+
+	private SudokuSolver BuildSolver()
+	{
+		var solverSettings = SolverControl.ViewModel;
+
+		return new SudokuSolver(
+			Sudoku!,
+			solverSettings.PopulationSize,
+			solverSettings.NumberOfParents,
+			MutationControl.SelectedMutation,
+			SelectionControl.SelectedSelection,
+			CrossoverControl.SelectedCrossover,
+			FitnessFunctionControl.SelectedFitnessFunction,
+			RepresentationControl.SelectedRepresentation,
+			solverSettings.MaxGenerations,
+			solverSettings.MaxTimeSpanMinutes
+		);
 	}
 
 	private void ShowBestResultWindow(AlgorithmProgressData bestResult)
