@@ -22,15 +22,10 @@ public sealed class StochasticUniversalSamplingSelection : ISelection
 
 		var parents = new List<List<Gene>>(count);
 
-		// if all weights are zero, fall back to uniform random
+		// if all weights are zero, fall back to uniform random selection
 		if (totalWeight <= 0)
 		{
-			for (var i = 0; i < count; i++)
-			{
-				var randomInd = population[Random.Shared.Next(population.Count)];
-				parents.Add(randomInd.CloneGenes());
-			}
-			return parents;
+			return new UniformRandomSelection().Select(population, count, comparer);
 		}
 
 		var pointerSpacing = totalWeight / count;

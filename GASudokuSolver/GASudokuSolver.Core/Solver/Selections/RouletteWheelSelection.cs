@@ -27,14 +27,9 @@ public sealed class RouletteWheelSelection : ISelection
 		// if totalWeight is zero, fall back to uniform random selection
 		if (totalWeight <= 0)
 		{
-			for (var i = 0; i < count; i++)
-			{
-				var randomInd = population[Random.Shared.Next(population.Count)];
-				parents.Add(randomInd.CloneGenes());
-			}
-			return parents;
+			return new UniformRandomSelection().Select(population, count, comparer);
 		}
-		
+
 		for (var i = 0; i < count; i++)
 		{
 			var pick = Random.Shared.NextDouble() * totalWeight;
