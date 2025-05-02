@@ -167,6 +167,7 @@ public partial class MainWindow : Window
 		});
 
 		var selection = SelectionControl.SelectedSelection;
+		var crossover = CrossoverControl.SelectedCrossover;
 		var mutation = MutationControl.SelectedMutation;
 		var fitnessFunction = FitnessFunctionControl.SelectedFitnessFunction;
 
@@ -176,7 +177,7 @@ public partial class MainWindow : Window
 		Solver = new SudokuSolver(Sudoku, 10000, 10,
 			mutation,
 			selection,
-			new OnePointCrossover(),
+			crossover,
 			fitnessFunction,
 			new SingleCellRowCollumnRepresentation(),
 			1000,

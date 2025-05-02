@@ -96,10 +96,7 @@
                             <controls:SelectionSettingsControl x:Name="SelectionControl" />
                         </TabItem>
                         <TabItem Header="Crossover">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="Crossover settings" />
+                            <controls:CrossoverSettingsControl x:Name="CrossoverControl" />
                         </TabItem>
                         <TabItem Header="Mutation">
                             <controls:MutationSettingsControl x:Name="MutationControl" />
