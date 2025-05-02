@@ -57,11 +57,9 @@
                             <Slider
                                 Width="150"
                                 IsSnapToTickEnabled="True"
-                                LargeChange="1"
                                 Maximum="{Binding MaximumPenalty}"
                                 Minimum="{Binding MinimumPenalty}"
-                                SmallChange="0.01"
-                                TickFrequency="0.01"
+                                TickFrequency="1"
                                 Value="{Binding RowPenalty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                             <TextBlock
@@ -69,7 +67,7 @@
                                 Margin="4,0,0,0"
                                 VerticalAlignment="Center"
                                 Foreground="Gray"
-                                Text="{Binding RowPenalty, StringFormat={}{0:F2}}" />
+                                Text="{Binding RowPenalty, StringFormat={}{0:F0}}" />
                         </StackPanel>
                         <TextBlock
                             Margin="0,0,0,4"
@@ -83,11 +81,9 @@
                             <Slider
                                 Width="150"
                                 IsSnapToTickEnabled="True"
-                                LargeChange="1"
                                 Maximum="{Binding MaximumPenalty}"
                                 Minimum="{Binding MinimumPenalty}"
-                                SmallChange="0.01"
-                                TickFrequency="0.01"
+                                TickFrequency="1"
                                 Value="{Binding ColumnPenalty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                             <TextBlock
@@ -95,7 +91,7 @@
                                 Margin="4,0,0,0"
                                 VerticalAlignment="Center"
                                 Foreground="Gray"
-                                Text="{Binding ColumnPenalty, StringFormat={}{0:F2}}" />
+                                Text="{Binding ColumnPenalty, StringFormat={}{0:F0}}" />
                         </StackPanel>
                         <TextBlock
                             Margin="0,0,0,4"
@@ -109,11 +105,9 @@
                             <Slider
                                 Width="150"
                                 IsSnapToTickEnabled="True"
-                                LargeChange="1"
                                 Maximum="{Binding MaximumPenalty}"
                                 Minimum="{Binding MinimumPenalty}"
-                                SmallChange="0.01"
-                                TickFrequency="0.01"
+                                TickFrequency="1"
                                 Value="{Binding SubgridPenalty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                             <TextBlock
@@ -121,7 +115,7 @@
                                 Margin="4,0,0,0"
                                 VerticalAlignment="Center"
                                 Foreground="Gray"
-                                Text="{Binding SubgridPenalty, StringFormat={}{0:F2}}" />
+                                Text="{Binding SubgridPenalty, StringFormat={}{0:F0}}" />
                         </StackPanel>
                     </StackPanel>
                 </DataTemplate>
