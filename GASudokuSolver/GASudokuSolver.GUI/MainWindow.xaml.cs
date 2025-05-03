@@ -4,6 +4,7 @@ using GASudokuSolver.Core.Loading.Puzzles;
 using GASudokuSolver.Core.Models;
 using GASudokuSolver.Core.Solver;
 using GASudokuSolver.GUI.Controls;
+using GASudokuSolver.GUI.Enums;
 using GASudokuSolver.GUI.Models;
 using GASudokuSolver.GUI.Windows;
 using LiveCharts;
@@ -15,7 +16,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace GASudokuSolver.GUI;
@@ -150,10 +150,7 @@ public partial class MainWindow : Window
 		ClearResults();
 
 		MainMenu.IsAlgorithmRunning = true;
-		StartButtonCard.Visibility = Visibility.Collapsed;
-		ClearButtonCard.Visibility = Visibility.Visible;
-		ClearButton.Content = "Stop";
-
+		ShowButton(ButtonType.Stop);
 		AlgorithmResultsGrid.Visibility = Visibility.Visible;
 
 		var progress = new Progress<AlgorithmProgressData>(data =>
@@ -187,6 +184,8 @@ public partial class MainWindow : Window
 		Timer.Stop();
 
 		MainMenu.IsAlgorithmRunning = false;
+		TokenSource = null;
+		ShowButton(ButtonType.Clear);
 
 		ShowBestResultWindow(bestResult.BestIndividual);
 	}
@@ -198,16 +197,14 @@ public partial class MainWindow : Window
 		if (TokenSource != null && !TokenSource.IsCancellationRequested)
 		{
 			TokenSource.Cancel();
-			ClearButton.Content = "Clear";
+			ShowButton(ButtonType.Clear);
 			return;
 		}
 
 		ClearResults();
 		InitializeBoard(Board);
 		LoadBoard(Sudoku.Unsolved.Data, Board, updateMutable: true, Sudoku.Solved.Data);
-		
-		ClearButtonCard.Visibility = Visibility.Collapsed;
-		StartButtonCard.Visibility = Visibility.Visible;
+		ShowButton(ButtonType.Start);
 	}
 
 	private SudokuSolver BuildSolver()
@@ -289,8 +286,7 @@ public partial class MainWindow : Window
 				InitializeBoard(Board);
 				LoadBoard(Sudoku.Unsolved.Data, Board, updateMutable: true, Sudoku.Solved.Data);
 
-				StartButtonCard.Visibility = Visibility.Visible;
-				ClearButtonCard.Visibility = Visibility.Collapsed;
+				ShowButton(ButtonType.Start);
 			}
 
 		}
@@ -302,6 +298,27 @@ public partial class MainWindow : Window
 				MessageBoxButton.OK,
 				MessageBoxImage.Error
 			);
+		}
+	}
+
+	private void ShowButton(ButtonType buttonType)
+	{
+		switch (buttonType)
+		{
+			case ButtonType.Start:
+				StartButtonCard.Visibility = Visibility.Visible;
+				ClearButtonCard.Visibility = Visibility.Collapsed;
+				break;
+			case ButtonType.Clear:
+				ClearButton.Content = nameof(ButtonType.Clear);
+				StartButtonCard.Visibility = Visibility.Collapsed;
+				ClearButtonCard.Visibility = Visibility.Visible;
+				break;
+			case ButtonType.Stop:
+				ClearButton.Content = nameof(ButtonType.Stop);
+				StartButtonCard.Visibility = Visibility.Collapsed;
+				ClearButtonCard.Visibility = Visibility.Visible;
+				break;
 		}
 	}
 
