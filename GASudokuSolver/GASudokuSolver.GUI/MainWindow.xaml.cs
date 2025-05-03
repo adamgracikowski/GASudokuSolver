@@ -130,6 +130,7 @@ public partial class MainWindow : Window
 			fitnessSeries
 		};
 
+		GeneticChart.UpdaterThrottler = TimeSpan.FromMilliseconds(100);
 		GeneticChart.DataPointerDown += GeneticChartDataClick;
 
 		XAxes[0].PropertyChanged += AxisXRangeChanged;
