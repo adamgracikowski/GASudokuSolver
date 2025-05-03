@@ -165,6 +165,8 @@ public partial class MainWindow : Window
 		FitnessText.Text = "0";
 		GenerationText.Text = "0";
 		selectedPoint = null;
+		XAxes[0].MinLimit = null;
+		XAxes[0].MaxLimit = null;
 	}
 
 	private async void StartButtonClickAsync(object sender, RoutedEventArgs e)
