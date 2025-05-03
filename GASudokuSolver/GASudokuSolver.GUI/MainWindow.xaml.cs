@@ -1,8 +1,10 @@
 ﻿using GASudokuSolver.Core.Configurations;
 using GASudokuSolver.Core.Enums;
-using GASudokuSolver.Core.Models;
 using GASudokuSolver.Core.Loading.Puzzles;
+using GASudokuSolver.Core.Models;
+using GASudokuSolver.Core.Solver;
 using GASudokuSolver.GUI.Controls;
+using GASudokuSolver.GUI.Enums;
 using GASudokuSolver.GUI.Models;
 using GASudokuSolver.GUI.Windows;
 using LiveChartsCore;
@@ -33,6 +35,8 @@ public partial class MainWindow : Window
 {
 	private readonly Stopwatch Stopwatch = new();
 	private readonly System.Timers.Timer Timer = new(50);
+
+	private CancellationTokenSource? TokenSource;
 
 	public Sudoku? Sudoku { get; set; }
 	public ObservableCollection<SudokuCell> Board { get; set; } = [];
@@ -79,13 +83,14 @@ public partial class MainWindow : Window
 
 	public static void InitializeBoard(ObservableCollection<SudokuCell> board)
 	{
+		board.Clear();
+
 		var cells = Enumerable
 			.Range(0, Constants.Grid.Cells)
 			.Select(i => new SudokuCell
 			{
 				Row = i / Constants.Grid.Rows,
 				Column = i % Constants.Grid.Columns,
-				Value = null,
 			})
 			.ToList();
 
@@ -158,22 +163,29 @@ public partial class MainWindow : Window
 		}
 	}
 
-	public static void LoadBoard(byte[,] source, ObservableCollection<SudokuCell> destination, bool updateReadOnly = false)
+	public static void LoadBoard(byte[,] source, ObservableCollection<SudokuCell> destination, bool updateMutable = false, byte[,]? solved = null)
 	{
 		for (var row = 0; row < Constants.Grid.Rows; ++row)
 		{
 			for (var col = 0; col < Constants.Grid.Columns; ++col)
 			{
+				var index = row * Constants.Grid.Rows + col;
 				var cellValue = source[row, col];
-				if (updateReadOnly)
+
+				if (updateMutable)
 				{
-					destination[row * Constants.Grid.Rows + col].ReadOnly =
-						cellValue == Constants.Cell.EmptyValue;
+					destination[index].Mutable = cellValue == Constants.Cell.EmptyValue;
 				}
-				destination[row * Constants.Grid.Rows + col].Value =
+
+				destination[index].Value =
 					cellValue == Constants.Cell.EmptyValue
 					? null
 					: cellValue;
+
+				if (solved is not null)
+				{
+					destination[index].CorrectValue = solved[row, col];
+				}
 			}
 		}
 	}
@@ -196,7 +208,7 @@ public partial class MainWindow : Window
 		ClearResults();
 
 		MainMenu.IsAlgorithmRunning = true;
-		StartButton.IsEnabled = false;
+		ShowButton(ButtonType.Stop);
 		AlgorithmResultsGrid.Visibility = Visibility.Visible;
 
 		var progress = new Progress<AlgorithmProgressData>(data =>
@@ -215,29 +227,60 @@ public partial class MainWindow : Window
 			}
 		});
 
+		TokenSource = new CancellationTokenSource();
+
+		var solver = BuildSolver();
+
 		Stopwatch.Restart();
 		Timer.Start();
 
-		Solver = new SudokuSolver(Sudoku, 10000, 10,
-			new PercentChanceMutation(20),
-			new TruncateSelection(),
-			new OnePointCrossover(),
-			new EachErrorPunishedEqualyFitnessFunction(),
-			new SingleCellRowCollumnRepresentation(),
-			1000,
-			TimeSpan.FromMinutes(1)
-		);
-
 		var bestResult = await Task.Run(
-			() => Solver.Run(progress: progress)
+			() => solver.Run(progress: progress, cancellationToken: TokenSource.Token)
 		);
 
 		Stopwatch.Stop();
 		Timer.Stop();
 
 		MainMenu.IsAlgorithmRunning = false;
+		TokenSource = null;
+		ShowButton(ButtonType.Clear);
 
 		ShowBestResultWindow(bestResult.BestIndividual);
+	}
+
+	private void ClearButtonClick(object sender, RoutedEventArgs e)
+	{
+		if (Sudoku is null) return;
+
+		if (TokenSource != null && !TokenSource.IsCancellationRequested)
+		{
+			TokenSource.Cancel();
+			ShowButton(ButtonType.Clear);
+			return;
+		}
+
+		ClearResults();
+		InitializeBoard(Board);
+		LoadBoard(Sudoku.Unsolved.Data, Board, updateMutable: true, Sudoku.Solved.Data);
+		ShowButton(ButtonType.Start);
+	}
+
+	private SudokuSolver BuildSolver()
+	{
+		var solverSettings = SolverControl.ViewModel;
+
+		return new SudokuSolver(
+			Sudoku!,
+			solverSettings.PopulationSize,
+			solverSettings.NumberOfParents,
+			MutationControl.SelectedMutation,
+			SelectionControl.SelectedSelection,
+			CrossoverControl.SelectedCrossover,
+			FitnessFunctionControl.SelectedFitnessFunction,
+			RepresentationControl.SelectedRepresentation,
+			solverSettings.MaxGenerations,
+			solverSettings.MaxTimeSpanMinutes
+		);
 	}
 
 	private void ShowBestResultWindow(AlgorithmProgressData bestResult)
@@ -248,7 +291,7 @@ public partial class MainWindow : Window
 
 		InitializeBoard(bestBoard);
 
-		LoadBoard(Sudoku.Unsolved.Data, bestBoard, updateReadOnly: true);
+		LoadBoard(Sudoku.Unsolved.Data, bestBoard, updateMutable: true, Sudoku.Solved.Data);
 		LoadBoard(bestResult.Board, bestBoard);
 
 		var viewModel = new BestResultViewModel(
@@ -356,8 +399,10 @@ public partial class MainWindow : Window
 			if (Sudoku is not null)
 			{
 				ClearResults();
-				LoadBoard(Sudoku.Unsolved.Data, Board, updateReadOnly: true);
-				StartButton.IsEnabled = true;
+				InitializeBoard(Board);
+				LoadBoard(Sudoku.Unsolved.Data, Board, updateMutable: true, Sudoku.Solved.Data);
+
+				ShowButton(ButtonType.Start);
 			}
 
 		}
@@ -369,6 +414,27 @@ public partial class MainWindow : Window
 				MessageBoxButton.OK,
 				MessageBoxImage.Error
 			);
+		}
+	}
+
+	private void ShowButton(ButtonType buttonType)
+	{
+		switch (buttonType)
+		{
+			case ButtonType.Start:
+				StartButtonCard.Visibility = Visibility.Visible;
+				ClearButtonCard.Visibility = Visibility.Collapsed;
+				break;
+			case ButtonType.Clear:
+				ClearButton.Content = nameof(ButtonType.Clear);
+				StartButtonCard.Visibility = Visibility.Collapsed;
+				ClearButtonCard.Visibility = Visibility.Visible;
+				break;
+			case ButtonType.Stop:
+				ClearButton.Content = nameof(ButtonType.Stop);
+				StartButtonCard.Visibility = Visibility.Collapsed;
+				ClearButtonCard.Visibility = Visibility.Visible;
+				break;
 		}
 	}
 

@@ -69,46 +69,27 @@
                 <!--  Settings  -->
                 <Border Grid.Row="1" Style="{StaticResource ModernCard}">
                     <TabControl>
-                        <TabItem Header="Population">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="Population settings" />
+                        <TabItem Header="Solver">
+                            <controls:SolverSettingsControl x:Name="SolverControl" />
                         </TabItem>
                         <TabItem Header="Representation">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="Representation settings" />
+                            <controls:RepresentationSettingsControl x:Name="RepresentationControl" />
                         </TabItem>
                         <TabItem Header="Fitness Function">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="Fitness function settings" />
+                            <controls:FitnessFunctionSettingsControl x:Name="FitnessFunctionControl" />
                         </TabItem>
                         <TabItem Header="Selection">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="Selection settings" />
+                            <controls:SelectionSettingsControl x:Name="SelectionControl" />
                         </TabItem>
                         <TabItem Header="Crossover">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="Crossover settings" />
+                            <controls:CrossoverSettingsControl x:Name="CrossoverControl" />
                         </TabItem>
                         <TabItem Header="Mutation">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="Mutation settings" />
+                            <controls:MutationSettingsControl x:Name="MutationControl" />
                         </TabItem>
                     </TabControl>
                 </Border>
             </Grid>
-
 
             <!--  Right Panel  -->
             <Grid Grid.Row="1" Grid.Column="1">
@@ -124,22 +105,48 @@
                 <Border Grid.Row="1" Style="{StaticResource ModernCard}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <DockPanel>
-                            <Border
-                                Width="100"
-                                Padding="5"
-                                Background="#4CAF50"
+                            <StackPanel
+                                Margin="0"
+                                HorizontalAlignment="Center"
                                 DockPanel.Dock="Top"
-                                Style="{StaticResource ModernCard}">
-                                <Button
-                                    x:Name="StartButton"
-                                    Grid.Row="3"
-                                    Grid.Column="0"
+                                Orientation="Horizontal">
+                                <Border
+                                    x:Name="StartButtonCard"
                                     Width="100"
-                                    HorizontalAlignment="Center"
-                                    Click="StartButtonClickAsync"
-                                    Content="Start"
-                                    Style="{StaticResource NoHoverButtonStyle}" />
-                            </Border>
+                                    Margin="0"
+                                    Padding="5"
+                                    Background="#4CAF50"
+                                    Style="{StaticResource ModernCard}">
+
+                                    <Button
+                                        x:Name="StartButton"
+                                        Grid.Row="3"
+                                        Grid.Column="0"
+                                        Width="100"
+                                        HorizontalAlignment="Center"
+                                        Click="StartButtonClickAsync"
+                                        Content="Start"
+                                        Style="{StaticResource NoHoverButtonStyle}" />
+                                </Border>
+                                <Border
+                                    x:Name="ClearButtonCard"
+                                    Width="100"
+                                    Margin="0"
+                                    Padding="5"
+                                    Background="#EF5350"
+                                    Style="{StaticResource ModernCard}"
+                                    Visibility="Collapsed">
+                                    <Button
+                                        x:Name="ClearButton"
+                                        Grid.Row="3"
+                                        Grid.Column="0"
+                                        Width="100"
+                                        HorizontalAlignment="Center"
+                                        Click="ClearButtonClick"
+                                        Content="Stop"
+                                        Style="{StaticResource NoHoverButtonStyle}" />
+                                </Border>
+                            </StackPanel>
                             <StackPanel Margin="10" Orientation="Vertical">
                                 <Grid x:Name="AlgorithmResultsGrid" Visibility="Collapsed">
                                     <Grid.RowDefinitions>

@@ -3,6 +3,7 @@ using GASudokuSolver.Core.Enums;
 using GASudokuSolver.Core.Models;
 using GASudokuSolver.Core.Solver.Genes;
 using GASudokuSolver.Core.Solver.Interfaces;
+using System.Collections.Concurrent;
 
 namespace GASudokuSolver.Core.Solver;
 
@@ -58,14 +59,14 @@ public class SudokuSolver
 		ICrossover crossover,
 		IFitnessFunction fitnessFunction,
 		IRepresentation representation,
-		int maxGenerations = Constants.Solver.DefaultMaxGenerations,
+		int maxGenerations = Constants.Solver.DefaultGenerations,
 		TimeSpan? maxTime = null
 	)
 	{
 		this.maxGenerations = maxGenerations > 0 ? maxGenerations : 1;
 		this.generation = 0;
 		this.maxTime = maxTime ?? TimeSpan.FromMinutes(
-			Constants.Solver.DefaultMaxTimeInMinutes);
+			Constants.Solver.DefaultTimeInMinutes);
 		this.bestIndividualThroughtGenerationsIndex = 0;
 
 		this.populationSize = Math.Max(populationSize, 2);
@@ -74,11 +75,14 @@ public class SudokuSolver
 		Representation = representation;
 		Representation.SetupRepresentation(sudoku.Unsolved);
 
-		Population = new List<Individual>(this.populationSize);
+		var concurrentPopulation = new ConcurrentBag<Individual>();
+
 		Parallel.For(0, this.populationSize, (i, state) =>
 		{
-			Population.Add(new Individual(Representation, sudoku.Unsolved));
+			concurrentPopulation.Add(new Individual(Representation, sudoku.Unsolved));
 		});
+
+		Population = [.. concurrentPopulation];
 		BestIndividuals = new List<Individual>(this.populationSize);
 		bestIndividualThroughtGenerations = Population[0];
 
@@ -102,7 +106,7 @@ public class SudokuSolver
 		using var cancellationTokenSource = new CancellationTokenSource(maxTime);
 
 		var timeoutToken = cancellationTokenSource.Token;
-		DateTime start = DateTime.UtcNow;
+		var start = DateTime.UtcNow;
 		EvaluatePopulation();
 		while (generation < maxGenerations)
 		{
@@ -148,14 +152,17 @@ public class SudokuSolver
 			}
 
 			var parentsGenes = Selection.Select(Population, numberOfParents, FitnessFunction);
+			
 			Crossover.Crossover(parentsGenes, Population);
+
 			Parallel.ForEach(Population , individual =>
 			{
-				foreach(Gene gene in individual.Genes)
+				foreach(var gene in individual.Genes)
 				{
 					Mutation.Mutate(gene);
 				}
 			});
+
 			generation++;
 		}
 

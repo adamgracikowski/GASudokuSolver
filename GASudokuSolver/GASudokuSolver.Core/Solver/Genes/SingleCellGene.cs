@@ -23,10 +23,10 @@ public class SingleCellGene : Gene
 
 	public override void Copy(Gene gene)
 	{
-		var singleCellGene = (gene as SingleCellGene) ??
-			throw new Exception("Cannot copy different gene Representation");
+		if(gene is not SingleCellGene other)
+			throw new ArgumentException("Gene type mismatch", nameof(gene));
 
-		Number = singleCellGene.Number;
+		Number = other.Number;
 	}
 
 	public override void Mutate()
@@ -38,5 +38,4 @@ public class SingleCellGene : Gene
 	{
 		Number = (byte)Random.Shared.Next(Constants.Cell.MinValue, Constants.Cell.MaxValue + 1);
 	}
-
 }

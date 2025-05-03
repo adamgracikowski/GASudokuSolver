@@ -24,7 +24,7 @@
                             Width="40"
                             Height="40"
                             Margin="1"
-                            Background="{Binding ReadOnly, Converter={StaticResource ReadOnlyToBackgroundConverter}}"
+                            Background="{Binding Converter={StaticResource SudokuBackgroundConverter}}"
                             BorderBrush="#444"
                             BorderThickness="{Binding Converter={StaticResource SudokuBorderConverter}}"
                             CornerRadius="3">
