@@ -15,12 +15,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
-using GASudokuSolver.Core.Solver;
-using GASudokuSolver.Core.Solver.Crossovers;
-using GASudokuSolver.Core.Solver.Mutations;
-using GASudokuSolver.Core.Solver.FitnessFunctions;
-using GASudokuSolver.Core.Solver.Representations;
-using GASudokuSolver.Core.Solver.Selections;
 using LiveChartsCore.Kernel;
 using SkiaSharp;
 using LiveChartsCore.Kernel.Sketches;
@@ -40,8 +34,6 @@ public partial class MainWindow : Window
 
 	public Sudoku? Sudoku { get; set; }
 	public ObservableCollection<SudokuCell> Board { get; set; } = [];
-
-	public SudokuSolver Solver { get; set; }
 
 	public ObservableCollection<ISeries> FitnessSeries { get; set; }
 	public ObservableCollection<ChartPointData> ChartPointsColection { get; set; } = [];
