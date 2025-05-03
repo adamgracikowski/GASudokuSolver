@@ -24,7 +24,8 @@ public partial class MainWindow : Window
 {
 	private readonly Stopwatch Stopwatch = new();
 	private readonly System.Timers.Timer Timer = new(50);
-	private CancellationTokenSource? tokenSource;
+
+	private CancellationTokenSource? TokenSource;
 
 	public Sudoku? Sudoku { get; set; }
 	public ObservableCollection<SudokuCell> Board { get; set; } = [];
@@ -33,7 +34,7 @@ public partial class MainWindow : Window
 	public ChartValues<ChartPointData> ChartPointsColection { get; set; } = [];
 	
 	public ChartPointData? Selected = null;
-	private object SelectedLock = new();
+	private readonly object SelectedLock = new();
 
 	public Func<double, string> YAxisLabelFormatter { get; set; } = value => value.ToString("N2");
 	public Func<double, string> XAxisLabelFormatter { get; set; } = value => value.ToString("N0");
@@ -171,7 +172,7 @@ public partial class MainWindow : Window
 			}
 		});
 
-		tokenSource = new CancellationTokenSource();
+		TokenSource = new CancellationTokenSource();
 
 		var solver = BuildSolver();
 
@@ -179,7 +180,7 @@ public partial class MainWindow : Window
 		Timer.Start();
 
 		var bestResult = await Task.Run(
-			() => solver.Run(progress: progress, cancellationToken: tokenSource.Token)
+			() => solver.Run(progress: progress, cancellationToken: TokenSource.Token)
 		);
 
 		Stopwatch.Stop();
@@ -194,18 +195,17 @@ public partial class MainWindow : Window
 	{
 		if (Sudoku is null) return;
 
-		if (tokenSource != null && !tokenSource.IsCancellationRequested)
+		if (TokenSource != null && !TokenSource.IsCancellationRequested)
 		{
-			// stop functionality
-			tokenSource.Cancel();
+			TokenSource.Cancel();
 			ClearButton.Content = "Clear";
 			return;
 		}
 
-		// clear functionality
 		ClearResults();
 		InitializeBoard(Board);
 		LoadBoard(Sudoku.Unsolved.Data, Board, updateMutable: true, Sudoku.Solved.Data);
+		
 		ClearButtonCard.Visibility = Visibility.Collapsed;
 		StartButtonCard.Visibility = Visibility.Visible;
 	}
@@ -288,7 +288,9 @@ public partial class MainWindow : Window
 				ClearResults();
 				InitializeBoard(Board);
 				LoadBoard(Sudoku.Unsolved.Data, Board, updateMutable: true, Sudoku.Solved.Data);
-				StartButton.IsEnabled = true;
+
+				StartButtonCard.Visibility = Visibility.Visible;
+				ClearButtonCard.Visibility = Visibility.Collapsed;
 			}
 
 		}
