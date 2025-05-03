@@ -25,6 +25,7 @@ using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.SkiaSharpView.Drawing.Geometries;
 using System.ComponentModel;
 using System.Windows.Input;
+using LiveChartsCore.ConditionalDraw;
 
 namespace GASudokuSolver.GUI;
 
@@ -41,7 +42,7 @@ public partial class MainWindow : Window
 	public ObservableCollection<ISeries> FitnessSeries { get; set; }
 	public ObservableCollection<ChartPointData> ChartPointsColection { get; set; } = [];
 
-	private ChartPoint? selectedPoint = null;
+	private ChartPointData? selectedPoint = null;
 	private object SelectedLock = new();
 
 	public Axis[] XAxes { get; set; } =
@@ -109,10 +110,22 @@ public partial class MainWindow : Window
 				GeometryStroke = new SolidColorPaint(SKColors.LightBlue),
 				GeometrySize = 4,
 				Pivot = -1e30
-			}
+			}.OnPointMeasured((point) =>
+			{
+				if(point.Visual is null || point.Model is null)
+					return;
+				point.Visual.Fill = point.Model.Selected ?
+				new SolidColorPaint(SKColors.Red) :
+				new SolidColorPaint(SKColors.AliceBlue);
+
+				point.Visual.Stroke = point.Model.Selected ?
+				new SolidColorPaint(SKColors.Red) :
+				new SolidColorPaint(SKColors.LightBlue);
+			})
 		};
-		
 		GeneticChart.ChartPointPointerDown += GeneticChartDataClick;
+
+		GeneticChart.UpdaterThrottler = TimeSpan.FromMilliseconds(100);
 		XAxes[0].PropertyChanged += AxisXRangeChanged; 
 	}
 
@@ -259,20 +272,15 @@ public partial class MainWindow : Window
 
 		lock (SelectedLock)
 		{
-			if (selectedPoint != point)
+			if (selectedPoint != chartPointForGeneration)
 			{
-				if (selectedPoint?.Context.Visual is CircleGeometry oldGeometry)
+				if(selectedPoint is not null)
 				{
-					oldGeometry.Fill = new SolidColorPaint(SKColors.AliceBlue);
-					oldGeometry.Stroke = new SolidColorPaint(SKColors.LightBlue);
+					selectedPoint.Selected = false;
 				}
 
-				selectedPoint = point;
-				if (selectedPoint?.Context.Visual is CircleGeometry newGeometry)
-				{
-					newGeometry.Fill = new SolidColorPaint(SKColors.Red);
-					newGeometry.Stroke = new SolidColorPaint(SKColors.Red);
-				}
+				selectedPoint = chartPointForGeneration;
+				selectedPoint.Selected = true;
 
 				LoadBoard(progressData.Board, Board);
 				FitnessText.Text = progressData.FitnessValue.ToString("F4");
@@ -280,12 +288,6 @@ public partial class MainWindow : Window
 			}
 			else
 			{
-				if (selectedPoint?.Context.Visual is CircleGeometry oldGeometry)
-				{
-					oldGeometry.Fill = new SolidColorPaint(SKColors.AliceBlue);
-					oldGeometry.Stroke = new SolidColorPaint(SKColors.LightBlue);
-				}
-
 				chartPointForGeneration.Selected = false;
 				selectedPoint = null; 
 				XAxes[0].MaxLimit = null;
