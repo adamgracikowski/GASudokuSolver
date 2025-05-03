@@ -22,10 +22,10 @@ using GASudokuSolver.Core.Solver.Selections;
 using LiveChartsCore.Kernel;
 using SkiaSharp;
 using LiveChartsCore.Kernel.Sketches;
-using LiveChartsCore.SkiaSharpView.Drawing.Geometries;
 using System.ComponentModel;
 using System.Windows.Input;
 using LiveChartsCore.ConditionalDraw;
+using LiveChartsCore.Drawing;
 
 namespace GASudokuSolver.GUI;
 
@@ -93,40 +93,46 @@ public partial class MainWindow : Window
 	}
 	public void InitializeChart()
 	{
+		var fitnessSeries = new LineSeries<ChartPointData>
+		{
+			Values = ChartPointsColection,
+			Mapping = (data, _) =>
+			{
+				var point = new Coordinate(data.ProgressData.Generation, data.ProgressData.FitnessValue);
+				return point;
+			},
+			ScalesYAt = 0,
+			Stroke = new SolidColorPaint(new SKColor(33, 150, 243, 255), 2),
+			Fill = new SolidColorPaint(SKColors.AliceBlue),
+			GeometryFill = new SolidColorPaint(SKColors.AliceBlue),
+			GeometryStroke = new SolidColorPaint(SKColors.LightBlue),
+			GeometrySize = 6,
+			Pivot = -1e30,
+			EnableNullSplitting = false,
+			LineSmoothness = 0.2,
+		};
+
+		fitnessSeries.OnPointMeasured((point) =>
+		{
+			if (point.Visual is null || point.Model is null)
+				return;
+			point.Visual.Fill = point.Model.Selected ?
+			new SolidColorPaint(SKColors.Red) :
+			new SolidColorPaint(SKColors.AliceBlue);
+
+			point.Visual.Stroke = point.Model.Selected ?
+			new SolidColorPaint(SKColors.Red) :
+			new SolidColorPaint(SKColors.LightBlue);
+		});
+
 		FitnessSeries = new ObservableCollection<ISeries>
 		{
-			new LineSeries<ChartPointData>
-			{
-				Values = ChartPointsColection,
-				Mapping = (data, _) =>
-				{
-					var point = new Coordinate(data.ProgressData.Generation, data.ProgressData.FitnessValue);
-					return point;
-				},
-				ScalesYAt = 0,
-				Stroke = new SolidColorPaint(new SKColor(33, 150, 243, 255), 2),
-				Fill = new SolidColorPaint(SKColors.AliceBlue),
-				GeometryFill = new SolidColorPaint(SKColors.AliceBlue),
-				GeometryStroke = new SolidColorPaint(SKColors.LightBlue),
-				GeometrySize = 4,
-				Pivot = -1e30
-			}.OnPointMeasured((point) =>
-			{
-				if(point.Visual is null || point.Model is null)
-					return;
-				point.Visual.Fill = point.Model.Selected ?
-				new SolidColorPaint(SKColors.Red) :
-				new SolidColorPaint(SKColors.AliceBlue);
-
-				point.Visual.Stroke = point.Model.Selected ?
-				new SolidColorPaint(SKColors.Red) :
-				new SolidColorPaint(SKColors.LightBlue);
-			})
+			fitnessSeries
 		};
-		GeneticChart.ChartPointPointerDown += GeneticChartDataClick;
 
-		GeneticChart.UpdaterThrottler = TimeSpan.FromMilliseconds(100);
-		XAxes[0].PropertyChanged += AxisXRangeChanged; 
+		GeneticChart.DataPointerDown += GeneticChartDataClick;
+
+		XAxes[0].PropertyChanged += AxisXRangeChanged;
 	}
 
 	public void InitializeTimer()
@@ -263,9 +269,13 @@ public partial class MainWindow : Window
 		// TODO
 	}
 
-	private void GeneticChartDataClick(IChartView chart, ChartPoint? point)
+	private void GeneticChartDataClick(IChartView chart, IEnumerable<ChartPoint> points)
 	{
-		if (point is null) return;
+		var mousePosition = Mouse.GetPosition(GeneticChart);
+		points = GeneticChart.GetPointsAt(new LvcPoint(mousePosition.X, mousePosition.Y),
+			LiveChartsCore.Measure.TooltipFindingStrategy.CompareAll);
+		if (points is null || !points.Any()) return;
+		var point = points.First();
 		var generation = point.Index;
 		var chartPointForGeneration = ChartPointsColection[generation];
 		var progressData = chartPointForGeneration.ProgressData;
@@ -291,7 +301,13 @@ public partial class MainWindow : Window
 				chartPointForGeneration.Selected = false;
 				selectedPoint = null; 
 				XAxes[0].MaxLimit = null;
+
+				progressData = ChartPointsColection.Last().ProgressData;
+				LoadBoard(progressData.Board, Board);
+				FitnessText.Text = progressData.FitnessValue.ToString("F4");
+				GenerationText.Text = progressData.Generation.ToString();
 			}
+			GeneticChart.InvalidateVisual();
 		}
 	}
 

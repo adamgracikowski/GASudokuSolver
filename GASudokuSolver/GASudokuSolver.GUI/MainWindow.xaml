@@ -61,6 +61,7 @@
                             XAxes="{Binding XAxes}"
                             YAxes="{Binding YAxes}"
                             ZoomMode="X"
+                            TooltipFindingStrategy="CompareAll"
                             TooltipPosition="Top"
                             />
                 </Border>
