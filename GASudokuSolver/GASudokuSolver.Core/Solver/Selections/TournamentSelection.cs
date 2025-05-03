@@ -1,5 +1,6 @@
 ﻿using GASudokuSolver.Core.Solver.Interfaces;
 using GASudokuSolver.Core.Solver.Genes;
+using System.Collections.Concurrent;
 
 namespace GASudokuSolver.Core.Solver.Selections;
 
@@ -17,9 +18,9 @@ public sealed class TournamentSelection : ISelection
 		int count,
 		IComparer<Individual> comparer)
 	{
-		var parents = new List<List<Gene>>(count);
+		var parentsBag = new ConcurrentBag<List<Gene>>();
 
-		for (var i = 0; i < count; i++)
+		Parallel.For(0, count, i =>
 		{
 			var tourney = Enumerable
 				.Range(0, _tournamentSize)
@@ -30,9 +31,9 @@ public sealed class TournamentSelection : ISelection
 				.OrderByDescending(ind => ind, comparer)
 				.First();
 
-			parents.Add(winner.CloneGenes());
-		}
+			parentsBag.Add(winner.CloneGenes());
+		});
 
-		return parents;
+		return [.. parentsBag];
 	}
 }

@@ -39,7 +39,7 @@ public static class Constants
 
 		public const int DefaultNumberOfParentsSize = 300;
 		public const int MinimumNumberOfParentsSize = 10;
-		public const int MaximumNumberOfParentsSize = 10000;
+		public const int MaximumNumberOfParentsSize = 10_000;
 
 		public const double DefaultTimeInMinutes = 5.0;
 		public const double MinimumTimeInMinutes = 1.0;

@@ -77,7 +77,7 @@
                 <!--  Settings  -->
                 <Border Grid.Row="1" Style="{StaticResource ModernCard}">
                     <TabControl>
-                        <TabItem Header="Population">
+                        <TabItem Header="Solver">
                             <controls:SolverSettingsControl x:Name="SolverControl" />
                         </TabItem>
                         <TabItem Header="Representation">

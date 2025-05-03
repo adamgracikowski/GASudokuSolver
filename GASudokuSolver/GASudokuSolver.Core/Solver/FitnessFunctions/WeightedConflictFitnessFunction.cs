@@ -26,7 +26,7 @@ public sealed class WeightedConflictFitnessFunction : IFitnessFunction
 		=> lhs > rhs;
 
 	public bool IsSolved(double fitness)
-		=> Math.Abs(fitness) < 1e-6;
+		=> Math.Abs(fitness) == 0.0;
 
 	public double Eveluate(Grid sudoku)
 	{
@@ -40,17 +40,23 @@ public sealed class WeightedConflictFitnessFunction : IFitnessFunction
 		{
 			for (var col = 0; col < Constants.Grid.Columns; col++)
 			{
-				int numberInCell = sudoku.Data[row, col];
+				var numberInCell = sudoku.Data[row, col];
 
-				if (isNumberInRow[row, numberInCell]) fitness -= _rowPenalty;
+				if (isNumberInRow[row, numberInCell]) 
+					fitness -= _rowPenalty;
+				
 				isNumberInRow[row, numberInCell] = true;
 
-				if (isNumberInCollumn[col, numberInCell]) fitness -= _columnPenalty;
+				if (isNumberInCollumn[col, numberInCell]) 
+					fitness -= _columnPenalty;
+				
 				isNumberInCollumn[col, numberInCell] = true;
 
 				var subgrid = row / Constants.Subgrid.Rows * Constants.Grid.SubgridsInRow + col / Constants.Subgrid.Columns;
 
-				if (isNumberInSubgrid[subgrid, numberInCell]) fitness -= _subgridPenalty;
+				if (isNumberInSubgrid[subgrid, numberInCell]) 
+					fitness -= _subgridPenalty;
+				
 				isNumberInSubgrid[subgrid, numberInCell] = true;
 			}
 		}
