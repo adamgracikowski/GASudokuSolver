@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace GASudokuSolver.GUI;
@@ -23,6 +24,7 @@ public partial class MainWindow : Window
 {
 	private readonly Stopwatch Stopwatch = new();
 	private readonly System.Timers.Timer Timer = new(50);
+	private CancellationTokenSource? tokenSource;
 
 	public Sudoku? Sudoku { get; set; }
 	public ObservableCollection<SudokuCell> Board { get; set; } = [];
@@ -131,7 +133,6 @@ public partial class MainWindow : Window
 		}
 	}
 
-
 	public void ClearResults()
 	{
 		ChartPointsColection.Clear();
@@ -148,7 +149,10 @@ public partial class MainWindow : Window
 		ClearResults();
 
 		MainMenu.IsAlgorithmRunning = true;
-		StartButton.IsEnabled = false;
+		StartButtonCard.Visibility = Visibility.Collapsed;
+		ClearButtonCard.Visibility = Visibility.Visible;
+		ClearButton.Content = "Stop";
+
 		AlgorithmResultsGrid.Visibility = Visibility.Visible;
 
 		var progress = new Progress<AlgorithmProgressData>(data =>
@@ -167,13 +171,15 @@ public partial class MainWindow : Window
 			}
 		});
 
+		tokenSource = new CancellationTokenSource();
+
 		var solver = BuildSolver();
 
 		Stopwatch.Restart();
 		Timer.Start();
 
 		var bestResult = await Task.Run(
-			() => solver.Run(progress: progress)
+			() => solver.Run(progress: progress, cancellationToken: tokenSource.Token)
 		);
 
 		Stopwatch.Stop();
@@ -182,6 +188,26 @@ public partial class MainWindow : Window
 		MainMenu.IsAlgorithmRunning = false;
 
 		ShowBestResultWindow(bestResult.BestIndividual);
+	}
+
+	private void ClearButtonClick(object sender, RoutedEventArgs e)
+	{
+		if (Sudoku is null) return;
+
+		if (tokenSource != null && !tokenSource.IsCancellationRequested)
+		{
+			// stop functionality
+			tokenSource.Cancel();
+			ClearButton.Content = "Clear";
+			return;
+		}
+
+		// clear functionality
+		ClearResults();
+		InitializeBoard(Board);
+		LoadBoard(Sudoku.Unsolved.Data, Board, updateMutable: true, Sudoku.Solved.Data);
+		ClearButtonCard.Visibility = Visibility.Collapsed;
+		StartButtonCard.Visibility = Visibility.Visible;
 	}
 
 	private SudokuSolver BuildSolver()
@@ -327,7 +353,8 @@ public partial class MainWindow : Window
 
 	private void AxisXRangeChanged(RangeChangedEventArgs eventArgs)
 	{
-		Axis axis = (Axis)eventArgs.Axis;
+		var axis = (Axis)eventArgs.Axis;
+
 		if (axis.MinValue < 0)
 		{
 			axis.MinValue = 0;
