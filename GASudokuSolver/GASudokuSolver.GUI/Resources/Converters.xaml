@@ -4,6 +4,6 @@
     xmlns:converters="clr-namespace:GASudokuSolver.GUI.Converters">
 
     <converters:SudokuBorderConverter x:Key="SudokuBorderConverter" />
-    <converters:ReadOnlyToBackgroundConverter x:Key="ReadOnlyToBackgroundConverter" />
     <converters:BooleanInverseConverter x:Key="BooleanInverseConverter" />
+    <converters:SudokuBackgroundConverter x:Key="SudokuBackgroundConverter" />
 </ResourceDictionary>

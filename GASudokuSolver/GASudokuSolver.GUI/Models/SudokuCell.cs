@@ -5,8 +5,9 @@ namespace GASudokuSolver.GUI.Models;
 
 public class SudokuCell : INotifyPropertyChanged
 {
-	private bool readOnly;
+	private bool mutable;
 	private int? _value;
+	private int? _correctValue;
 
 	public int Row { get; set; }
 	public int Column { get; set; }
@@ -24,14 +25,27 @@ public class SudokuCell : INotifyPropertyChanged
 		}
 	}
 
-	public bool ReadOnly
+	public bool Mutable
 	{
-		get => readOnly;
+		get => mutable;
 		set
 		{
-			if (readOnly != value)
+			if (mutable != value)
 			{
-				readOnly = value;
+				mutable = value;
+				OnPropertyChanged();
+			}
+		}
+	}
+
+	public int? CorrectValue
+	{
+		get => _correctValue;
+		set
+		{
+			if (_correctValue != value)
+			{
+				_correctValue = value;
 				OnPropertyChanged();
 			}
 		}
