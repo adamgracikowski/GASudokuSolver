@@ -46,7 +46,8 @@ public partial class MainWindow : Window
 		new Axis
 		{
 			Name = "Generation",
-			Labeler = value => value.ToString("N0")
+			Labeler = value => value.ToString("N0"),
+			NameTextSize = 15.0
 		}
 	};
 
@@ -55,7 +56,8 @@ public partial class MainWindow : Window
 		new Axis
 		{
 			Name = "Fitness",
-			Labeler = value => value.ToString("N2")
+			Labeler = value => value.ToString("N2"),
+			NameTextSize = 15.0
 		}
 	};
 
