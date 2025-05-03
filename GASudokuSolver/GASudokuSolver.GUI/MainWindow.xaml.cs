@@ -43,9 +43,6 @@ public partial class MainWindow : Window
 
 	private ChartPoint? selectedPoint = null;
 	private object SelectedLock = new();
-	private SolidColorPaint defaultPointStrokePaint = new (SKColors.Blue);
-	private SolidColorPaint defaultPointFillPaint = new(SKColors.LightBlue);
-	private SolidColorPaint selectedPointPaint = new(SKColors.Red);
 
 	public Axis[] XAxes { get; set; } =
 	{
@@ -106,10 +103,10 @@ public partial class MainWindow : Window
 					return point;
 				},
 				ScalesYAt = 0,
-				Stroke = new SolidColorPaint(SKColors.LightBlue, 2),
+				Stroke = new SolidColorPaint(new SKColor(33, 150, 243, 255), 2),
 				Fill = new SolidColorPaint(SKColors.AliceBlue),
-				GeometryFill = new SolidColorPaint(SKColors.LightBlue),
-				GeometryStroke = new SolidColorPaint(SKColors.Blue),
+				GeometryFill = new SolidColorPaint(SKColors.AliceBlue),
+				GeometryStroke = new SolidColorPaint(SKColors.LightBlue),
 				GeometrySize = 4,
 				Pivot = -1e30
 			}
@@ -264,8 +261,8 @@ public partial class MainWindow : Window
 			{
 				if (selectedPoint?.Context.Visual is CircleGeometry oldGeometry)
 				{
-					oldGeometry.Fill = new SolidColorPaint(SKColors.LightBlue);
-					oldGeometry.Stroke = new SolidColorPaint(SKColors.Blue);
+					oldGeometry.Fill = new SolidColorPaint(SKColors.AliceBlue);
+					oldGeometry.Stroke = new SolidColorPaint(SKColors.LightBlue);
 				}
 
 				selectedPoint = point;
@@ -283,14 +280,13 @@ public partial class MainWindow : Window
 			{
 				if (selectedPoint?.Context.Visual is CircleGeometry oldGeometry)
 				{
-					oldGeometry.Fill = new SolidColorPaint(SKColors.LightBlue);
-					oldGeometry.Stroke = new SolidColorPaint(SKColors.Blue);
+					oldGeometry.Fill = new SolidColorPaint(SKColors.AliceBlue);
+					oldGeometry.Stroke = new SolidColorPaint(SKColors.LightBlue);
 				}
 
 				chartPointForGeneration.Selected = false;
 				selectedPoint = null; 
 				XAxes[0].MaxLimit = null;
-				//Task.Run(async () => { await Task.Delay(300); XAxes[0].MaxLimit = null; });
 			}
 		}
 	}
