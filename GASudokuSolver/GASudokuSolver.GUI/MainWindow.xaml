@@ -77,46 +77,27 @@
                 <!--  Settings  -->
                 <Border Grid.Row="1" Style="{StaticResource ModernCard}">
                     <TabControl>
-                        <TabItem Header="Population">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="Population settings" />
+                        <TabItem Header="Solver">
+                            <controls:SolverSettingsControl x:Name="SolverControl" />
                         </TabItem>
                         <TabItem Header="Representation">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="Representation settings" />
+                            <controls:RepresentationSettingsControl x:Name="RepresentationControl" />
                         </TabItem>
                         <TabItem Header="Fitness Function">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="Fitness function settings" />
+                            <controls:FitnessFunctionSettingsControl x:Name="FitnessFunctionControl" />
                         </TabItem>
                         <TabItem Header="Selection">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="Selection settings" />
+                            <controls:SelectionSettingsControl x:Name="SelectionControl" />
                         </TabItem>
                         <TabItem Header="Crossover">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="Crossover settings" />
+                            <controls:CrossoverSettingsControl x:Name="CrossoverControl" />
                         </TabItem>
                         <TabItem Header="Mutation">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="Mutation settings" />
+                            <controls:MutationSettingsControl x:Name="MutationControl" />
                         </TabItem>
                     </TabControl>
                 </Border>
             </Grid>
-
 
             <!--  Right Panel  -->
             <Grid Grid.Row="1" Grid.Column="1">
