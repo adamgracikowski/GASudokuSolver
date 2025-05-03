@@ -7,16 +7,21 @@ using GASudokuSolver.GUI.Controls;
 using GASudokuSolver.GUI.Enums;
 using GASudokuSolver.GUI.Models;
 using GASudokuSolver.GUI.Windows;
-using LiveCharts;
-using LiveCharts.Configurations;
-using LiveCharts.Events;
-using LiveCharts.Wpf;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
-using System.Windows.Media;
+using LiveChartsCore.Kernel;
+using SkiaSharp;
+using LiveChartsCore.Kernel.Sketches;
+using System.ComponentModel;
+using System.Windows.Input;
+using LiveChartsCore.ConditionalDraw;
+using LiveChartsCore.Drawing;
 
 namespace GASudokuSolver.GUI;
 
@@ -30,14 +35,32 @@ public partial class MainWindow : Window
 	public Sudoku? Sudoku { get; set; }
 	public ObservableCollection<SudokuCell> Board { get; set; } = [];
 
-	public SeriesCollection FitnessSeries { get; set; }
-	public ChartValues<ChartPointData> ChartPointsColection { get; set; } = [];
-	
-	public ChartPointData? Selected = null;
-	private readonly object SelectedLock = new();
+	public ObservableCollection<ISeries> FitnessSeries { get; set; }
+	public ObservableCollection<ChartPointData> ChartPointsColection { get; set; } = [];
 
-	public Func<double, string> YAxisLabelFormatter { get; set; } = value => value.ToString("N2");
-	public Func<double, string> XAxisLabelFormatter { get; set; } = value => value.ToString("N0");
+	private ChartPointData? selectedPoint = null;
+	private object SelectedLock = new();
+
+	public Axis[] XAxes { get; set; } =
+	{
+		new Axis
+		{
+			Name = "Generation",
+			Labeler = value => value.ToString("N0"),
+			NameTextSize = 15.0
+		}
+	};
+
+	public Axis[] YAxes { get; set; } =
+	{
+		new Axis
+		{
+			Name = "Fitness",
+			Labeler = value => value.ToString("N2"),
+			NameTextSize = 15.0
+		}
+	};
+
 
 #pragma warning disable CS8618
 	public MainWindow()
@@ -69,22 +92,49 @@ public partial class MainWindow : Window
 	}
 	public void InitializeChart()
 	{
-		FitnessSeries =
-		[
-			new LineSeries
+		var fitnessSeries = new LineSeries<ChartPointData>
+		{
+			Values = ChartPointsColection,
+			Mapping = (data, _) =>
 			{
-				Title = "Fitness",
-				Values = ChartPointsColection,
-				Configuration = new CartesianMapper<ChartPointData>()
-					.X(point => point.ProgressData.Generation)
-					.Y(point => point.ProgressData.FitnessValue)
-					.Stroke(point => point.Selected ? Brushes.Red : Brushes.LightBlue)
-					.Fill(point => point.Selected ? Brushes.Red : null),
-			}
-		];
+				var point = new Coordinate(data.ProgressData.Generation, data.ProgressData.FitnessValue);
+				return point;
+			},
+			ScalesYAt = 0,
+			Stroke = new SolidColorPaint(new SKColor(33, 150, 243, 255), 2),
+			Fill = new SolidColorPaint(SKColors.AliceBlue),
+			GeometryFill = new SolidColorPaint(SKColors.AliceBlue),
+			GeometryStroke = new SolidColorPaint(SKColors.LightBlue),
+			GeometrySize = 6,
+			Pivot = -1e30,
+			EnableNullSplitting = false,
+			LineSmoothness = 0.2,
+		};
 
-		GeneticChart.DisableAnimations = true;
+		fitnessSeries.OnPointMeasured((point) =>
+		{
+			if (point.Visual is null || point.Model is null)
+				return;
+			point.Visual.Fill = point.Model.Selected ?
+			new SolidColorPaint(SKColors.Red) :
+			new SolidColorPaint(SKColors.AliceBlue);
+
+			point.Visual.Stroke = point.Model.Selected ?
+			new SolidColorPaint(SKColors.Red) :
+			new SolidColorPaint(SKColors.LightBlue);
+		});
+
+		FitnessSeries = new ObservableCollection<ISeries>
+		{
+			fitnessSeries
+		};
+
+		GeneticChart.UpdaterThrottler = TimeSpan.FromMilliseconds(100);
+		GeneticChart.DataPointerDown += GeneticChartDataClick;
+
+		XAxes[0].PropertyChanged += AxisXRangeChanged;
 	}
+
 	public void InitializeTimer()
 	{
 		Timer.Elapsed += TimerElapsed;
@@ -140,7 +190,9 @@ public partial class MainWindow : Window
 		TimeText.Text = @"00:00:00:000";
 		FitnessText.Text = "0";
 		GenerationText.Text = "0";
-		Selected = null;
+		selectedPoint = null;
+		XAxes[0].MinLimit = null;
+		XAxes[0].MaxLimit = null;
 	}
 
 	private async void StartButtonClickAsync(object sender, RoutedEventArgs e)
@@ -159,7 +211,7 @@ public partial class MainWindow : Window
 
 			lock (SelectedLock)
 			{
-				if(Selected is null)
+				if(selectedPoint is null)
 				{
 					FitnessText.Text = data.FitnessValue.ToString("F4");
 					GenerationText.Text = data.Generation.ToString();
@@ -255,6 +307,64 @@ public partial class MainWindow : Window
 		// TODO
 	}
 
+	private void GeneticChartDataClick(IChartView chart, IEnumerable<ChartPoint> points)
+	{
+		var mousePosition = Mouse.GetPosition(GeneticChart);
+		points = GeneticChart.GetPointsAt(new LvcPoint(mousePosition.X, mousePosition.Y),
+			LiveChartsCore.Measure.TooltipFindingStrategy.CompareAll);
+		if (points is null || !points.Any()) return;
+		var point = points.First();
+		var generation = point.Index;
+		var chartPointForGeneration = ChartPointsColection[generation];
+		var progressData = chartPointForGeneration.ProgressData;
+
+		lock (SelectedLock)
+		{
+			if (selectedPoint != chartPointForGeneration)
+			{
+				if(selectedPoint is not null)
+				{
+					selectedPoint.Selected = false;
+				}
+
+				selectedPoint = chartPointForGeneration;
+				selectedPoint.Selected = true;
+
+				LoadBoard(progressData.Board, Board);
+				FitnessText.Text = progressData.FitnessValue.ToString("F4");
+				GenerationText.Text = progressData.Generation.ToString();
+			}
+			else
+			{
+				chartPointForGeneration.Selected = false;
+				selectedPoint = null; 
+				XAxes[0].MaxLimit = null;
+
+				progressData = ChartPointsColection.Last().ProgressData;
+				LoadBoard(progressData.Board, Board);
+				FitnessText.Text = progressData.FitnessValue.ToString("F4");
+				GenerationText.Text = progressData.Generation.ToString();
+			}
+			GeneticChart.InvalidateVisual();
+		}
+	}
+
+	private void AxisXRangeChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		Axis xAxis = XAxes[0];
+		if (e.PropertyName is (nameof(xAxis.MaxLimit)) or (nameof(xAxis.MinLimit)))
+		{
+			if (xAxis.MinLimit < 0)
+			{
+				xAxis.MinLimit = null;
+			}
+			if (ChartPointsColection.Count > 0 && xAxis.MaxLimit > ChartPointsColection.Last().ProgressData.Generation)
+			{
+				xAxis.MaxLimit = null;
+			}
+		}
+	}
+
 	private async void LoadBoardCsvClickAsync(object sender, RoutedEventArgs e)
 	{
 		var initialDirectory = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Datasets", "Csv"));
@@ -340,48 +450,6 @@ public partial class MainWindow : Window
 	private void UserGuideClick(object sender, RoutedEventArgs e)
 	{
 		// TODO
-	}
-
-	private void GeneticChartDataClick(object sender, ChartPoint chartPoint)
-	{
-		var generation = (int)chartPoint.X;
-		var chartPointForGeneration = ChartPointsColection[generation];
-		var progressData = chartPointForGeneration.ProgressData;
-
-		lock (SelectedLock)
-		{
-			if (Selected != chartPointForGeneration)
-			{
-				if (Selected is not null) Selected.Selected = false;
-
-				chartPointForGeneration.Selected = true;
-				Selected = chartPointForGeneration;
-
-				LoadBoard(progressData.Board, Board);
-				FitnessText.Text = progressData.FitnessValue.ToString("F4");
-				GenerationText.Text = progressData.Generation.ToString();
-			}
-			else
-			{
-				chartPointForGeneration.Selected = false;
-				Selected = null;
-				GeneticChart.AxisX[0].MaxValue = double.NaN;
-			}
-		}
-	}
-
-	private void AxisXRangeChanged(RangeChangedEventArgs eventArgs)
-	{
-		var axis = (Axis)eventArgs.Axis;
-
-		if (axis.MinValue < 0)
-		{
-			axis.MinValue = 0;
-		}
-		if (ChartPointsColection.Count > 0 && axis.MaxValue > ChartPointsColection.Last().ProgressData.Generation)
-		{
-			axis.MaxValue = double.NaN;
-		}
 	}
 
 	protected override void OnClosed(EventArgs e)

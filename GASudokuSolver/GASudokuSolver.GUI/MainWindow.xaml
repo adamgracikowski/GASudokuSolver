@@ -6,7 +6,7 @@
     xmlns:converters="clr-namespace:GASudokuSolver.GUI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:GASudokuSolver.GUI"
-    xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+    xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Genetic Algorithms Sudoku Solver"
     Width="1200"
@@ -56,22 +56,14 @@
 
                 <!--  Chart  -->
                 <Border Grid.Row="0" Style="{StaticResource ModernCard}">
-                    <lvc:CartesianChart
-                        x:Name="GeneticChart"
-                        DataClick="GeneticChartDataClick"
-                        LegendLocation="Right"
-                        Series="{Binding FitnessSeries}"
-                        Zoom="X">
-                        <lvc:CartesianChart.AxisY>
-                            <lvc:Axis Title="Fitness" LabelFormatter="{Binding YAxisLabelFormatter}" />
-                        </lvc:CartesianChart.AxisY>
-                        <lvc:CartesianChart.AxisX>
-                            <lvc:Axis
-                                Title="Generation"
-                                LabelFormatter="{Binding XAxisLabelFormatter}"
-                                RangeChanged="AxisXRangeChanged" />
-                        </lvc:CartesianChart.AxisX>
-                    </lvc:CartesianChart>
+                    <lvc:CartesianChart x:Name="GeneticChart"
+                            Series="{Binding FitnessSeries}"
+                            XAxes="{Binding XAxes}"
+                            YAxes="{Binding YAxes}"
+                            ZoomMode="X"
+                            TooltipFindingStrategy="CompareAll"
+                            TooltipPosition="Top"
+                            />
                 </Border>
 
                 <!--  Settings  -->
