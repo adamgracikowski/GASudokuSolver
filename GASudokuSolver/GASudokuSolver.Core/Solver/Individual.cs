@@ -74,7 +74,7 @@ public class Individual
 	public Individual Clone()
 	{
 		UpdateBoard();
-		var clone = new Individual(Representation, Board);
+		var clone = new Individual(this, this.Genes);
 		clone.Fitness = Fitness;
 		return clone;
 	}

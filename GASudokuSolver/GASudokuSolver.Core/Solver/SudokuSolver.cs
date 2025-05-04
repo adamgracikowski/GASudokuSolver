@@ -127,7 +127,8 @@ public class SudokuSolver
 			if (FitnessFunction.IsSolved(bestIndividualThroughtGenerations.Fitness))
 			{
 				return new AlgorithmResult(
-					new AlgorithmProgressData(bestIndividualThroughtGenerations, generation),
+					new AlgorithmProgressData(bestIndividualThroughtGenerations, 
+						bestIndividualThroughtGenerationsIndex),
 					start - DateTime.UtcNow,
 					TerminationReason.SoultionFound
 				);
@@ -136,7 +137,8 @@ public class SudokuSolver
 			if (timeoutToken.IsCancellationRequested)
 			{
 				return new AlgorithmResult(
-					new AlgorithmProgressData(bestIndividualThroughtGenerations, generation),
+					new AlgorithmProgressData(bestIndividualThroughtGenerations, 
+						bestIndividualThroughtGenerationsIndex),
 					start - DateTime.UtcNow,
 					TerminationReason.Timeout
 				);
@@ -145,7 +147,8 @@ public class SudokuSolver
 			if (cancellationToken.IsCancellationRequested)
 			{
 				return new AlgorithmResult(
-					new AlgorithmProgressData(bestIndividualThroughtGenerations, generation),
+					new AlgorithmProgressData(bestIndividualThroughtGenerations, 
+						bestIndividualThroughtGenerationsIndex),
 					start - DateTime.UtcNow,
 					TerminationReason.Cancelled
 				);

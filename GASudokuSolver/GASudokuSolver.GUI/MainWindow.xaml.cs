@@ -22,6 +22,9 @@ using System.ComponentModel;
 using System.Windows.Input;
 using LiveChartsCore.ConditionalDraw;
 using LiveChartsCore.Drawing;
+using GASudokuSolver.Core.Solver.Representations;
+using GASudokuSolver.Core.Solver.Crossovers;
+using GASudokuSolver.Core.Solver.FitnessFunctions;
 
 namespace GASudokuSolver.GUI;
 
