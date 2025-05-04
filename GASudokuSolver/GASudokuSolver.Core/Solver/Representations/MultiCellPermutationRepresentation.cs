@@ -8,11 +8,11 @@ namespace GASudokuSolver.Core.Solver.Representations;
 
 public sealed class MultiCellPermutationRepresentation : IRepresentation
 {
-	public MultiCellRepresenationGroupBy GroupBy;
+	public GroupByStrategy GroupBy;
 	public byte[][]? ValuesInGroups;
 	public int[]? GroupIndexByGeneIndex;
 
-	public MultiCellPermutationRepresentation(MultiCellRepresenationGroupBy groupBy)
+	public MultiCellPermutationRepresentation(GroupByStrategy groupBy)
 	{
 		GroupBy = groupBy;
 	}
@@ -21,7 +21,7 @@ public sealed class MultiCellPermutationRepresentation : IRepresentation
 	{
 		if (GroupIndexByGeneIndex!.Length != genes.Count)
 			throw new ArgumentException("Gene number missmatch");
-		if (GroupBy == MultiCellRepresenationGroupBy.Rows)
+		if (GroupBy == GroupByStrategy.Rows)
 		{
 			for (var geneIndex = 0; geneIndex < genes.Count; geneIndex++)
 			{
@@ -38,7 +38,7 @@ public sealed class MultiCellPermutationRepresentation : IRepresentation
 				}
 			}
 		}
-		else if (GroupBy == MultiCellRepresenationGroupBy.Columns)
+		else if (GroupBy == GroupByStrategy.Columns)
 		{
 			for (var geneIndex = 0; geneIndex < genes.Count; geneIndex++)
 			{
@@ -55,7 +55,7 @@ public sealed class MultiCellPermutationRepresentation : IRepresentation
 				}
 			}
 		}
-		else // GroupBy == MultiCellRepresenationGroupBy.Subgrids
+		else // GroupBy == GroupByStrategy.Subgrids
 		{
 			for (var geneIndex = 0; geneIndex < genes.Count; geneIndex++)
 			{
@@ -115,11 +115,11 @@ public sealed class MultiCellPermutationRepresentation : IRepresentation
 
 		bool[,] numbersInGroups;
 
-		if (GroupBy == MultiCellRepresenationGroupBy.Rows)
+		if (GroupBy == GroupByStrategy.Rows)
 			numbersInGroups = numbersInRows;
-		else if (GroupBy == MultiCellRepresenationGroupBy.Columns)
+		else if (GroupBy == GroupByStrategy.Columns)
 			numbersInGroups = numbersInColumns;
-		else // GroupBy == MultiCellRepresenationGroupBy.Subgrids
+		else // GroupBy == GroupByStrategy.Subgrids
 			numbersInGroups = numbersInSubgrids;
 
 		var geneIndexByGroupIndex = new List<int>();
