@@ -5,11 +5,11 @@ namespace GASudokuSolver.Core.Solver.Crossovers;
 
 public sealed class KPointCrossover : ICrossover
 {
-	public int NumberOfPoints;
+	public int K;
 
 	public KPointCrossover(int k)
 	{
-		NumberOfPoints = k;
+		K = k;
 	}
 
 	public void Crossover(List<List<Gene>> parents, List<Individual> population)
@@ -19,7 +19,7 @@ public sealed class KPointCrossover : ICrossover
 		var childrenCount = population.Count;
 		var halfChildrenCount = childrenCount / 2;
 
-		var numberOfPoints = Math.Min(NumberOfPoints, geneCount - 1);
+		var numberOfPoints = Math.Min(K, geneCount - 1);
 
 		Parallel.For(0, (childrenCount + 1) / 2, (i, state) =>
 		{

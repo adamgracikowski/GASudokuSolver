@@ -1,6 +1,6 @@
 ﻿namespace GASudokuSolver.Core.Enums;
 
-public enum MultiCellRepresenationGroupBy
+public enum GroupByStrategy
 {
 	Rows,
 	Columns,

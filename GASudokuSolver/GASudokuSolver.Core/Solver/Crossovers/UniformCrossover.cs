@@ -22,9 +22,13 @@ public sealed class UniformCrossover : ICrossover
 			{
 				var parentForFirstChild = Random.Shared.Next(0, 2);
 
-				population[i].Genes[geneIndex].Copy(parentForFirstChild == 0 ? parentA[geneIndex] : parentB[geneIndex]);
+				population[i].Genes[geneIndex].Copy(parentForFirstChild == 0 
+					? parentA[geneIndex] 
+					: parentB[geneIndex]);
 				if (i + halfChildrenCount < childrenCount)
-					population[i + halfChildrenCount].Genes[geneIndex].Copy(parentForFirstChild == 0 ? parentB[geneIndex] : parentA[geneIndex]);
+					population[i + halfChildrenCount].Genes[geneIndex].Copy(parentForFirstChild == 0 
+						? parentB[geneIndex] 
+						: parentA[geneIndex]);
 			}
 		});
 	}
