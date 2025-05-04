@@ -8,11 +8,11 @@ namespace GASudokuSolver.Core.Solver.Representations;
 
 public sealed class MultiCellRepresentation : IRepresentation
 {
-	public MultiCellRepresenationGroupBy GroupBy;
+	public GroupByStrategy GroupBy;
 	public int[]? MutablesInGroup;
 	public int[]? GroupIndexByGeneIndex;
 
-	public MultiCellRepresentation(MultiCellRepresenationGroupBy groupBy)
+	public MultiCellRepresentation(GroupByStrategy groupBy)
 	{
 		GroupBy = groupBy;
 	}
@@ -21,7 +21,7 @@ public sealed class MultiCellRepresentation : IRepresentation
 	{
 		if (GroupIndexByGeneIndex!.Length != genes.Count)
 			throw new ArgumentException("Gene number missmatch");
-		if (GroupBy == MultiCellRepresenationGroupBy.Rows)
+		if (GroupBy == GroupByStrategy.Rows)
 		{
 			for (var geneIndex = 0; geneIndex < genes.Count; geneIndex++)
 			{
@@ -38,7 +38,7 @@ public sealed class MultiCellRepresentation : IRepresentation
 				}
 			}
 		}
-		else if(GroupBy == MultiCellRepresenationGroupBy.Columns)
+		else if(GroupBy == GroupByStrategy.Columns)
 		{
 			for (var geneIndex = 0; geneIndex < genes.Count; geneIndex++)
 			{
@@ -55,7 +55,7 @@ public sealed class MultiCellRepresentation : IRepresentation
 				}
 			}
 		}
-		else // GroupBy == MultiCellRepresenationGroupBy.Subgrids
+		else // GroupBy == GroupByStrategy.Subgrids
 		{
 			for (var geneIndex = 0; geneIndex < genes.Count; geneIndex++)
 			{
@@ -115,11 +115,11 @@ public sealed class MultiCellRepresentation : IRepresentation
 			}
 		}
 
-		if (GroupBy == MultiCellRepresenationGroupBy.Rows)
+		if (GroupBy == GroupByStrategy.Rows)
 			MutablesInGroup = mutablesInRows;
-		else if (GroupBy == MultiCellRepresenationGroupBy.Columns)
+		else if (GroupBy == GroupByStrategy.Columns)
 			MutablesInGroup = mutablesInColumns;
-		else // GroupBy == MultiCellRepresenationGroupBy.Subgrids
+		else // GroupBy == GroupByStrategy.Subgrids
 			MutablesInGroup = mutablesInSubgrids;
 
 		var geneIndexByGroupIndex = new List<int>();
