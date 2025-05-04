@@ -9,8 +9,8 @@ public sealed class OnePointCrossover : ICrossover
 	{
 		var parentsCount = parents.Count;
 		var geneCount = parents[0].Count;
-		var halfGeneCount = geneCount / 2;
 		var childrenCount = population.Count;
+		var halfChildrenCount = childrenCount / 2;
 
 		Parallel.For(0, (childrenCount + 1) / 2, (i, state) =>
 		{
@@ -22,14 +22,14 @@ public sealed class OnePointCrossover : ICrossover
 			for (; geneIndex < point; geneIndex++)
 			{
 				population[i].Genes[geneIndex].Copy(parentA[geneIndex]);
-				if(i + halfGeneCount < childrenCount)
-					population[i + halfGeneCount].Genes[geneIndex].Copy(parentB[geneIndex]);
+				if(i + halfChildrenCount < childrenCount)
+					population[i + halfChildrenCount].Genes[geneIndex].Copy(parentB[geneIndex]);
 			}
 			for(; geneIndex < geneCount; geneIndex++)
 			{
 				population[i].Genes[geneIndex].Copy(parentB[geneIndex]);
-				if (i + halfGeneCount < childrenCount)
-					population[i + halfGeneCount].Genes[geneIndex].Copy(parentA[geneIndex]);
+				if (i + halfChildrenCount < childrenCount)
+					population[i + halfChildrenCount].Genes[geneIndex].Copy(parentA[geneIndex]);
 			}
 		});
 	}

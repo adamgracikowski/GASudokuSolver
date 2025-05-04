@@ -18,7 +18,7 @@ public sealed class EquallyPunishedConflictFitnessFunction : IFitnessFunction
 		var fitness = 0.0;
 
 		var isNumberInRow = new bool[Constants.Grid.Rows, Constants.Cell.MaxValue + 1];
-		var isNumberInCollumn = new bool[Constants.Grid.Columns, Constants.Cell.MaxValue + 1];
+		var isNumberInColumn = new bool[Constants.Grid.Columns, Constants.Cell.MaxValue + 1];
 		var isNumberInSubgrid = new bool[Constants.Grid.Subgrids, Constants.Cell.MaxValue + 1];
 
 		for (var row = 0; row < Constants.Grid.Rows; row++)
@@ -27,15 +27,18 @@ public sealed class EquallyPunishedConflictFitnessFunction : IFitnessFunction
 			{
 				int numberInCell = sudoku.Data[row, col];
 
-				if (isNumberInRow[row, numberInCell]) fitness -= 1.0;
+				if (isNumberInRow[row, numberInCell]) 
+					fitness -= 1.0;
 				isNumberInRow[row, numberInCell] = true;
 
-				if(isNumberInCollumn[col, numberInCell]) fitness -= 1.0;
-				isNumberInCollumn[col, numberInCell] = true;
+				if(isNumberInColumn[col, numberInCell]) 
+					fitness -= 1.0;
+				isNumberInColumn[col, numberInCell] = true;
 
 				var subgrid = row / Constants.Subgrid.Rows * Constants.Grid.SubgridsInRow + col / Constants.Subgrid.Columns;
 				
-				if (isNumberInSubgrid[subgrid, numberInCell]) fitness -= 1.0;
+				if (isNumberInSubgrid[subgrid, numberInCell]) 
+					fitness -= 1.0;
 				isNumberInSubgrid[subgrid, numberInCell] = true;
 			}
 		}

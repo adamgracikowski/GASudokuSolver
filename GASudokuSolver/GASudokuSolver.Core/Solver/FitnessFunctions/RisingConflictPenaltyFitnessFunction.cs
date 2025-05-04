@@ -4,29 +4,14 @@ using GASudokuSolver.Core.Solver.Interfaces;
 
 namespace GASudokuSolver.Core.Solver.FitnessFunctions;
 
-public sealed class WeightedConflictFitnessFunction : IFitnessFunction
+public sealed class RisingConflictPenaltyFitnessFunction : IFitnessFunction
 {
-	private readonly double _rowPenalty, _columnPenalty, _subgridPenalty;
-
-	public WeightedConflictFitnessFunction(
-		double rowPenalty = 1.0,
-		double colPenalty = 1.0,
-		double subgridPenalty = 1.0)
-	{
-		_rowPenalty = rowPenalty;
-		_columnPenalty = colPenalty;
-		_subgridPenalty = subgridPenalty;
-	}
-
 	public int Compare(Individual? x, Individual? y)
 		=> x == null || y == null ? 0
 		   : x.Fitness.CompareTo(y.Fitness);
 
 	public bool CompareFitness(double lhs, double rhs)
 		=> lhs > rhs;
-
-	public bool IsSolved(double fitness)
-		=> Math.Abs(fitness) == 0.0;
 
 	public double Eveluate(Grid sudoku)
 	{
@@ -36,31 +21,44 @@ public sealed class WeightedConflictFitnessFunction : IFitnessFunction
 		var isNumberInColumn = new bool[Constants.Grid.Columns, Constants.Cell.MaxValue + 1];
 		var isNumberInSubgrid = new bool[Constants.Grid.Subgrids, Constants.Cell.MaxValue + 1];
 
+		var conflictsInRows = new int[Constants.Grid.Rows];
+		var conflictsInColumns = new int[Constants.Grid.Columns];
+		var conflictsInSubgrids = new int[Constants.Grid.Subgrids];
+
 		for (var row = 0; row < Constants.Grid.Rows; row++)
 		{
 			for (var col = 0; col < Constants.Grid.Columns; col++)
 			{
-				var numberInCell = sudoku.Data[row, col];
+				int numberInCell = sudoku.Data[row, col];
 
 				if (isNumberInRow[row, numberInCell]) 
-					fitness -= _rowPenalty;
-				
+				{
+					conflictsInRows[row]++;
+					fitness -= 1.0*conflictsInRows[row];
+				}
 				isNumberInRow[row, numberInCell] = true;
 
-				if (isNumberInColumn[col, numberInCell]) 
-					fitness -= _columnPenalty;
-				
+				if (isNumberInColumn[col, numberInCell])
+				{
+					conflictsInColumns[col]++;
+					fitness -= 1.0 * conflictsInColumns[col];
+				}
 				isNumberInColumn[col, numberInCell] = true;
 
 				var subgrid = row / Constants.Subgrid.Rows * Constants.Grid.SubgridsInRow + col / Constants.Subgrid.Columns;
 
-				if (isNumberInSubgrid[subgrid, numberInCell]) 
-					fitness -= _subgridPenalty;
-				
+				if (isNumberInSubgrid[subgrid, numberInCell])
+				{
+					conflictsInSubgrids[subgrid]++;
+					fitness -= 1.0 * conflictsInSubgrids[subgrid];
+				}
 				isNumberInSubgrid[subgrid, numberInCell] = true;
 			}
 		}
 
 		return fitness;
 	}
+
+	public bool IsSolved(double fitness)
+		=> fitness == 0;
 }
