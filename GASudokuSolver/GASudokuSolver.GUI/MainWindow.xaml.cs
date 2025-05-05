@@ -7,6 +7,7 @@ using GASudokuSolver.GUI.Controls;
 using GASudokuSolver.GUI.Enums;
 using GASudokuSolver.GUI.Models;
 using GASudokuSolver.GUI.Windows;
+using GASudokuSolver.GUI.Windows.ViewModels;
 using LiveChartsCore;
 using LiveChartsCore.ConditionalDraw;
 using LiveChartsCore.Drawing;
@@ -238,7 +239,7 @@ public partial class MainWindow : Window
 		TokenSource = null;
 		ShowButton(ButtonType.Clear);
 
-		ShowBestResultWindow(bestResult.BestIndividual);
+		ShowBestResultWindow(bestResult.BestIndividual, bestResult.TerminationReason);
 	}
 
 	private void ClearButtonClick(object sender, RoutedEventArgs e)
@@ -276,7 +277,7 @@ public partial class MainWindow : Window
 		);
 	}
 
-	private void ShowBestResultWindow(AlgorithmProgressData bestResult)
+	private void ShowBestResultWindow(AlgorithmProgressData bestResult, TerminationReason terminationReason)
 	{
 		if (Sudoku is null) return;
 
@@ -290,7 +291,8 @@ public partial class MainWindow : Window
 		var viewModel = new BestResultViewModel(
 			board: bestBoard,
 			currentFitness: bestResult.FitnessValue.ToString("F4"),
-			currentGeneration: bestResult.Generation.ToString()
+			currentGeneration: bestResult.Generation.ToString(),
+			terminationReason: GetTerminationReasonDescription(terminationReason)
 		);
 
 		var bestResultWindow = new BestResultWindow(viewModel)
@@ -299,6 +301,18 @@ public partial class MainWindow : Window
 		};
 
 		bestResultWindow.Show();
+	}
+
+	private static string GetTerminationReasonDescription(TerminationReason terminationReason)
+	{
+		return terminationReason switch
+		{
+			TerminationReason.SoultionFound => "A valid Sudoku solution was successfully found.",
+			TerminationReason.Timeout => "The solver stopped because it exceeded the allowed time limit.",
+			TerminationReason.MaxGenerationsReached => "The maximum number of generations was reached without finding a solution.",
+			TerminationReason.Cancelled => "The solving process was manually cancelled by the user.",
+			_ => "Unknown termination reason."
+		};
 	}
 
 	private void SaveBoardCsvClick(object sender, RoutedEventArgs e)

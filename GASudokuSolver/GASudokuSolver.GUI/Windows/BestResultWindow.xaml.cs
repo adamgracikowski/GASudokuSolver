@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using GASudokuSolver.GUI.Windows.ViewModels;
+using System.Windows;
 using System.Windows.Input;
 
 namespace GASudokuSolver.GUI.Windows;

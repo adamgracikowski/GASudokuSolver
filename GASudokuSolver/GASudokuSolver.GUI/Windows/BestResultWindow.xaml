@@ -9,7 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Best Result"
     Width="490"
-    Height="730"
+    Height="780"
     AllowsTransparency="True"
     Background="Transparent"
     BorderThickness="0"
@@ -54,7 +54,8 @@
                 <controls:BestResultsControl
                     Fitness="{Binding CurrentFitness}"
                     Generation="{Binding CurrentGeneration}"
-                    ResultsVisibility="{Binding ResultsVisibility}" />
+                    ResultsVisibility="{Binding ResultsVisibility}"
+                    TerminationReason="{Binding TerminationReason}" />
             </Border>
         </Grid>
     </Border>

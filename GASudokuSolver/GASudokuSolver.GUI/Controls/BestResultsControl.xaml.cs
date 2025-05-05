@@ -48,4 +48,17 @@ public partial class BestResultsControl : UserControl
 		get => (Visibility)GetValue(ResultsVisibilityProperty);
 		set => SetValue(ResultsVisibilityProperty, value);
 	}
+
+	public static readonly DependencyProperty TerminationReasonProperty =
+		DependencyProperty.Register(
+			nameof(TerminationReason),
+			typeof(string),
+			typeof(BestResultsControl),
+			new PropertyMetadata(string.Empty));
+
+	public string TerminationReason
+	{
+		get => (string)GetValue(TerminationReasonProperty);
+		set => SetValue(TerminationReasonProperty, value);
+	}
 }
