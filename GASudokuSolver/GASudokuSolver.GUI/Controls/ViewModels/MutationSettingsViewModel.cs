@@ -13,11 +13,7 @@ public class MutationSettingsViewModel : INotifyPropertyChanged
 	private MutationOptionViewModel selectedOption = defaultOption;
 
 	private static readonly MutationOptionViewModel defaultOption
-		= new SimpleMutatationOption(
-			  "Never Mutation",
-			  "Disables all mutation: offspring are created only by crossover, so no random gene changes ever occur.",
-			  () => new NeverMutation()
-		);
+		= new PercentChanceMutationOption();
 
 	public MutationOptionViewModel SelectedOption
 	{
@@ -34,7 +30,12 @@ public class MutationSettingsViewModel : INotifyPropertyChanged
 
 	public MutationSettingsViewModel()
 	{
-		MutationOptions.Add(new PercentChanceMutationOption());
+		MutationOptions.Add(new SimpleMutatationOption(
+				"Never Mutation",
+				"Disables all mutation: offspring are created only by crossover, so no random gene changes ever occur.",
+				() => new NeverMutation()
+			)
+		);
 
 		MutationOptions.Add(
 			new SimpleMutatationOption(

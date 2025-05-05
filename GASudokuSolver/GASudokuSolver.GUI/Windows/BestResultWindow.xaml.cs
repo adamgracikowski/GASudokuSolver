@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using GASudokuSolver.GUI.Windows.ViewModels;
+using System.Windows;
 using System.Windows.Input;
 
 namespace GASudokuSolver.GUI.Windows;
@@ -32,5 +33,10 @@ public partial class BestResultWindow : Window
 	private void CloseButtonClick(object sender, RoutedEventArgs e)
 	{
 		this.Close();
+	}
+
+	private void MinimizeButtonClick(object sender, RoutedEventArgs e)
+	{
+		this.WindowState = WindowState.Minimized;
 	}
 }

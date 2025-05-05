@@ -7,29 +7,44 @@ using GASudokuSolver.GUI.Controls;
 using GASudokuSolver.GUI.Enums;
 using GASudokuSolver.GUI.Models;
 using GASudokuSolver.GUI.Windows;
+using GASudokuSolver.GUI.Windows.ViewModels;
 using LiveChartsCore;
+using LiveChartsCore.ConditionalDraw;
+using LiveChartsCore.Drawing;
+using LiveChartsCore.Kernel;
+using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using Microsoft.Win32;
+using SkiaSharp;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
-using LiveChartsCore.Kernel;
-using SkiaSharp;
-using LiveChartsCore.Kernel.Sketches;
-using System.ComponentModel;
 using System.Windows.Input;
-using LiveChartsCore.ConditionalDraw;
-using LiveChartsCore.Drawing;
-using GASudokuSolver.Core.Solver.Representations;
-using GASudokuSolver.Core.Solver.Crossovers;
-using GASudokuSolver.Core.Solver.FitnessFunctions;
 
 namespace GASudokuSolver.GUI;
 
-public partial class MainWindow : Window
+public partial class MainWindow : Window, INotifyPropertyChanged
 {
+	private bool _highlightErrors;
+
+	public bool HighlightErrors
+	{
+		get => _highlightErrors;
+		set
+		{
+			if (_highlightErrors != value)
+			{
+				_highlightErrors = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HighlightErrors)));
+			}
+		}
+	}
+
+	public event PropertyChangedEventHandler? PropertyChanged;
+
 	private readonly Stopwatch Stopwatch = new();
 	private readonly System.Timers.Timer Timer = new(50);
 
@@ -42,7 +57,7 @@ public partial class MainWindow : Window
 	public ObservableCollection<ChartPointData> ChartPointsColection { get; set; } = [];
 
 	private ChartPointData? selectedPoint = null;
-	private object SelectedLock = new();
+	private readonly object SelectedLock = new();
 
 	public Axis[] XAxes { get; set; } =
 	{
@@ -53,7 +68,6 @@ public partial class MainWindow : Window
 			NameTextSize = 15.0
 		}
 	};
-
 	public Axis[] YAxes { get; set; } =
 	{
 		new Axis
@@ -127,17 +141,16 @@ public partial class MainWindow : Window
 			new SolidColorPaint(SKColors.LightBlue);
 		});
 
-		FitnessSeries = new ObservableCollection<ISeries>
-		{
+		FitnessSeries =
+		[
 			fitnessSeries
-		};
+		];
 
 		GeneticChart.UpdaterThrottler = TimeSpan.FromMilliseconds(100);
 		GeneticChart.DataPointerDown += GeneticChartDataClick;
 
 		XAxes[0].PropertyChanged += AxisXRangeChanged;
 	}
-
 	public void InitializeTimer()
 	{
 		Timer.Elapsed += TimerElapsed;
@@ -196,6 +209,7 @@ public partial class MainWindow : Window
 		selectedPoint = null;
 		XAxes[0].MinLimit = null;
 		XAxes[0].MaxLimit = null;
+		HighlightErrors = false;
 	}
 
 	private async void StartButtonClickAsync(object sender, RoutedEventArgs e)
@@ -242,7 +256,7 @@ public partial class MainWindow : Window
 		TokenSource = null;
 		ShowButton(ButtonType.Clear);
 
-		ShowBestResultWindow(bestResult.BestIndividual);
+		ShowBestResultWindow(bestResult.BestIndividual, bestResult.TerminationReason);
 	}
 
 	private void ClearButtonClick(object sender, RoutedEventArgs e)
@@ -280,7 +294,7 @@ public partial class MainWindow : Window
 		);
 	}
 
-	private void ShowBestResultWindow(AlgorithmProgressData bestResult)
+	private void ShowBestResultWindow(AlgorithmProgressData bestResult, TerminationReason terminationReason)
 	{
 		if (Sudoku is null) return;
 
@@ -294,7 +308,8 @@ public partial class MainWindow : Window
 		var viewModel = new BestResultViewModel(
 			board: bestBoard,
 			currentFitness: bestResult.FitnessValue.ToString("F4"),
-			currentGeneration: bestResult.Generation.ToString()
+			currentGeneration: bestResult.Generation.ToString(),
+			terminationReason: terminationReason
 		);
 
 		var bestResultWindow = new BestResultWindow(viewModel)
@@ -333,6 +348,7 @@ public partial class MainWindow : Window
 				selectedPoint = chartPointForGeneration;
 				selectedPoint.Selected = true;
 
+				HighlightErrors = true;
 				LoadBoard(progressData.Board, Board);
 				FitnessText.Text = progressData.FitnessValue.ToString("F4");
 				GenerationText.Text = progressData.Generation.ToString();
@@ -344,6 +360,7 @@ public partial class MainWindow : Window
 				XAxes[0].MaxLimit = null;
 
 				progressData = ChartPointsColection.Last().ProgressData;
+				HighlightErrors = false;
 				LoadBoard(progressData.Board, Board);
 				FitnessText.Text = progressData.FitnessValue.ToString("F4");
 				GenerationText.Text = progressData.Generation.ToString();
@@ -354,7 +371,7 @@ public partial class MainWindow : Window
 
 	private void AxisXRangeChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		Axis xAxis = XAxes[0];
+		var xAxis = XAxes[0];
 		if (e.PropertyName is (nameof(xAxis.MaxLimit)) or (nameof(xAxis.MinLimit)))
 		{
 			if (xAxis.MinLimit < 0)
@@ -396,6 +413,7 @@ public partial class MainWindow : Window
 			if (Sudoku is not null)
 			{
 				ClearResults();
+				HighlightErrors = false;
 				InitializeBoard(Board);
 				LoadBoard(Sudoku.Unsolved.Data, Board, updateMutable: true, Sudoku.Solved.Data);
 

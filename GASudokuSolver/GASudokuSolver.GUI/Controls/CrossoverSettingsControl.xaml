@@ -44,7 +44,29 @@
             Content="{Binding SelectedOption}">
             <ContentControl.Resources>
                 <!--  Templates specific for a concrete types:  -->
-
+                <DataTemplate DataType="{x:Type vm:KPointCrossoverOption}">
+                    <StackPanel VerticalAlignment="Top" Orientation="Vertical">
+                        <TextBlock
+                            Margin="0,0,0,8"
+                            VerticalAlignment="Center"
+                            Text="K value:" />
+                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                            <Slider
+                                Width="120"
+                                IsSnapToTickEnabled="True"
+                                Maximum="{Binding MaximumK}"
+                                Minimum="{Binding MinimumK}"
+                                TickFrequency="1"
+                                Value="{Binding K, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock
+                                Width="24"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Foreground="Gray"
+                                Text="{Binding K}" />
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
                 <!--  Default template  -->
                 <DataTemplate DataType="{x:Type vm:SimpleCrossoverOption}">
                     <TextBlock

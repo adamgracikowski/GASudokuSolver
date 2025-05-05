@@ -9,13 +9,14 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Best Result"
     Width="490"
-    Height="730"
+    Height="780"
     AllowsTransparency="True"
     Background="Transparent"
     BorderThickness="0"
     FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}"
     Focusable="True"
     FontFamily="Segoe UI"
+    Icon="/Resources/Icons/sudoku.ico"
     KeyDown="WindowKeyDown"
     MouseDown="WindowMouseDown"
     ResizeMode="NoResize"
@@ -32,11 +33,20 @@
             </Grid.RowDefinitions>
 
             <!--  Close Button  -->
-            <Button
+            <StackPanel
                 Grid.Column="1"
-                Click="CloseButtonClick"
-                Content="✖"
-                Style="{StaticResource CloseButtonStyle}" />
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <Button
+                    Margin="0,0,4,0"
+                    Click="MinimizeButtonClick"
+                    Content="―"
+                    Style="{StaticResource CloseButtonStyle}" />
+                <Button
+                    Click="CloseButtonClick"
+                    Content="✖"
+                    Style="{StaticResource CloseButtonStyle}" />
+            </StackPanel>
 
             <!--  Title  -->
             <Border
@@ -47,14 +57,19 @@
             </Border>
 
             <!--  Sudoku Board  -->
-            <controls:SudokuBoardControl Grid.Row="2" Board="{Binding Board}" />
+            <controls:SudokuBoardControl
+                Grid.Row="2"
+                Board="{Binding Board}"
+                HighlightErrors="True" />
 
             <!--  Best Results  -->
             <Border Grid.Row="3" Style="{StaticResource ModernCard}">
                 <controls:BestResultsControl
                     Fitness="{Binding CurrentFitness}"
                     Generation="{Binding CurrentGeneration}"
-                    ResultsVisibility="{Binding ResultsVisibility}" />
+                    ResultsVisibility="{Binding ResultsVisibility}"
+                    TerminationReason="{Binding TerminationReason}"
+                    TerminationReasonDescription="{Binding TerminationReasonDescription}" />
             </Border>
         </Grid>
     </Border>

@@ -1,4 +1,5 @@
 ﻿using GASudokuSolver.Core.Solver.Crossovers;
+using GASudokuSolver.Core.Solver.FitnessFunctions;
 using GASudokuSolver.Core.Solver.Interfaces;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -15,8 +16,7 @@ public class CrossoverSettingsViewModel : INotifyPropertyChanged
 	private static readonly CrossoverOptionViewModel defaultOption
 		= new SimpleCrossoverOption(
 			"One Point Crossover",
-			"Chooses a random cut point along the gene sequence, then produces two children by swapping parent segments: " +
-			"Child 1 inherits Parent A’s genes up to the cut and Parent B’s genes after it, while Child 2 does the opposite.",
+			"Chooses a random cut point along the gene sequence, then produces two children by swapping parent segments.",
 			() => new OnePointCrossover()
 		);
 
@@ -35,7 +35,14 @@ public class CrossoverSettingsViewModel : INotifyPropertyChanged
 
 	public CrossoverSettingsViewModel()
 	{
-		// CrossoverOptions.Add(new YetAnotherCrossover());
+		CrossoverOptions.Add(new KPointCrossoverOption());
+
+		CrossoverOptions.Add(new SimpleCrossoverOption(
+				"Uniform Crossover",
+				"Randomly selects each gene from one of two parents, creating diverse offspring with mixed traits.",
+				() => new UniformCrossover()
+			)
+		);
 	}
 
 	public ICrossover BuildCrossover()
@@ -77,4 +84,37 @@ public class SimpleCrossoverOption : CrossoverOptionViewModel
 	}
 
 	public override ICrossover BuildCrossover() => _factory();
+}
+
+public class KPointCrossoverOption : CrossoverOptionViewModel
+{
+	private int k = DefaultK;
+
+	public int MinimumK { get; } = 1;
+	public int MaximumK { get; } = 10;
+
+	public const int DefaultK = 2;
+
+	public KPointCrossoverOption()
+		: base(
+			"K Point Crossover",
+			"Splits parent genes at K random points, alternating segments between them to create varied offspring.")
+	{ }
+
+	public int K
+	{
+		get => k;
+		set
+		{
+			var clamped = Math.Clamp(value, MinimumK, MaximumK);
+			if (k != clamped)
+			{
+				k = clamped;
+				OnPropertyChanged();
+			}
+		}
+	}
+
+	public override ICrossover BuildCrossover()
+		=> new KPointCrossover(K);
 }
