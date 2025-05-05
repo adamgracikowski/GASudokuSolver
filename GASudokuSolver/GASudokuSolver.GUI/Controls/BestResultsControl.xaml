@@ -22,6 +22,14 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
+            <ContentPresenter
+                Grid.Row="2"
+                Grid.Column="2"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Content="{Binding TerminationReason, ElementName=Root, Converter={StaticResource TerminationReasonToEmojiConverter}}" />
+
+
             <TextBlock
                 Grid.Row="0"
                 Grid.Column="0"
@@ -53,7 +61,7 @@
                 Grid.Row="2"
                 Grid.Column="1"
                 Style="{StaticResource ResultValueStyle}"
-                Text="{Binding TerminationReason, ElementName=Root}"
+                Text="{Binding TerminationReasonDescription, ElementName=Root}"
                 TextWrapping="Wrap" />
         </Grid>
     </StackPanel>

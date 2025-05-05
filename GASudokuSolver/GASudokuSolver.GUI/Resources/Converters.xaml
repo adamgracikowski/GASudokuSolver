@@ -7,4 +7,5 @@
     <converters:BooleanInverseConverter x:Key="BooleanInverseConverter" />
     <converters:SudokuBackgroundConverter x:Key="SudokuBackgroundConverter" />
     <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+    <converters:TerminationReasonToEmojiConverter x:Key="TerminationReasonToEmojiConverter" />
 </ResourceDictionary>

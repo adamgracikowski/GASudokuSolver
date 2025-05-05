@@ -1,4 +1,5 @@
-﻿using GASudokuSolver.GUI.Models;
+﻿using GASudokuSolver.Core.Enums;
+using GASudokuSolver.GUI.Models;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -11,14 +12,14 @@ public sealed class BestResultViewModel : INotifyPropertyChanged
 	private ObservableCollection<SudokuCell> board;
 	private string currentFitness;
 	private string currentGeneration;
-	private string terminationReason;
+	private TerminationReason terminationReason;
 	private Visibility resultsVisibility = Visibility.Visible;
 
 	public BestResultViewModel(
 		ObservableCollection<SudokuCell> board,
 		string currentFitness,
 		string currentGeneration,
-		string terminationReason
+		TerminationReason terminationReason
 		)
 	{
 		this.board = board;
@@ -51,10 +52,26 @@ public sealed class BestResultViewModel : INotifyPropertyChanged
 		set { resultsVisibility = value; OnPropertyChanged(); }
 	}
 
-	public string TerminationReason
+	public string TerminationReasonDescription
+	{
+		get => GetTerminationReasonDescription(terminationReason);
+	}
+
+	public TerminationReason TerminationReason
 	{
 		get => terminationReason;
-		set { terminationReason = value; OnPropertyChanged(); }
+	}
+
+	private static string GetTerminationReasonDescription(TerminationReason terminationReason)
+	{
+		return terminationReason switch
+		{
+			TerminationReason.SoultionFound => "A valid Sudoku solution was successfully found.",
+			TerminationReason.Timeout => "The solver stopped because it exceeded the allowed time limit.",
+			TerminationReason.MaxGenerationsReached => "The maximum number of generations was reached without finding a solution.",
+			TerminationReason.Cancelled => "The solving process was manually cancelled by the user.",
+			_ => "Unknown termination reason."
+		};
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;

@@ -292,7 +292,7 @@ public partial class MainWindow : Window
 			board: bestBoard,
 			currentFitness: bestResult.FitnessValue.ToString("F4"),
 			currentGeneration: bestResult.Generation.ToString(),
-			terminationReason: GetTerminationReasonDescription(terminationReason)
+			terminationReason: terminationReason
 		);
 
 		var bestResultWindow = new BestResultWindow(viewModel)
@@ -301,18 +301,6 @@ public partial class MainWindow : Window
 		};
 
 		bestResultWindow.Show();
-	}
-
-	private static string GetTerminationReasonDescription(TerminationReason terminationReason)
-	{
-		return terminationReason switch
-		{
-			TerminationReason.SoultionFound => "A valid Sudoku solution was successfully found.",
-			TerminationReason.Timeout => "The solver stopped because it exceeded the allowed time limit.",
-			TerminationReason.MaxGenerationsReached => "The maximum number of generations was reached without finding a solution.",
-			TerminationReason.Cancelled => "The solving process was manually cancelled by the user.",
-			_ => "Unknown termination reason."
-		};
 	}
 
 	private void SaveBoardCsvClick(object sender, RoutedEventArgs e)

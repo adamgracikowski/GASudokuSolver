@@ -65,7 +65,8 @@
                     Fitness="{Binding CurrentFitness}"
                     Generation="{Binding CurrentGeneration}"
                     ResultsVisibility="{Binding ResultsVisibility}"
-                    TerminationReason="{Binding TerminationReason}" />
+                    TerminationReason="{Binding TerminationReason}"
+                    TerminationReasonDescription="{Binding TerminationReasonDescription}" />
             </Border>
         </Grid>
     </Border>
