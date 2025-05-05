@@ -6,4 +6,5 @@
     <converters:SudokuBorderConverter x:Key="SudokuBorderConverter" />
     <converters:BooleanInverseConverter x:Key="BooleanInverseConverter" />
     <converters:SudokuBackgroundConverter x:Key="SudokuBackgroundConverter" />
+    <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
 </ResourceDictionary>

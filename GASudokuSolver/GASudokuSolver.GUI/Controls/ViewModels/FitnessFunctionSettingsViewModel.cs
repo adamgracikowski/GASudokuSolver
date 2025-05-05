@@ -35,6 +35,14 @@ public class FitnessFunctionSettingsViewModel : INotifyPropertyChanged
 
 	public FitnessFunctionSettingsViewModel()
 	{
+		FitnessFunctionOptions.Add(new SimpleFitnessFunctionOption(
+				"Rising Conflict",
+				"Each repeated number in a row, column, or subgrid is penalized more heavily the more it appears, " +
+				"with conflict penalties growing cumulatively. A perfect solution scores 0.",
+				() => new RisingConflictPenaltyFitnessFunction()
+			)
+		);
+
 		FitnessFunctionOptions.Add(new WeightedConflictFitnessFunctionOption());
 	}
 

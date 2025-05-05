@@ -44,7 +44,56 @@
             Content="{Binding SelectedOption}">
             <ContentControl.Resources>
                 <!--  Templates specific for a concrete types:  -->
-
+                <DataTemplate DataType="{x:Type vm:MultiCellRepresentationOption}">
+                    <StackPanel VerticalAlignment="Top" Orientation="Vertical">
+                        <TextBlock
+                            Margin="0,0,0,8"
+                            VerticalAlignment="Center"
+                            Text="Group by strategy:" />
+                        <StackPanel>
+                            <RadioButton
+                                Margin="0,0,0,4"
+                                Content="Rows"
+                                GroupName="GroupBy"
+                                IsChecked="{Binding GroupByStrategy, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Rows}" />
+                            <RadioButton
+                                Margin="0,0,0,4"
+                                Content="Columns"
+                                GroupName="GroupBy"
+                                IsChecked="{Binding GroupByStrategy, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Columns}" />
+                            <RadioButton
+                                Margin="0,0,0,4"
+                                Content="Subgrids"
+                                GroupName="GroupBy"
+                                IsChecked="{Binding GroupByStrategy, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Subgrids}" />
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:MultiCellPermutationRepresentationOption}">
+                    <StackPanel VerticalAlignment="Top" Orientation="Vertical">
+                        <TextBlock
+                            Margin="0,0,0,8"
+                            VerticalAlignment="Center"
+                            Text="Group by strategy:" />
+                        <StackPanel>
+                            <RadioButton
+                                Margin="0,0,0,4"
+                                Content="Rows"
+                                GroupName="GroupBy"
+                                IsChecked="{Binding GroupByStrategy, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Rows}" />
+                            <RadioButton
+                                Margin="0,0,0,4"
+                                Content="Columns"
+                                GroupName="GroupBy"
+                                IsChecked="{Binding GroupByStrategy, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Columns}" />
+                            <RadioButton
+                                Margin="0,0,0,4"
+                                Content="Subgrids"
+                                GroupName="GroupBy"
+                                IsChecked="{Binding GroupByStrategy, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Subgrids}" />
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
                 <!--  Default template  -->
                 <DataTemplate DataType="{x:Type vm:SimpleRepresentationOption}">
                     <TextBlock

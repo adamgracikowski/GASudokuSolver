@@ -1,4 +1,5 @@
-﻿using GASudokuSolver.Core.Solver.Interfaces;
+﻿using GASudokuSolver.Core.Enums;
+using GASudokuSolver.Core.Solver.Interfaces;
 using GASudokuSolver.Core.Solver.Representations;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -42,7 +43,8 @@ public class RepresentationSettingsViewModel : INotifyPropertyChanged
 			)
 		); 
 		
-		//RepresentationOptions.Add(new YetAnotherRepresentation());
+		RepresentationOptions.Add(new MultiCellRepresentationOption());
+		RepresentationOptions.Add(new MultiCellPermutationRepresentationOption());
 	}
 
 	public IRepresentation BuildRepresentation()
@@ -84,4 +86,63 @@ public class SimpleRepresentationOption : RepresentationOptionViewModel
 	}
 
 	public override IRepresentation BuildRepresentation() => _factory();
+}
+
+public class MultiCellRepresentationOption : RepresentationOptionViewModel
+{
+	private GroupByStrategy groupByStrategy;
+
+	public MultiCellRepresentationOption()
+		: base(
+			"Multi Cell Representation",
+			"Groups mutable cells by row, column, or subgrid (based on strategy), " +
+			"encoding each group as a single gene holding all its values. " +
+			"This reduces gene count and enforces local structure in solutions.")
+	{ }
+
+
+	public GroupByStrategy GroupByStrategy
+	{
+		get => groupByStrategy;
+		set
+		{
+			if (groupByStrategy != value)
+			{
+				groupByStrategy = value;
+				OnPropertyChanged();
+			}
+		}
+	}
+
+	public override IRepresentation BuildRepresentation()
+		=> new MultiCellRepresentation(GroupByStrategy);
+}
+
+public class MultiCellPermutationRepresentationOption : RepresentationOptionViewModel
+{
+	private GroupByStrategy groupByStrategy;
+
+	public MultiCellPermutationRepresentationOption()
+		: base(
+			"Multi Cell Permutation Representation",
+			"Encodes each row, column, or subgrid as a gene containing a valid permutation of missing values, " +
+			"ensuring no duplicates within groups and promoting Sudoku-valid structures by design.")
+	{ }
+
+
+	public GroupByStrategy GroupByStrategy
+	{
+		get => groupByStrategy;
+		set
+		{
+			if (groupByStrategy != value)
+			{
+				groupByStrategy = value;
+				OnPropertyChanged();
+			}
+		}
+	}
+
+	public override IRepresentation BuildRepresentation()
+		=> new MultiCellPermutationRepresentation(GroupByStrategy);
 }

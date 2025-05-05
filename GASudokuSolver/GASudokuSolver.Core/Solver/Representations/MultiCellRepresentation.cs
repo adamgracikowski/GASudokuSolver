@@ -103,8 +103,6 @@ public sealed class MultiCellRepresentation : IRepresentation
 				if (!board.Mutable[row, col])
 					continue;
 
-				var numberInCell = board.Data[row, col];
-
 				mutablesInRows[row]++;
 
 				mutablesInColumns[col]++;
@@ -129,6 +127,7 @@ public sealed class MultiCellRepresentation : IRepresentation
 				geneIndexByGroupIndex.Add(i);
 			
 		}
-		GroupIndexByGeneIndex = geneIndexByGroupIndex.ToArray();
+
+		GroupIndexByGeneIndex = [.. geneIndexByGroupIndex];
 	}
 }

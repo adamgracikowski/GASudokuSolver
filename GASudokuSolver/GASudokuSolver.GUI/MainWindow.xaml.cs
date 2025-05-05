@@ -8,23 +8,20 @@ using GASudokuSolver.GUI.Enums;
 using GASudokuSolver.GUI.Models;
 using GASudokuSolver.GUI.Windows;
 using LiveChartsCore;
+using LiveChartsCore.ConditionalDraw;
+using LiveChartsCore.Drawing;
+using LiveChartsCore.Kernel;
+using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using Microsoft.Win32;
+using SkiaSharp;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
-using LiveChartsCore.Kernel;
-using SkiaSharp;
-using LiveChartsCore.Kernel.Sketches;
-using System.ComponentModel;
 using System.Windows.Input;
-using LiveChartsCore.ConditionalDraw;
-using LiveChartsCore.Drawing;
-using GASudokuSolver.Core.Solver.Representations;
-using GASudokuSolver.Core.Solver.Crossovers;
-using GASudokuSolver.Core.Solver.FitnessFunctions;
 
 namespace GASudokuSolver.GUI;
 
@@ -127,17 +124,16 @@ public partial class MainWindow : Window
 			new SolidColorPaint(SKColors.LightBlue);
 		});
 
-		FitnessSeries = new ObservableCollection<ISeries>
-		{
+		FitnessSeries =
+		[
 			fitnessSeries
-		};
+		];
 
 		GeneticChart.UpdaterThrottler = TimeSpan.FromMilliseconds(100);
 		GeneticChart.DataPointerDown += GeneticChartDataClick;
 
 		XAxes[0].PropertyChanged += AxisXRangeChanged;
 	}
-
 	public void InitializeTimer()
 	{
 		Timer.Elapsed += TimerElapsed;

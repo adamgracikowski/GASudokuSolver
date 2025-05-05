@@ -24,7 +24,7 @@ public sealed class KPointCrossover : ICrossover
 		Parallel.For(0, (childrenCount + 1) / 2, (i, state) =>
 		{
 
-			SortedSet<int> points = new SortedSet<int>();
+			var points = new SortedSet<int>();
 			while (points.Count < numberOfPoints)
 			{
 				points.Add(Random.Shared.Next(1, geneCount));
