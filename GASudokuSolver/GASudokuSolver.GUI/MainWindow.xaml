@@ -11,7 +11,7 @@
     Title="Genetic Algorithms Sudoku Solver"
     Width="1200"
     Height="850"
-    Icon="/Resources/Icons/sudoku.png"
+    Icon="/Resources/Icons/sudoku.ico"
     mc:Ignorable="d">
     <Window.Resources />
 

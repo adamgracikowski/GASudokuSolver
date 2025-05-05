@@ -16,7 +16,7 @@
     FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}"
     Focusable="True"
     FontFamily="Segoe UI"
-    Icon="/Resources/Icons/sudoku.png"
+    Icon="/Resources/Icons/sudoku.ico"
     KeyDown="WindowKeyDown"
     MouseDown="WindowMouseDown"
     ResizeMode="NoResize"
