@@ -16,6 +16,7 @@
     FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}"
     Focusable="True"
     FontFamily="Segoe UI"
+    Icon="/Resources/Icons/sudoku.png"
     KeyDown="WindowKeyDown"
     MouseDown="WindowMouseDown"
     ResizeMode="NoResize"
@@ -32,11 +33,20 @@
             </Grid.RowDefinitions>
 
             <!--  Close Button  -->
-            <Button
+            <StackPanel
                 Grid.Column="1"
-                Click="CloseButtonClick"
-                Content="✖"
-                Style="{StaticResource CloseButtonStyle}" />
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <Button
+                    Margin="0,0,4,0"
+                    Click="MinimizeButtonClick"
+                    Content="―"
+                    Style="{StaticResource CloseButtonStyle}" />
+                <Button
+                    Click="CloseButtonClick"
+                    Content="✖"
+                    Style="{StaticResource CloseButtonStyle}" />
+            </StackPanel>
 
             <!--  Title  -->
             <Border

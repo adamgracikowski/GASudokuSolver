@@ -34,4 +34,9 @@ public partial class BestResultWindow : Window
 	{
 		this.Close();
 	}
+
+	private void MinimizeButtonClick(object sender, RoutedEventArgs e)
+	{
+		this.WindowState = WindowState.Minimized;
+	}
 }
