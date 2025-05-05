@@ -331,6 +331,8 @@ public partial class MainWindow : Window
 				selectedPoint = chartPointForGeneration;
 				selectedPoint.Selected = true;
 
+				InitializeBoard(Board);
+				LoadBoard(Sudoku!.Unsolved.Data, Board, updateMutable: true, Sudoku!.Solved.Data);
 				LoadBoard(progressData.Board, Board);
 				FitnessText.Text = progressData.FitnessValue.ToString("F4");
 				GenerationText.Text = progressData.Generation.ToString();
