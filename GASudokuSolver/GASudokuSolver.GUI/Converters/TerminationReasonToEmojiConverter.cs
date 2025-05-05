@@ -9,7 +9,7 @@ namespace GASudokuSolver.GUI.Converters;
 [ValueConversion(typeof(TerminationReason), typeof(TextBlock))]
 public class TerminationReasonToEmojiConverter : IValueConverter
 {
-	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+	public object? Convert(object? value, Type targetType, object parameter, CultureInfo culture)
 	{
 		if (value is TerminationReason terminationReason)
 		{
@@ -29,7 +29,7 @@ public class TerminationReasonToEmojiConverter : IValueConverter
 				{
 					TerminationReason.SoultionFound => new SolidColorBrush(Colors.Green),
 					TerminationReason.Timeout => new SolidColorBrush(Colors.Orange),
-					TerminationReason.MaxGenerationsReached => new SolidColorBrush(Colors.Yellow),
+					TerminationReason.MaxGenerationsReached => new SolidColorBrush(Colors.Orange),
 					TerminationReason.Cancelled => new SolidColorBrush(Colors.Red),
 					_ => new SolidColorBrush(Colors.Gray)
 				}
@@ -41,7 +41,7 @@ public class TerminationReasonToEmojiConverter : IValueConverter
 		return new TextBlock { Text = "❓", Foreground = new SolidColorBrush(Colors.Gray) };
 	}
 
-	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+	public object? ConvertBack(object? value, Type targetType, object parameter, CultureInfo culture)
 	{
 		return System.Windows.DependencyProperty.UnsetValue;
 	}

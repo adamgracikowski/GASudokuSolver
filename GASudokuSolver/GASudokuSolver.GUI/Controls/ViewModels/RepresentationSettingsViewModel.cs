@@ -15,9 +15,9 @@ public class RepresentationSettingsViewModel : INotifyPropertyChanged
 
 	private static readonly RepresentationOptionViewModel defaultOption
 		= new SimpleRepresentationOption(
-			"Single Cell Row Column",
-			"One gene per empty cell in row‑major order.",
-			() => new SingleCellRowColumnRepresentation()
+			"Candidate Choice",
+			"One gene per empty cell, each initialized with that cell’s list of valid potential Sudoku values.",
+			() => new CandidateChoiceRepresentation()
 		);
 
 	public RepresentationOptionViewModel SelectedOption
@@ -35,11 +35,12 @@ public class RepresentationSettingsViewModel : INotifyPropertyChanged
 
 	public RepresentationSettingsViewModel()
 	{
+
 		RepresentationOptions.Add(
 			new SimpleRepresentationOption(
-				"Candidate Choice",
-				"One gene per empty cell, each initialized with that cell’s list of valid potential Sudoku values.", 
-				() => new CandidateChoiceRepresentation()
+				"Single Cell Row Column",
+				"One gene per empty cell in row‑major order.",
+				() => new SingleCellRowColumnRepresentation()
 			)
 		); 
 		

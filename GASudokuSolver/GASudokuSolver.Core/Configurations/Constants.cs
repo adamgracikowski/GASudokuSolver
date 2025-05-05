@@ -33,12 +33,12 @@ public static class Constants
 		public const int MinimumGenerations = 10;
 		public const int MaximumGenerations = 100_000;
 
-		public const int DefaultPopulationSize = 10_000;
+		public const int DefaultPopulationSize = 1_000;
 		public const int MinimumPopulationSize = 10;
 		public const int MaximumPopulationSize = 100_000;
 
-		public const int DefaultNumberOfParentsSize = 300;
-		public const int MinimumNumberOfParentsSize = 10;
+		public const int DefaultNumberOfParentsSize = 20;
+		public const int MinimumNumberOfParentsSize = 2;
 		public const int MaximumNumberOfParentsSize = 10_000;
 
 		public const double DefaultTimeInMinutes = 5.0;

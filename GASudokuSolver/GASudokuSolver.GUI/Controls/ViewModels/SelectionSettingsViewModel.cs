@@ -14,9 +14,10 @@ public class SelectionSettingsViewModel : INotifyPropertyChanged
 
 	private static readonly SelectionOptionViewModel defaultOption 
 		= new SimpleSelectionOption(
-			  "Roulette Wheel",
-			  "Spins a ‘fitness wheel’ so individuals are chosen in proportion to their fitness.",
-			  () => new RouletteWheelSelection()
+			"Truncate Selection",
+			"Sorts the population by fitness (best first), then keeps only the top N individuals" +
+			" — discarding the rest to form the next generation.",
+			() => new TruncateSelection()
 		);
 
 	public SelectionOptionViewModel SelectedOption
@@ -36,6 +37,16 @@ public class SelectionSettingsViewModel : INotifyPropertyChanged
 	{
 		SelectionOptions.Add(
 			new SimpleSelectionOption(
+				"Roulette Wheel",
+				"Spins a ‘fitness wheel’ so individuals are chosen in proportion to their fitness.",
+				() => new RouletteWheelSelection()
+			)
+		);
+
+		SelectionOptions.Add(new TournamentSelectionOption());
+
+		SelectionOptions.Add(
+			new SimpleSelectionOption(
 				"Stochastic Universal Sampling",
 				"Evenly spaced pointers sample the wheel, giving a more consistent spread than roulette.",
 				() => new StochasticUniversalSamplingSelection()
@@ -47,17 +58,6 @@ public class SelectionSettingsViewModel : INotifyPropertyChanged
 				"Rank Selection",
 				"Sorts the population by fitness, then assigns selection probabilities linearly by rank.",
 				() => new RankSelection()
-			)
-		);
-
-		SelectionOptions.Add(new TournamentSelectionOption());
-
-		SelectionOptions.Add(
-			new SimpleSelectionOption(
-				"Truncate Selection",
-				"Sorts the population by fitness (best first), then keeps only the top N individuals" +
-				" — discarding the rest to form the next generation.",
-				() => new TruncateSelection()
 			)
 		);
 
@@ -116,14 +116,13 @@ public class TournamentSelectionOption : SelectionOptionViewModel
 	private int tournamentSize = DefaultTrournamentSize;
 	public int MinimumTournamentSize { get; } = 2;
 	public int MaximumTournamentSize { get; } = 100;
-	public const int DefaultTrournamentSize = 20;
+	public const int DefaultTrournamentSize = 40;
 
 	public TournamentSelectionOption()
 		: base(
 			"Tournament Selection",
 			"Randomly picks a group of candidates to compete against each other. The best in each mini‑tournament wins.")
 	{ }
-
 
 	public int TournamentSize
 	{

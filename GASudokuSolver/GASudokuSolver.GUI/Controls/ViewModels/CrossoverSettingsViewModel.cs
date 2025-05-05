@@ -90,7 +90,7 @@ public class KPointCrossoverOption : CrossoverOptionViewModel
 {
 	private int k = DefaultK;
 
-	public int MinimumK { get; } = 0;
+	public int MinimumK { get; } = 1;
 	public int MaximumK { get; } = 10;
 
 	public const int DefaultK = 2;

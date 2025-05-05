@@ -13,12 +13,7 @@ public class FitnessFunctionSettingsViewModel : INotifyPropertyChanged
 	private FitnessFunctionOptionViewModel selectedOption = defaultOption;
 
 	private static readonly FitnessFunctionOptionViewModel defaultOption
-		= new SimpleFitnessFunctionOption(
-			"Equally Punished Conflict",
-			"Evaluates a Sudoku by scanning for duplicate numbers in each row, column, and subgrid, subtracting one point per conflict. " +
-			"All conflicts count equally, and a perfect solution scores 0.",
-			() => new EquallyPunishedConflictFitnessFunction()
-		);
+		= new WeightedConflictFitnessFunctionOption();
 
 	public FitnessFunctionOptionViewModel SelectedOption
 	{
@@ -36,14 +31,20 @@ public class FitnessFunctionSettingsViewModel : INotifyPropertyChanged
 	public FitnessFunctionSettingsViewModel()
 	{
 		FitnessFunctionOptions.Add(new SimpleFitnessFunctionOption(
+				"Equally Punished Conflict",
+				"Evaluates a Sudoku by scanning for duplicate numbers in each row, column, and subgrid, subtracting one point per conflict. " +
+				"All conflicts count equally, and a perfect solution scores 0.",
+				() => new EquallyPunishedConflictFitnessFunction()
+			)
+		);
+
+		FitnessFunctionOptions.Add(new SimpleFitnessFunctionOption(
 				"Rising Conflict",
 				"Each repeated number in a row, column, or subgrid is penalized more heavily the more it appears, " +
 				"with conflict penalties growing cumulatively. A perfect solution scores 0.",
 				() => new RisingConflictPenaltyFitnessFunction()
 			)
 		);
-
-		FitnessFunctionOptions.Add(new WeightedConflictFitnessFunctionOption());
 	}
 
 	public IFitnessFunction BuildFitnessFunction()
