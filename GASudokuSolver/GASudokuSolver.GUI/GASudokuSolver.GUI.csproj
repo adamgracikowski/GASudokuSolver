@@ -13,6 +13,7 @@
     <None Remove="Resources\Icons\info.svg" />
     <None Remove="Resources\Icons\question.svg" />
     <None Remove="Resources\Icons\save.svg" />
+    <None Remove="Resources\Icons\sudoku.png" />
     <None Remove="Resources\Icons\upload.svg" />
     <None Remove="Resources\Texts\about.txt" />
   </ItemGroup>
@@ -39,6 +40,7 @@
     <Resource Include="Resources\Icons\info.svg" />
     <Resource Include="Resources\Icons\question.svg" />
     <Resource Include="Resources\Icons\save.svg" />
+    <Resource Include="Resources\Icons\sudoku.png" />
     <Resource Include="Resources\Icons\upload.svg" />
   </ItemGroup>
 

@@ -11,6 +11,7 @@
     Title="Genetic Algorithms Sudoku Solver"
     Width="1200"
     Height="850"
+    Icon="/Resources/Icons/sudoku.png"
     mc:Ignorable="d">
     <Window.Resources />
 
@@ -56,14 +57,14 @@
 
                 <!--  Chart  -->
                 <Border Grid.Row="0" Style="{StaticResource ModernCard}">
-                    <lvc:CartesianChart x:Name="GeneticChart"
-                            Series="{Binding FitnessSeries}"
-                            XAxes="{Binding XAxes}"
-                            YAxes="{Binding YAxes}"
-                            ZoomMode="X"
-                            TooltipFindingStrategy="CompareAll"
-                            TooltipPosition="Top"
-                            />
+                    <lvc:CartesianChart
+                        x:Name="GeneticChart"
+                        Series="{Binding FitnessSeries}"
+                        TooltipFindingStrategy="CompareAll"
+                        TooltipPosition="Top"
+                        XAxes="{Binding XAxes}"
+                        YAxes="{Binding YAxes}"
+                        ZoomMode="X" />
                 </Border>
 
                 <!--  Settings  -->

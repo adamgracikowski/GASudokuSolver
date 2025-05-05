@@ -15,7 +15,8 @@
                 Click="SaveBoardCsvClick"
                 Header="_Save Board"
                 IsEnabled="{Binding IsAlgorithmRunning, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BooleanInverseConverter}}"
-                Style="{StaticResource ModernMenuItem}">
+                Style="{StaticResource ModernMenuItem}"
+                Visibility="Collapsed">
                 <MenuItem.Icon>
                     <svgc:SvgViewbox Source="Resources/Icons/save.svg" />
                 </MenuItem.Icon>
@@ -51,7 +52,8 @@
             <MenuItem
                 Click="UserGuideClick"
                 Header="_User Guide"
-                Style="{StaticResource ModernMenuItem}">
+                Style="{StaticResource ModernMenuItem}"
+                Visibility="Collapsed">
                 <MenuItem.Icon>
                     <svgc:SvgViewbox Source="Resources/Icons/question.svg" />
                 </MenuItem.Icon>
