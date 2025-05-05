@@ -26,8 +26,25 @@ using System.Windows.Input;
 
 namespace GASudokuSolver.GUI;
 
-public partial class MainWindow : Window
+public partial class MainWindow : Window, INotifyPropertyChanged
 {
+	private bool _highlightErrors;
+
+	public bool HighlightErrors
+	{
+		get => _highlightErrors;
+		set
+		{
+			if (_highlightErrors != value)
+			{
+				_highlightErrors = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HighlightErrors)));
+			}
+		}
+	}
+
+	public event PropertyChangedEventHandler? PropertyChanged;
+
 	private readonly Stopwatch Stopwatch = new();
 	private readonly System.Timers.Timer Timer = new(50);
 
@@ -40,7 +57,7 @@ public partial class MainWindow : Window
 	public ObservableCollection<ChartPointData> ChartPointsColection { get; set; } = [];
 
 	private ChartPointData? selectedPoint = null;
-	private object SelectedLock = new();
+	private readonly object SelectedLock = new();
 
 	public Axis[] XAxes { get; set; } =
 	{
@@ -51,7 +68,6 @@ public partial class MainWindow : Window
 			NameTextSize = 15.0
 		}
 	};
-
 	public Axis[] YAxes { get; set; } =
 	{
 		new Axis
@@ -193,6 +209,7 @@ public partial class MainWindow : Window
 		selectedPoint = null;
 		XAxes[0].MinLimit = null;
 		XAxes[0].MaxLimit = null;
+		HighlightErrors = false;
 	}
 
 	private async void StartButtonClickAsync(object sender, RoutedEventArgs e)
@@ -331,8 +348,7 @@ public partial class MainWindow : Window
 				selectedPoint = chartPointForGeneration;
 				selectedPoint.Selected = true;
 
-				InitializeBoard(Board);
-				LoadBoard(Sudoku!.Unsolved.Data, Board, updateMutable: true, Sudoku!.Solved.Data);
+				HighlightErrors = true;
 				LoadBoard(progressData.Board, Board);
 				FitnessText.Text = progressData.FitnessValue.ToString("F4");
 				GenerationText.Text = progressData.Generation.ToString();
@@ -344,6 +360,7 @@ public partial class MainWindow : Window
 				XAxes[0].MaxLimit = null;
 
 				progressData = ChartPointsColection.Last().ProgressData;
+				HighlightErrors = false;
 				LoadBoard(progressData.Board, Board);
 				FitnessText.Text = progressData.FitnessValue.ToString("F4");
 				GenerationText.Text = progressData.Generation.ToString();
@@ -354,7 +371,7 @@ public partial class MainWindow : Window
 
 	private void AxisXRangeChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		Axis xAxis = XAxes[0];
+		var xAxis = XAxes[0];
 		if (e.PropertyName is (nameof(xAxis.MaxLimit)) or (nameof(xAxis.MinLimit)))
 		{
 			if (xAxis.MinLimit < 0)
@@ -396,6 +413,7 @@ public partial class MainWindow : Window
 			if (Sudoku is not null)
 			{
 				ClearResults();
+				HighlightErrors = false;
 				InitializeBoard(Board);
 				LoadBoard(Sudoku.Unsolved.Data, Board, updateMutable: true, Sudoku.Solved.Data);
 

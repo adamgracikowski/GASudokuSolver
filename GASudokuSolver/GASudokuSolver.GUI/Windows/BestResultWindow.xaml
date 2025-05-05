@@ -57,7 +57,10 @@
             </Border>
 
             <!--  Sudoku Board  -->
-            <controls:SudokuBoardControl Grid.Row="2" Board="{Binding Board}" />
+            <controls:SudokuBoardControl
+                Grid.Row="2"
+                Board="{Binding Board}"
+                HighlightErrors="True" />
 
             <!--  Best Results  -->
             <Border Grid.Row="3" Style="{StaticResource ModernCard}">

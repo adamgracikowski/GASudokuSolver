@@ -23,4 +23,17 @@ public partial class SudokuBoardControl : UserControl
 		get => (IEnumerable)GetValue(BoardProperty);
 		set => SetValue(BoardProperty, value);
 	}
+
+	public static readonly DependencyProperty HighlightErrorsProperty =
+	DependencyProperty.Register(
+		nameof(HighlightErrors),
+		typeof(bool),
+		typeof(SudokuBoardControl),
+		new PropertyMetadata(false));
+
+	public bool HighlightErrors
+	{
+		get => (bool)GetValue(HighlightErrorsProperty);
+		set => SetValue(HighlightErrorsProperty, value);
+	}
 }

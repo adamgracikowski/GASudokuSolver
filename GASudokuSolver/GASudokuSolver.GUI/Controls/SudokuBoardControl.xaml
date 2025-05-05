@@ -24,10 +24,17 @@
                             Width="40"
                             Height="40"
                             Margin="1"
-                            Background="{Binding Converter={StaticResource SudokuBackgroundConverter}}"
                             BorderBrush="#444"
                             BorderThickness="{Binding Converter={StaticResource SudokuBorderConverter}}"
                             CornerRadius="3">
+                            <Border.Background>
+                                <MultiBinding Converter="{StaticResource SudokuBackgroundConverter}">
+                                    <Binding Path="Mutable" />
+                                    <Binding Path="Value" />
+                                    <Binding Path="CorrectValue" />
+                                    <Binding ElementName="Root" Path="HighlightErrors" />
+                                </MultiBinding>
+                            </Border.Background>
                             <TextBlock
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"

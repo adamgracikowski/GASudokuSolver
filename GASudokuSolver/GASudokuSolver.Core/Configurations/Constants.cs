@@ -29,15 +29,15 @@ public static class Constants
 
 	public static class Solver
 	{
-		public const int DefaultGenerations = 10_000;
+		public const int DefaultGenerations = 1_000;
 		public const int MinimumGenerations = 10;
-		public const int MaximumGenerations = 100_000;
+		public const int MaximumGenerations = 2_000;
 
-		public const int DefaultPopulationSize = 1_000;
+		public const int DefaultPopulationSize = 10_000;
 		public const int MinimumPopulationSize = 10;
 		public const int MaximumPopulationSize = 100_000;
 
-		public const int DefaultNumberOfParentsSize = 20;
+		public const int DefaultNumberOfParentsSize = 50;
 		public const int MinimumNumberOfParentsSize = 2;
 		public const int MaximumNumberOfParentsSize = 10_000;
 

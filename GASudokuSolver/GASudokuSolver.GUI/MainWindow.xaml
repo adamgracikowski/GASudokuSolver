@@ -100,7 +100,10 @@
                 </Grid.RowDefinitions>
 
                 <!--  Sudoku Board  -->
-                <controls:SudokuBoardControl Grid.Row="0" Board="{Binding Board}" />
+                <controls:SudokuBoardControl
+                    Grid.Row="0"
+                    Board="{Binding Board}"
+                    HighlightErrors="{Binding HighlightErrors}" />
 
                 <!--  Algorithm Results  -->
                 <Border Grid.Row="1" Style="{StaticResource ModernCard}">
