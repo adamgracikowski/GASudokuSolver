@@ -18,8 +18,8 @@ public sealed class RankSelection : ISelection
 		var totalRank = (n * (n + 1)) / 2.0;
 
 		var parents = new List<List<Gene>>(count);
-		
-		for (var i = 0; i < count; i++)
+
+		Parallel.For(0, count, (i, _) =>
 		{
 			var pick = Random.Shared.NextDouble() * totalRank;
 			var cumulative = 0.0;
@@ -34,7 +34,7 @@ public sealed class RankSelection : ISelection
 					break;
 				}
 			}
-		}
+		});
 
 		return parents;
 	}

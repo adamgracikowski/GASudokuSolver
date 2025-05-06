@@ -27,14 +27,17 @@ public sealed class MultipleCellPermutationGene : MultipleCellGene
 			throw new ArgumentException("Gene length mismatch");
 		if(other.ValuesInCells != ValuesInCells)
 			throw new ArgumentException("Gene values mismatch");
-		Array.Copy(Numbers, other.Numbers, Numbers.Length);
+		Array.Copy(other.Numbers, Numbers, Numbers.Length);
 	}
 
 	public override void Mutate()
 	{
-		var i = Random.Shared.Next(Numbers.Length);
-		var j = Random.Shared.Next(Numbers.Length);
-		(Numbers[j], Numbers[i]) = (Numbers[i], Numbers[j]);
+		for (var k = 0; k < Math.Ceiling((double)Numbers.Length / 2); k++)
+		{
+			var i = Random.Shared.Next(Numbers.Length);
+			var j = Random.Shared.Next(Numbers.Length);
+			(Numbers[j], Numbers[i]) = (Numbers[i], Numbers[j]);
+		}
 	}
 
 	public override void Randomize()
