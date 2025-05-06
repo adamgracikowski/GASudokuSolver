@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GASudokuSolver.Core", "GASudokuSolver.Core\GASudokuSolver.Core.csproj", "{716D884F-3750-47B0-9B7F-3785A8F10191}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GASudokuSolver", "GASudokuSolver\GASudokuSolver.csproj", "{0D246E19-EC58-4C85-95B6-E93558B2C0E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GASudokuSolver.GUI", "GASudokuSolver.GUI\GASudokuSolver.GUI.csproj", "{5F2997D6-6E11-4F27-BF7B-21D6CF8A0E12}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{716D884F-3750-47B0-9B7F-3785A8F10191}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{716D884F-3750-47B0-9B7F-3785A8F10191}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{716D884F-3750-47B0-9B7F-3785A8F10191}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{716D884F-3750-47B0-9B7F-3785A8F10191}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D246E19-EC58-4C85-95B6-E93558B2C0E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D246E19-EC58-4C85-95B6-E93558B2C0E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D246E19-EC58-4C85-95B6-E93558B2C0E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D246E19-EC58-4C85-95B6-E93558B2C0E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F2997D6-6E11-4F27-BF7B-21D6CF8A0E12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F2997D6-6E11-4F27-BF7B-21D6CF8A0E12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F2997D6-6E11-4F27-BF7B-21D6CF8A0E12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F2997D6-6E11-4F27-BF7B-21D6CF8A0E12}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {17E713FE-8B72-409F-A9C0-324EC446A7D8}
+	EndGlobalSection
+EndGlobal

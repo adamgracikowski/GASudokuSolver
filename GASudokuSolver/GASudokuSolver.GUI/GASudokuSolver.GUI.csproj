@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Icons\close.svg" />
+    <None Remove="Resources\Icons\info.svg" />
+    <None Remove="Resources\Icons\question.svg" />
+    <None Remove="Resources\Icons\save.svg" />
+    <None Remove="Resources\Icons\sudoku.ico" />
+    <None Remove="Resources\Icons\sudoku.png" />
+    <None Remove="Resources\Icons\upload.svg" />
+    <None Remove="Resources\Texts\about.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Icons\close.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Texts\about.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.7.25104.5739" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-rc2" />
+    <PackageReference Include="SharpVectors.Wpf" Version="1.8.4.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GASudokuSolver.Core\GASudokuSolver.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Icons\info.svg" />
+    <Resource Include="Resources\Icons\question.svg" />
+    <Resource Include="Resources\Icons\save.svg" />
+    <Resource Include="Resources\Icons\sudoku.ico" />
+    <Resource Include="Resources\Icons\sudoku.png" />
+    <Resource Include="Resources\Icons\upload.svg" />
+  </ItemGroup>
+
+</Project>
