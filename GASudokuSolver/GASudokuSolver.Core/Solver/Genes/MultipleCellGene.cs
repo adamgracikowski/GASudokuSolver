@@ -31,8 +31,11 @@ public class MultipleCellGene : Gene
 
 	public override void Mutate()
 	{
-		int randomIndex = Random.Shared.Next(Numbers.Length);
-		Numbers[randomIndex] = (byte)Random.Shared.Next(Constants.Cell.MinValue, Constants.Cell.MaxValue + 1);
+		for (var i = 0; i < Math.Ceiling((double)Numbers.Length / 2); i++)
+		{
+			int randomIndex = Random.Shared.Next(Numbers.Length);
+			Numbers[randomIndex] = (byte)Random.Shared.Next(Constants.Cell.MinValue, Constants.Cell.MaxValue + 1);
+		}
 	}
 
 	public override void Randomize()
