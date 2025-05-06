@@ -22,15 +22,15 @@ public sealed class RouletteWheelSelection : ISelection
 
 		var totalWeight = weights.Sum();
 
-		var parents = new List<List<Gene>>(count);
-
 		// if totalWeight is zero, fall back to uniform random selection
 		if (totalWeight <= 0)
 		{
 			return new UniformRandomSelection().Select(population, count, comparer);
 		}
 
-		for (var i = 0; i < count; i++)
+		var parents = new List<List<Gene>>(count);
+
+		Parallel.For(0, count, (i, _) =>
 		{
 			var pick = Random.Shared.NextDouble() * totalWeight;
 			var cumulative = 0.0;
@@ -45,7 +45,7 @@ public sealed class RouletteWheelSelection : ISelection
 					break;
 				}
 			}
-		}
+		});
 
 		return parents;
 	}
