@@ -56,6 +56,7 @@ public sealed class Program
 		Console.WriteLine("Loading records from the input file...");
 
 		var records = await File.ReadAllLinesAsync(options.InputFilePath);
+		
 		var tasks = records.Select(record =>
 			sudokuLoader.LoadSudokuFromStringAsync(record, Difficulty.Unknown)
 		);
@@ -99,8 +100,10 @@ public sealed class Program
 		for (var i = 0; i < options.Runs; i++)
 		{
 			Console.WriteLine($"Starting solver for the {i + 1} time...");
+			
 			var result = BuildSolver(puzzle).Run();
-			Console.WriteLine($"Solving finished...");
+			
+			Console.WriteLine("Solving finished...");
 			Console.WriteLine("Saving result to the output file...");
 
 			csv.WriteRecord(new AlgorithmResultCsvRecord()
